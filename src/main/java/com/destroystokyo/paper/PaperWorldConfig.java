@@ -98,6 +98,11 @@ public class PaperWorldConfig {
         log("Fishing time ranges are between " + fishingMinTicks +" and " + fishingMaxTicks + " ticks");
     }
 
+    public boolean nerfedMobsShouldJump;
+    private void nerfedMobsShouldJump() {
+        nerfedMobsShouldJump = getBoolean("spawner-nerfed-mobs-should-jump", false);
+    }
+
     public short keepLoadedRange;
     private void keepLoadedRange() {
         keepLoadedRange = (short) (getInt("keep-spawn-loaded-range", Math.min(spigotConfig.viewDistance, 10)) * 16);

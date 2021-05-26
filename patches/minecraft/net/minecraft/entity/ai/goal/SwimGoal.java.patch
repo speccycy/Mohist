@@ -1,0 +1,21 @@
+--- a/net/minecraft/entity/ai/goal/SwimGoal.java
++++ b/net/minecraft/entity/ai/goal/SwimGoal.java
+@@ -9,13 +_,18 @@
+ 
+    public SwimGoal(MobEntity p_i1624_1_) {
+       this.field_75373_a = p_i1624_1_;
++      if (field_75373_a.field_70170_p.paperConfig.nerfedMobsShouldJump) field_75373_a.goalFloat = this; // Paper
+       this.func_220684_a(EnumSet.of(Goal.Flag.JUMP));
+       p_i1624_1_.func_70661_as().func_212239_d(true);
+    }
+ 
++   public final boolean validConditions() { return this.func_75250_a(); } // Paper - OBFHELPER
++
+    public boolean func_75250_a() {
+       return this.field_75373_a.func_70090_H() && this.field_75373_a.func_233571_b_(FluidTags.field_206959_a) > this.field_75373_a.func_233579_cu_() || this.field_75373_a.func_180799_ab();
+    }
++
++   public void update() { this.func_75246_d(); } // Paper - OBFHELPER
+ 
+    public void func_75246_d() {
+       if (this.field_75373_a.func_70681_au().nextFloat() < 0.8F) {

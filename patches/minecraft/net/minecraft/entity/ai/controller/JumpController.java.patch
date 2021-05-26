@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/ai/controller/JumpController.java
++++ b/net/minecraft/entity/ai/controller/JumpController.java
+@@ -14,6 +_,8 @@
+       this.field_75662_b = true;
+    }
+ 
++   public final void jumpIfSet() { this.func_75661_b(); } // Paper - OBFHELPER
++
+    public void func_75661_b() {
+       this.field_75663_a.func_70637_d(this.field_75662_b);
+       this.field_75662_b = false;
