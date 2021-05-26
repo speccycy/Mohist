@@ -25,7 +25,7 @@ public class DefaultLibraries {
         LinkedHashMap<File, String> libs = getDefaultLibs();
 
         for (File lib : getDefaultLibs().keySet()) {
-            if((!lib.exists() || !MD5Util.getMd5(lib).equals(libs.get(lib)) && !MohistConfigUtil.getString(MohistConfigUtil.mohistyml, "libraries_black_list:", "xxxxx").contains(lib.getName()))) {
+            if((!lib.exists() || !MD5Util.getMd5(lib).equalsIgnoreCase(libs.get(lib)) && !MohistConfigUtil.getString(MohistConfigUtil.mohistyml, "libraries_black_list:", "xxxxx").contains(lib.getName()))) {
                 lib.getParentFile().mkdirs();
                 //if (i18n.isCN() && !lib.getName().contains("mcp_config")) url = "https://MohistMC.gitee.io/mohistdown/"; //Gitee Mirror
                 String u = url + "libraries/" + lib.getAbsolutePath().replaceAll("\\\\", "/").split("/libraries/")[1];
@@ -33,7 +33,6 @@ public class DefaultLibraries {
 
                 try {
                     UpdateUtils.downloadFile(u, lib);
-                    if(lib.getName().endsWith(".jar") && !lib.getName().contains("asm-tree-6.1.1.jar")) new JarLoader().loadJar(lib);
                     fail.remove(u);
                 } catch (Exception e) {
                     System.out.println(i18n.get("file.download.nook", u));
@@ -56,6 +55,10 @@ public class DefaultLibraries {
                     System.out.println("Link : " + lib + "\nPath : " + fail.get(lib) + "\n");
                 System.exit(0);
             }
+        }
+
+        for (File lib : getDefaultLibs().keySet()) {
+            if(lib.getName().endsWith(".jar") && !lib.getName().contains("asm-tree-6.1.1.jar")) new JarLoader().loadJar(lib);
         }
     }
 

@@ -13,7 +13,7 @@ public class MD5Util {
         try {
             return String.format("%032x", new BigInteger(1, MessageDigest.getInstance("MD5").digest(Files.readAllBytes(path.toPath())))).toLowerCase();
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 
@@ -21,7 +21,7 @@ public class MD5Util {
         try {
             return String.format("%032x", new BigInteger(1, new DigestInputStream(is, MessageDigest.getInstance("MD5")).getMessageDigest().digest())).toLowerCase();
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 }
