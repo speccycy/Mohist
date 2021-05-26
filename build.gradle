@@ -391,9 +391,12 @@ project(':forge') {
         // Paper start
         //installer 'co.aikar:cleaner:1.0-SNAPSHOT'
         installer 'net.kyori:adventure-api:4.7.0'
+        installer 'net.kyori:adventure-key:4.7.0'
         installer 'net.kyori:adventure-text-serializer-gson:4.7.0'
         installer 'net.kyori:adventure-text-serializer-legacy:4.7.0'
         installer 'net.kyori:adventure-text-serializer-plain:4.7.0'
+        installer 'net.kyori:examination-api:1.1.0'
+        installer 'net.kyori:examination-string:1.1.0'
         // Paper end
 
         fmllauncherImplementation 'com.google.guava:guava:21.0'
