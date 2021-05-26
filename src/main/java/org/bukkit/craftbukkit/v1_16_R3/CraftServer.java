@@ -8,6 +8,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mohistmc.MohistMC;
+import com.mohistmc.MohistMCStart;
 import com.mohistmc.MohistProxySelector;
 import com.mohistmc.bukkit.nms.utils.RemapUtils;
 import com.mohistmc.util.i18n.i18n;
@@ -146,7 +147,7 @@ import java.util.logging.Logger;
 
 public final class CraftServer implements Server {
     private final String serverName = "Mohist";
-    public static String serverVersion;
+    public static String serverVersion = MohistMCStart.getVersion();
     private final String bukkitVersion = Versioning.getBukkitVersion();
     private final Logger logger = Logger.getLogger("Minecraft");
     private final ServicesManager servicesManager = new SimpleServicesManager();
@@ -196,7 +197,6 @@ public final class CraftServer implements Server {
                 return player.getBukkitEntity();
             }
         }));
-        this.serverVersion = (MohistMC.class.getPackage().getImplementationVersion() != null) ? MohistMC.class.getPackage().getImplementationVersion() : "unknown";
 
         Bukkit.setServer(this);
 

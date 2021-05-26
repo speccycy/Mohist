@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import com.mohistmc.MohistMCStart;
 import net.minecraftforge.versions.forge.ForgeVersion;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.advancement.Advancement;
@@ -89,7 +90,7 @@ public final class Bukkit {
         }
 
         Bukkit.server = server;
-        server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ", Forge version " + ForgeVersion.getVersion() + ")");
+        server.getLogger().info(com.mohistmc.util.i18n.i18n.get("server.version", Bukkit.getVersion(), getBukkitVersion(), ForgeVersion.getVersion()));
     }
 
     /**
