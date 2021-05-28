@@ -33,6 +33,7 @@ public class DefaultLibraries {
 
                 try {
                     UpdateUtils.downloadFile(u, lib);
+                    if(lib.getName().endsWith(".jar") && !lib.getName().contains("asm-tree-6.1.1.jar")) new JarLoader().loadJar(lib);
                     fail.remove(u);
                 } catch (Exception e) {
                     System.out.println(i18n.get("file.download.nook", u));
@@ -55,10 +56,6 @@ public class DefaultLibraries {
                     System.out.println("Link : " + lib + "\nPath : " + fail.get(lib) + "\n");
                 System.exit(0);
             }
-        }
-
-        for (File lib : getDefaultLibs().keySet()) {
-            if(lib.getName().endsWith(".jar") && !lib.getName().contains("asm-tree-6.1.1.jar")) new JarLoader().loadJar(lib);
         }
     }
 
