@@ -1,58 +1,247 @@
 --- a/net/minecraft/entity/item/TNTEntity.java
 +++ b/net/minecraft/entity/item/TNTEntity.java
-@@ -16,12 +_,15 @@
+@@ -1,6 +_,7 @@
+ package net.minecraft.entity.item;
+ 
+ import javax.annotation.Nullable;
++
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntitySize;
+ import net.minecraft.entity.EntityType;
+@@ -16,111 +_,131 @@
  import net.minecraft.particles.ParticleTypes;
  import net.minecraft.world.Explosion;
  import net.minecraft.world.World;
 +import org.bukkit.event.entity.ExplosionPrimeEvent;
  
  public class TNTEntity extends Entity {
-    private static final DataParameter<Integer> field_184537_a = EntityDataManager.func_187226_a(TNTEntity.class, DataSerializers.field_187192_b);
-    @Nullable
+-   private static final DataParameter<Integer> field_184537_a = EntityDataManager.func_187226_a(TNTEntity.class, DataSerializers.field_187192_b);
+-   @Nullable
 -   private LivingEntity field_94084_b;
-+   public LivingEntity field_94084_b;
-    private int field_70516_a = 80;
-+   public float yield = 4; // CraftBukkit - add field
-+   public boolean isIncendiary = false; // CraftBukkit - add field
- 
-    public TNTEntity(EntityType<? extends TNTEntity> p_i50216_1_, World p_i50216_2_) {
-       super(p_i50216_1_, p_i50216_2_);
-@@ -53,6 +_,7 @@
-    }
- 
-    public void func_70071_h_() {
-+      if (field_70170_p.spigotConfig.currentPrimedTnt++ > field_70170_p.spigotConfig.maxTntTicksPerTick) { return; } // Spigot
-       if (!this.func_189652_ae()) {
-          this.func_213317_d(this.func_213322_ci().func_72441_c(0.0D, -0.04D, 0.0D));
-       }
-@@ -65,10 +_,13 @@
- 
-       --this.field_70516_a;
-       if (this.field_70516_a <= 0) {
+-   private int field_70516_a = 80;
+-
+-   public TNTEntity(EntityType<? extends TNTEntity> p_i50216_1_, World p_i50216_2_) {
+-      super(p_i50216_1_, p_i50216_2_);
+-      this.field_70156_m = true;
+-   }
+-
+-   public TNTEntity(World p_i1730_1_, double p_i1730_2_, double p_i1730_4_, double p_i1730_6_, @Nullable LivingEntity p_i1730_8_) {
+-      this(EntityType.field_200735_aa, p_i1730_1_);
+-      this.func_70107_b(p_i1730_2_, p_i1730_4_, p_i1730_6_);
+-      double d0 = p_i1730_1_.field_73012_v.nextDouble() * (double)((float)Math.PI * 2F);
+-      this.func_213293_j(-Math.sin(d0) * 0.02D, (double)0.2F, -Math.cos(d0) * 0.02D);
+-      this.func_184534_a(80);
+-      this.field_70169_q = p_i1730_2_;
+-      this.field_70167_r = p_i1730_4_;
+-      this.field_70166_s = p_i1730_6_;
+-      this.field_94084_b = p_i1730_8_;
+-   }
+-
+-   protected void func_70088_a() {
+-      this.field_70180_af.func_187214_a(field_184537_a, 80);
+-   }
+-
+-   protected boolean func_225502_at_() {
+-      return false;
+-   }
+-
+-   public boolean func_70067_L() {
+-      return !this.field_70128_L;
+-   }
+-
+-   public void func_70071_h_() {
+-      if (!this.func_189652_ae()) {
+-         this.func_213317_d(this.func_213322_ci().func_72441_c(0.0D, -0.04D, 0.0D));
+-      }
+-
+-      this.func_213315_a(MoverType.SELF, this.func_213322_ci());
+-      this.func_213317_d(this.func_213322_ci().func_186678_a(0.98D));
+-      if (this.field_70122_E) {
+-         this.func_213317_d(this.func_213322_ci().func_216372_d(0.7D, -0.5D, 0.7D));
+-      }
+-
+-      --this.field_70516_a;
+-      if (this.field_70516_a <= 0) {
 -         this.func_70106_y();
-+         // CraftBukkit start - Need to reverse the order of the explosion and the entity death so we have a location for the event
-+    //    this.remove();
-          if (!this.field_70170_p.field_72995_K) {
-             this.func_70515_d();
-          }
-+         this.func_70106_y();
-+         // CraftBukkit end
-       } else {
-          this.func_233566_aG_();
-          if (this.field_70170_p.field_72995_K) {
-@@ -79,8 +_,13 @@
-    }
- 
-    protected void func_70515_d() {
+-         if (!this.field_70170_p.field_72995_K) {
+-            this.func_70515_d();
+-         }
+-      } else {
+-         this.func_233566_aG_();
+-         if (this.field_70170_p.field_72995_K) {
+-            this.field_70170_p.func_195594_a(ParticleTypes.field_197601_L, this.func_226277_ct_(), this.func_226278_cu_() + 0.5D, this.func_226281_cx_(), 0.0D, 0.0D, 0.0D);
+-         }
+-      }
+-
+-   }
+-
+-   protected void func_70515_d() {
 -      float f = 4.0F;
 -      this.field_70170_p.func_217385_a(this, this.func_226277_ct_(), this.func_226283_e_(0.0625D), this.func_226281_cx_(), 4.0F, Explosion.Mode.BREAK);
-+      // CraftBukkit start
-+      ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
-+      this.field_70170_p.getCBServer().getPluginManager().callEvent(event);
-+      if (!event.isCancelled()) {
-+         this.field_70170_p.func_217398_a(this, this.func_226277_ct_(), this.func_226283_e_(0.0625D), this.func_226281_cx_(), event.getRadius(), event.getFire(), Explosion.Mode.BREAK);
-+      }
-+      // CraftBukkit end
-    }
- 
-    protected void func_213281_b(CompoundNBT p_213281_1_) {
+-   }
+-
+-   protected void func_213281_b(CompoundNBT p_213281_1_) {
+-      p_213281_1_.func_74777_a("Fuse", (short)this.func_184536_l());
+-   }
+-
+-   protected void func_70037_a(CompoundNBT p_70037_1_) {
+-      this.func_184534_a(p_70037_1_.func_74765_d("Fuse"));
+-   }
+-
+-   @Nullable
+-   public LivingEntity func_94083_c() {
+-      return this.field_94084_b;
+-   }
+-
+-   protected float func_213316_a(Pose p_213316_1_, EntitySize p_213316_2_) {
+-      return 0.15F;
+-   }
+-
+-   public void func_184534_a(int p_184534_1_) {
+-      this.field_70180_af.func_187227_b(field_184537_a, p_184534_1_);
+-      this.field_70516_a = p_184534_1_;
+-   }
+-
+-   public void func_184206_a(DataParameter<?> p_184206_1_) {
+-      if (field_184537_a.equals(p_184206_1_)) {
+-         this.field_70516_a = this.func_184535_k();
+-      }
+-
+-   }
+-
+-   public int func_184535_k() {
+-      return this.field_70180_af.func_187225_a(field_184537_a);
+-   }
+-
+-   public int func_184536_l() {
+-      return this.field_70516_a;
+-   }
+-
+-   public IPacket<?> func_213297_N() {
+-      return new SSpawnObjectPacket(this);
+-   }
++    private static final DataParameter<Integer> field_184537_a = EntityDataManager.func_187226_a(TNTEntity.class, DataSerializers.field_187192_b);
++    @Nullable
++    public LivingEntity field_94084_b;
++    private int field_70516_a = 80;
++    public float yield = 4; // CraftBukkit - add field
++    public boolean isIncendiary = false; // CraftBukkit - add field
++
++    public TNTEntity(EntityType<? extends TNTEntity> p_i50216_1_, World p_i50216_2_) {
++        super(p_i50216_1_, p_i50216_2_);
++        this.field_70156_m = true;
++    }
++
++    public TNTEntity(World p_i1730_1_, double p_i1730_2_, double p_i1730_4_, double p_i1730_6_, @Nullable LivingEntity p_i1730_8_) {
++        this(EntityType.field_200735_aa, p_i1730_1_);
++        this.func_70107_b(p_i1730_2_, p_i1730_4_, p_i1730_6_);
++        double d0 = p_i1730_1_.field_73012_v.nextDouble() * (double) ((float) Math.PI * 2F);
++        this.func_213293_j(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
++        this.func_184534_a(80);
++        this.field_70169_q = p_i1730_2_;
++        this.field_70167_r = p_i1730_4_;
++        this.field_70166_s = p_i1730_6_;
++        this.field_94084_b = p_i1730_8_;
++    }
++
++    protected void func_70088_a() {
++        this.field_70180_af.func_187214_a(field_184537_a, 80);
++    }
++
++    protected boolean func_225502_at_() {
++        return false;
++    }
++
++    public boolean func_70067_L() {
++        return !this.field_70128_L;
++    }
++
++    public void func_70071_h_() {
++        if (field_70170_p.spigotConfig.currentPrimedTnt++ > field_70170_p.spigotConfig.maxTntTicksPerTick) {
++            return;
++        } // Spigot
++        if (!this.func_189652_ae()) {
++            this.func_213317_d(this.func_213322_ci().func_72441_c(0.0D, -0.04D, 0.0D));
++        }
++
++        this.func_213315_a(MoverType.SELF, this.func_213322_ci());
++        // Paper start - Configurable TNT entity height nerf
++        if (this.field_70170_p.paperConfig.entityTNTHeightNerf != 0 && this.func_226278_cu_() > this.field_70170_p.paperConfig.entityTNTHeightNerf) {
++            this.func_70106_y();
++            return;
++        }
++        // Paper end
++        this.func_213317_d(this.func_213322_ci().func_186678_a(0.98D));
++        if (this.field_70122_E) {
++            this.func_213317_d(this.func_213322_ci().func_216372_d(0.7D, -0.5D, 0.7D));
++        }
++
++        --this.field_70516_a;
++        if (this.field_70516_a <= 0) {
++            // CraftBukkit start - Need to reverse the order of the explosion and the entity death so we have a location for the event
++            //    this.remove();
++            if (!this.field_70170_p.field_72995_K) {
++                this.func_70515_d();
++            }
++            this.func_70106_y();
++            // CraftBukkit end
++        } else {
++            this.func_233566_aG_();
++            if (this.field_70170_p.field_72995_K) {
++                this.field_70170_p.func_195594_a(ParticleTypes.field_197601_L, this.func_226277_ct_(), this.func_226278_cu_() + 0.5D, this.func_226281_cx_(), 0.0D, 0.0D, 0.0D);
++            }
++        }
++
++    }
++
++    protected void func_70515_d() {
++        // CraftBukkit start
++        ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
++        this.field_70170_p.getCBServer().getPluginManager().callEvent(event);
++        if (!event.isCancelled()) {
++            this.field_70170_p.func_217398_a(this, this.func_226277_ct_(), this.func_226283_e_(0.0625D), this.func_226281_cx_(), event.getRadius(), event.getFire(), Explosion.Mode.BREAK);
++        }
++        // CraftBukkit end
++    }
++
++    protected void func_213281_b(CompoundNBT p_213281_1_) {
++        p_213281_1_.func_74777_a("Fuse", (short) this.func_184536_l());
++    }
++
++    protected void func_70037_a(CompoundNBT p_70037_1_) {
++        this.func_184534_a(p_70037_1_.func_74765_d("Fuse"));
++    }
++
++    @Nullable
++    public LivingEntity func_94083_c() {
++        return this.field_94084_b;
++    }
++
++    protected float func_213316_a(Pose p_213316_1_, EntitySize p_213316_2_) {
++        return 0.15F;
++    }
++
++    public void func_184534_a(int p_184534_1_) {
++        this.field_70180_af.func_187227_b(field_184537_a, p_184534_1_);
++        this.field_70516_a = p_184534_1_;
++    }
++
++    public void func_184206_a(DataParameter<?> p_184206_1_) {
++        if (field_184537_a.equals(p_184206_1_)) {
++            this.field_70516_a = this.func_184535_k();
++        }
++
++    }
++
++    public int func_184535_k() {
++        return this.field_70180_af.func_187225_a(field_184537_a);
++    }
++
++    public int func_184536_l() {
++        return this.field_70516_a;
++    }
++
++    public IPacket<?> func_213297_N() {
++        return new SSpawnObjectPacket(this);
++    }
+ }

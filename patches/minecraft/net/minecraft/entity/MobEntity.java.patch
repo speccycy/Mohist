@@ -256,7 +256,7 @@
           }
  
           this.func_233657_b_(equipmentslottype, p_233665_1_);
-@@ -638,7 +_,15 @@
+@@ -638,18 +_,26 @@
        if (this.field_70170_p.func_175659_aa() == Difficulty.PEACEFUL && this.func_225511_J_()) {
           this.func_70106_y();
        } else if (!this.func_104002_bU() && !this.func_213392_I()) {
@@ -273,6 +273,19 @@
           if (entity != null) {
              double d0 = entity.func_70068_e(this);
              int i = this.func_200600_R().func_220339_d().func_233671_f_();
+             int j = i * i;
+-            if (d0 > (double)j && this.func_213397_c(d0)) {
++            if (d0 > (double) field_70170_p.paperConfig.hardDespawnDistance) { // CraftBukkit - remove removeWhenFarAway() check // Paper - custom despawn distances
+                this.func_70106_y();
+             }
+ 
+             int k = this.func_200600_R().func_220339_d().func_233672_g_();
+             int l = k * k;
+-            if (this.field_70708_bq > 600 && this.field_70146_Z.nextInt(800) == 0 && d0 > (double)l && this.func_213397_c(d0)) {
++            if (this.field_70708_bq > 600 && this.field_70146_Z.nextInt(800) == 0 && d0 > (double) field_70170_p.paperConfig.softDespawnDistance) { // CraftBukkit - remove removeWhenFarAway() check // Paper - custom despawn distances
+                this.func_70106_y();
+             } else if (d0 < (double)l) {
+                this.field_70708_bq = 0;
 @@ -663,6 +_,17 @@
  
     protected final void func_70626_be() {

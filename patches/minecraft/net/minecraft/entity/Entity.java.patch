@@ -760,7 +760,7 @@
     }
  
     protected abstract void func_70037_a(CompoundNBT p_70037_1_);
-@@ -1537,6 +_,11 @@
+@@ -1537,6 +_,13 @@
        return this.func_70099_a(p_199701_1_, 0.0F);
     }
  
@@ -768,6 +768,8 @@
 +   private boolean dragonDone;
 +   private Class<?> dragonClass;
 +   // Mohist end
++
++   @Nullable public final ItemEntity dropItem(ItemStack itemstack, float offset) { return this.func_70099_a(itemstack, offset); } // Paper - OBFHELPER
 +
     @Nullable
     public ItemEntity func_70099_a(ItemStack p_70099_1_, float p_70099_2_) {

@@ -1,0 +1,301 @@
+--- a/net/minecraft/entity/item/minecart/TNTMinecartEntity.java
++++ b/net/minecraft/entity/item/minecart/TNTMinecartEntity.java
+@@ -22,148 +_,154 @@
+ import net.minecraftforge.api.distmarker.OnlyIn;
+ 
+ public class TNTMinecartEntity extends AbstractMinecartEntity {
+-   private int field_94106_a = -1;
+-
+-   public TNTMinecartEntity(EntityType<? extends TNTMinecartEntity> p_i50112_1_, World p_i50112_2_) {
+-      super(p_i50112_1_, p_i50112_2_);
+-   }
+-
+-   public TNTMinecartEntity(World p_i1728_1_, double p_i1728_2_, double p_i1728_4_, double p_i1728_6_) {
+-      super(EntityType.field_200778_R, p_i1728_1_, p_i1728_2_, p_i1728_4_, p_i1728_6_);
+-   }
+-
+-   public AbstractMinecartEntity.Type func_184264_v() {
+-      return AbstractMinecartEntity.Type.TNT;
+-   }
+-
+-   public BlockState func_180457_u() {
+-      return Blocks.field_150335_W.func_176223_P();
+-   }
+-
+-   public void func_70071_h_() {
+-      super.func_70071_h_();
+-      if (this.field_94106_a > 0) {
+-         --this.field_94106_a;
+-         this.field_70170_p.func_195594_a(ParticleTypes.field_197601_L, this.func_226277_ct_(), this.func_226278_cu_() + 0.5D, this.func_226281_cx_(), 0.0D, 0.0D, 0.0D);
+-      } else if (this.field_94106_a == 0) {
+-         this.func_94103_c(func_213296_b(this.func_213322_ci()));
+-      }
+-
+-      if (this.field_70123_F) {
+-         double d0 = func_213296_b(this.func_213322_ci());
+-         if (d0 >= (double)0.01F) {
+-            this.func_94103_c(d0);
+-         }
+-      }
+-
+-   }
+-
+-   public boolean func_70097_a(DamageSource p_70097_1_, float p_70097_2_) {
+-      Entity entity = p_70097_1_.func_76364_f();
+-      if (entity instanceof AbstractArrowEntity) {
+-         AbstractArrowEntity abstractarrowentity = (AbstractArrowEntity)entity;
+-         if (abstractarrowentity.func_70027_ad()) {
+-            this.func_94103_c(abstractarrowentity.func_213322_ci().func_189985_c());
+-         }
+-      }
+-
+-      return super.func_70097_a(p_70097_1_, p_70097_2_);
+-   }
+-
+-   public void func_94095_a(DamageSource p_94095_1_) {
+-      double d0 = func_213296_b(this.func_213322_ci());
+-      if (!p_94095_1_.func_76347_k() && !p_94095_1_.func_94541_c() && !(d0 >= (double)0.01F)) {
+-         super.func_94095_a(p_94095_1_);
+-         if (!p_94095_1_.func_94541_c() && this.field_70170_p.func_82736_K().func_223586_b(GameRules.field_223604_g)) {
+-            this.func_199703_a(Blocks.field_150335_W);
+-         }
+-
+-      } else {
+-         if (this.field_94106_a < 0) {
+-            this.func_94105_c();
+-            this.field_94106_a = this.field_70146_Z.nextInt(20) + this.field_70146_Z.nextInt(20);
+-         }
+-
+-      }
+-   }
+-
+-   protected void func_94103_c(double p_94103_1_) {
+-      if (!this.field_70170_p.field_72995_K) {
+-         double d0 = Math.sqrt(p_94103_1_);
+-         if (d0 > 5.0D) {
+-            d0 = 5.0D;
+-         }
+-
+-         this.field_70170_p.func_217385_a(this, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), (float)(4.0D + this.field_70146_Z.nextDouble() * 1.5D * d0), Explosion.Mode.BREAK);
+-         this.func_70106_y();
+-      }
+-
+-   }
+-
+-   public boolean func_225503_b_(float p_225503_1_, float p_225503_2_) {
+-      if (p_225503_1_ >= 3.0F) {
+-         float f = p_225503_1_ / 10.0F;
+-         this.func_94103_c((double)(f * f));
+-      }
+-
+-      return super.func_225503_b_(p_225503_1_, p_225503_2_);
+-   }
+-
+-   public void func_96095_a(int p_96095_1_, int p_96095_2_, int p_96095_3_, boolean p_96095_4_) {
+-      if (p_96095_4_ && this.field_94106_a < 0) {
+-         this.func_94105_c();
+-      }
+-
+-   }
+-
+-   @OnlyIn(Dist.CLIENT)
+-   public void func_70103_a(byte p_70103_1_) {
+-      if (p_70103_1_ == 10) {
+-         this.func_94105_c();
+-      } else {
+-         super.func_70103_a(p_70103_1_);
+-      }
+-
+-   }
+-
+-   public void func_94105_c() {
+-      this.field_94106_a = 80;
+-      if (!this.field_70170_p.field_72995_K) {
+-         this.field_70170_p.func_72960_a(this, (byte)10);
+-         if (!this.func_174814_R()) {
+-            this.field_70170_p.func_184148_a((PlayerEntity)null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
+-         }
+-      }
+-
+-   }
+-
+-   @OnlyIn(Dist.CLIENT)
+-   public int func_94104_d() {
+-      return this.field_94106_a;
+-   }
+-
+-   public boolean func_96096_ay() {
+-      return this.field_94106_a > -1;
+-   }
+-
+-   public float func_180428_a(Explosion p_180428_1_, IBlockReader p_180428_2_, BlockPos p_180428_3_, BlockState p_180428_4_, FluidState p_180428_5_, float p_180428_6_) {
+-      return !this.func_96096_ay() || !p_180428_4_.func_235714_a_(BlockTags.field_203437_y) && !p_180428_2_.func_180495_p(p_180428_3_.func_177984_a()).func_235714_a_(BlockTags.field_203437_y) ? super.func_180428_a(p_180428_1_, p_180428_2_, p_180428_3_, p_180428_4_, p_180428_5_, p_180428_6_) : 0.0F;
+-   }
+-
+-   public boolean func_174816_a(Explosion p_174816_1_, IBlockReader p_174816_2_, BlockPos p_174816_3_, BlockState p_174816_4_, float p_174816_5_) {
+-      return !this.func_96096_ay() || !p_174816_4_.func_235714_a_(BlockTags.field_203437_y) && !p_174816_2_.func_180495_p(p_174816_3_.func_177984_a()).func_235714_a_(BlockTags.field_203437_y) ? super.func_174816_a(p_174816_1_, p_174816_2_, p_174816_3_, p_174816_4_, p_174816_5_) : false;
+-   }
+-
+-   protected void func_70037_a(CompoundNBT p_70037_1_) {
+-      super.func_70037_a(p_70037_1_);
+-      if (p_70037_1_.func_150297_b("TNTFuse", 99)) {
+-         this.field_94106_a = p_70037_1_.func_74762_e("TNTFuse");
+-      }
+-
+-   }
+-
+-   protected void func_213281_b(CompoundNBT p_213281_1_) {
+-      super.func_213281_b(p_213281_1_);
+-      p_213281_1_.func_74768_a("TNTFuse", this.field_94106_a);
+-   }
++    private int field_94106_a = -1;
++
++    public TNTMinecartEntity(EntityType<? extends TNTMinecartEntity> p_i50112_1_, World p_i50112_2_) {
++        super(p_i50112_1_, p_i50112_2_);
++    }
++
++    public TNTMinecartEntity(World p_i1728_1_, double p_i1728_2_, double p_i1728_4_, double p_i1728_6_) {
++        super(EntityType.field_200778_R, p_i1728_1_, p_i1728_2_, p_i1728_4_, p_i1728_6_);
++    }
++
++    public AbstractMinecartEntity.Type func_184264_v() {
++        return AbstractMinecartEntity.Type.TNT;
++    }
++
++    public BlockState func_180457_u() {
++        return Blocks.field_150335_W.func_176223_P();
++    }
++
++    public void func_70071_h_() {
++        super.func_70071_h_();
++        if (this.field_94106_a > 0) {
++            // Paper start - Configurable TNT entity height nerf
++            if (this.field_70170_p.paperConfig.entityTNTHeightNerf != 0 && this.func_226278_cu_() > this.field_70170_p.paperConfig.entityTNTHeightNerf) {
++                this.func_70106_y();
++                return;
++            }
++            // Paper end
++            --this.field_94106_a;
++            this.field_70170_p.func_195594_a(ParticleTypes.field_197601_L, this.func_226277_ct_(), this.func_226278_cu_() + 0.5D, this.func_226281_cx_(), 0.0D, 0.0D, 0.0D);
++        } else if (this.field_94106_a == 0) {
++            this.func_94103_c(func_213296_b(this.func_213322_ci()));
++        }
++
++        if (this.field_70123_F) {
++            double d0 = func_213296_b(this.func_213322_ci());
++            if (d0 >= (double) 0.01F) {
++                this.func_94103_c(d0);
++            }
++        }
++
++    }
++
++    public boolean func_70097_a(DamageSource p_70097_1_, float p_70097_2_) {
++        Entity entity = p_70097_1_.func_76364_f();
++        if (entity instanceof AbstractArrowEntity) {
++            AbstractArrowEntity abstractarrowentity = (AbstractArrowEntity) entity;
++            if (abstractarrowentity.func_70027_ad()) {
++                this.func_94103_c(abstractarrowentity.func_213322_ci().func_189985_c());
++            }
++        }
++
++        return super.func_70097_a(p_70097_1_, p_70097_2_);
++    }
++
++    public void func_94095_a(DamageSource p_94095_1_) {
++        double d0 = func_213296_b(this.func_213322_ci());
++        if (!p_94095_1_.func_76347_k() && !p_94095_1_.func_94541_c() && !(d0 >= (double) 0.01F)) {
++            super.func_94095_a(p_94095_1_);
++            if (!p_94095_1_.func_94541_c() && this.field_70170_p.func_82736_K().func_223586_b(GameRules.field_223604_g)) {
++                this.func_199703_a(Blocks.field_150335_W);
++            }
++
++        } else {
++            if (this.field_94106_a < 0) {
++                this.func_94105_c();
++                this.field_94106_a = this.field_70146_Z.nextInt(20) + this.field_70146_Z.nextInt(20);
++            }
++
++        }
++    }
++
++    protected void func_94103_c(double p_94103_1_) {
++        if (!this.field_70170_p.field_72995_K) {
++            double d0 = Math.sqrt(p_94103_1_);
++            if (d0 > 5.0D) {
++                d0 = 5.0D;
++            }
++
++            this.field_70170_p.func_217385_a(this, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), (float) (4.0D + this.field_70146_Z.nextDouble() * 1.5D * d0), Explosion.Mode.BREAK);
++            this.func_70106_y();
++        }
++
++    }
++
++    public boolean func_225503_b_(float p_225503_1_, float p_225503_2_) {
++        if (p_225503_1_ >= 3.0F) {
++            float f = p_225503_1_ / 10.0F;
++            this.func_94103_c(f * f);
++        }
++
++        return super.func_225503_b_(p_225503_1_, p_225503_2_);
++    }
++
++    public void func_96095_a(int p_96095_1_, int p_96095_2_, int p_96095_3_, boolean p_96095_4_) {
++        if (p_96095_4_ && this.field_94106_a < 0) {
++            this.func_94105_c();
++        }
++
++    }
++
++    @OnlyIn(Dist.CLIENT)
++    public void func_70103_a(byte p_70103_1_) {
++        if (p_70103_1_ == 10) {
++            this.func_94105_c();
++        } else {
++            super.func_70103_a(p_70103_1_);
++        }
++
++    }
++
++    public void func_94105_c() {
++        this.field_94106_a = 80;
++        if (!this.field_70170_p.field_72995_K) {
++            this.field_70170_p.func_72960_a(this, (byte) 10);
++            if (!this.func_174814_R()) {
++                this.field_70170_p.func_184148_a(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
++            }
++        }
++
++    }
++
++    @OnlyIn(Dist.CLIENT)
++    public int func_94104_d() {
++        return this.field_94106_a;
++    }
++
++    public boolean func_96096_ay() {
++        return this.field_94106_a > -1;
++    }
++
++    public float func_180428_a(Explosion p_180428_1_, IBlockReader p_180428_2_, BlockPos p_180428_3_, BlockState p_180428_4_, FluidState p_180428_5_, float p_180428_6_) {
++        return !this.func_96096_ay() || !p_180428_4_.func_235714_a_(BlockTags.field_203437_y) && !p_180428_2_.func_180495_p(p_180428_3_.func_177984_a()).func_235714_a_(BlockTags.field_203437_y) ? super.func_180428_a(p_180428_1_, p_180428_2_, p_180428_3_, p_180428_4_, p_180428_5_, p_180428_6_) : 0.0F;
++    }
++
++    public boolean func_174816_a(Explosion p_174816_1_, IBlockReader p_174816_2_, BlockPos p_174816_3_, BlockState p_174816_4_, float p_174816_5_) {
++        return (!this.func_96096_ay() || !p_174816_4_.func_235714_a_(BlockTags.field_203437_y) && !p_174816_2_.func_180495_p(p_174816_3_.func_177984_a()).func_235714_a_(BlockTags.field_203437_y)) && super.func_174816_a(p_174816_1_, p_174816_2_, p_174816_3_, p_174816_4_, p_174816_5_);
++    }
++
++    protected void func_70037_a(CompoundNBT p_70037_1_) {
++        super.func_70037_a(p_70037_1_);
++        if (p_70037_1_.func_150297_b("TNTFuse", 99)) {
++            this.field_94106_a = p_70037_1_.func_74762_e("TNTFuse");
++        }
++
++    }
++
++    protected void func_213281_b(CompoundNBT p_213281_1_) {
++        super.func_213281_b(p_213281_1_);
++        p_213281_1_.func_74768_a("TNTFuse", this.field_94106_a);
++    }
+ }

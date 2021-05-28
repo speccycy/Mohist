@@ -180,13 +180,14 @@
        this.field_72984_F = p_i241925_4_;
        this.field_72986_A = p_i241925_1_;
        this.field_234921_x_ = p_i241925_3_;
-@@ -116,6 +_,16 @@
+@@ -116,6 +_,17 @@
        this.field_217407_c = Thread.currentThread();
        this.field_226689_w_ = new BiomeManager(this, p_i241925_7_, p_i241925_3_.func_227176_e_());
        this.field_234916_c_ = p_i241925_6_;
 +      // Mohist start - Fix Advanced Rocketry assembler crash
 +      if (!disableBukkit && p_i241925_1_ != null) {
 +         timings = new co.aikar.timings.WorldTimingsHandler(this); // Paper - code below can generate new world and access timings
++         this.keepSpawnInMemory = this.paperConfig.keepSpawnInMemory; // Paper
 +         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
 +         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
 +      }

@@ -103,6 +103,38 @@ public class PaperWorldConfig {
         nerfedMobsShouldJump = getBoolean("spawner-nerfed-mobs-should-jump", false);
     }
 
+    public int softDespawnDistance;
+    public int hardDespawnDistance;
+    private void despawnDistances() {
+        softDespawnDistance = getInt("despawn-ranges.soft", 32); // 32^2 = 1024, Minecraft Default
+        hardDespawnDistance = getInt("despawn-ranges.hard", 128); // 128^2 = 16384, Minecraft Default
+
+        if (softDespawnDistance > hardDespawnDistance) {
+            softDespawnDistance = hardDespawnDistance;
+        }
+
+        log("Living Entity Despawn Ranges:  Soft: " + softDespawnDistance + " Hard: " + hardDespawnDistance);
+
+        softDespawnDistance = softDespawnDistance * softDespawnDistance;
+        hardDespawnDistance = hardDespawnDistance * hardDespawnDistance;
+    }
+
+    public boolean keepSpawnInMemory;
+    private void keepSpawnInMemory() {
+        keepSpawnInMemory = getBoolean("keep-spawn-loaded", true);
+        log("Keep spawn chunk loaded: " + keepSpawnInMemory);
+    }
+
+    public int fallingBlockHeightNerf;
+    public int entityTNTHeightNerf;
+    private void heightNerfs() {
+        fallingBlockHeightNerf = getInt("falling-block-height-nerf", 0);
+        entityTNTHeightNerf = getInt("tnt-entity-height-nerf", 0);
+
+        if (fallingBlockHeightNerf != 0) log("Falling Block Height Limit set to Y: " + fallingBlockHeightNerf);
+        if (entityTNTHeightNerf != 0) log("TNT Entity Height Limit set to Y: " + entityTNTHeightNerf);
+    }
+
     public short keepLoadedRange;
     private void keepLoadedRange() {
         keepLoadedRange = (short) (getInt("keep-spawn-loaded-range", Math.min(spigotConfig.viewDistance, 10)) * 16);
