@@ -368,8 +368,9 @@
  
     public void func_217210_a(boolean p_217210_1_) {
        this.func_217235_l();
+-      this.field_217237_a.func_219177_a(p_217210_1_);
 +      try (co.aikar.timings.Timing timed = field_73251_h.timings.chunkSaveData.startTiming()) { // Paper - Timings
-       this.field_217237_a.func_219177_a(p_217210_1_);
++         this.field_217237_a.func_219177_a(p_217210_1_);
 +      } // Paper - Timings
     }
  
