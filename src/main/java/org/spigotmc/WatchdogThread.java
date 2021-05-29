@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.mohistmc.util.i18n.i18n;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import org.bukkit.Bukkit;
 
 public class WatchdogThread extends Thread
@@ -64,35 +65,35 @@ public class WatchdogThread extends Thread
     {
         while ( !stopping )
         {
-            //
-// Paper start
+            // Paper start
             Logger log = Bukkit.getServer().getLogger();
             long currentTime = monotonicMillis();
-            if ( lastTick != 0 && timeoutTime > 0 && currentTime > lastTick + earlyWarningEvery && !Boolean.getBoolean("disable.watchdog") )
+            MinecraftServer server = MinecraftServer.getServer();
+            if (lastTick != 0 && timeoutTime > 0 && hasStarted && (!server.isRunning() || (currentTime > lastTick + earlyWarningEvery && !Boolean.getBoolean("disable.watchdog")) ))
             {
-                boolean isLongTimeout = currentTime > lastTick + timeoutTime;
+                boolean isLongTimeout = currentTime > lastTick + timeoutTime || (!server.isRunning() && !server.hasStopped() && currentTime > lastTick + 1000);
                 // Don't spam early warning dumps
                 if ( !isLongTimeout && (earlyWarningEvery <= 0 || !hasStarted || currentTime < lastEarlyWarning + earlyWarningEvery || currentTime < lastTick + earlyWarningDelay)) continue;
-                if ( !isLongTimeout && MinecraftServer.getServer().hasStopped()) continue; // Don't spam early watchdog warnings during shutdown, we'll come back to this...
+                if ( !isLongTimeout && server.hasStopped()) continue; // Don't spam early watchdog warnings during shutdown, we'll come back to this...
                 lastEarlyWarning = currentTime;
                 if (isLongTimeout) {
                     // Paper end
-                log.log( Level.SEVERE, "------------------------------" );
-                log.log( Level.SEVERE, i18n.get("watchdogthread.1" ));
-                log.log( Level.SEVERE, i18n.get("watchdogthread.2" ));
-                log.log( Level.SEVERE, "\t "+ i18n.get("watchdogthread.3" ));
-                log.log( Level.SEVERE, i18n.get("watchdogthread.4" ));
-                log.log( Level.SEVERE, "\t "+ i18n.get("watchdogthread.5" ));
-                log.log( Level.SEVERE, i18n.get("watchdogthread.6" ));
-                log.log( Level.SEVERE, i18n.get("watchdogthread.7" ));
-                log.log( Level.SEVERE, i18n.get("watchdogthread.8") + " " + Bukkit.getServer().getVersion());
-                //
-                if ( net.minecraft.world.World.lastPhysicsProblem != null )
-                {
                     log.log( Level.SEVERE, "------------------------------" );
-                    log.log( Level.SEVERE, i18n.get("watchdogthread.9" ));
-                    log.log( Level.SEVERE, "near " + net.minecraft.world.World.lastPhysicsProblem );
-                }
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.1" ));
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.2" ));
+                    log.log( Level.SEVERE, "\t "+ i18n.get("watchdogthread.3" ));
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.4" ));
+                    log.log( Level.SEVERE, "\t "+ i18n.get("watchdogthread.5" ));
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.6" ));
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.7" ));
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.8") + " " + Bukkit.getServer().getVersion());
+                    //
+                    if ( World.lastPhysicsProblem != null )
+                    {
+                        log.log( Level.SEVERE, "------------------------------" );
+                        log.log( Level.SEVERE, i18n.get("watchdogthread.9" ));
+                        log.log( Level.SEVERE, "near " + net.minecraft.world.World.lastPhysicsProblem );
+                    }
                 } else
                 {
                     log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - THIS IS NOT A BUG OR A CRASH  - " + Bukkit.getServer().getVersion() + " ---");
@@ -100,27 +101,44 @@ public class WatchdogThread extends Thread
                 }
                 // Paper end - Different message for short timeout
                 log.log( Level.SEVERE, "------------------------------" );
-                log.log( Level.SEVERE, i18n.get("watchdogthread.10" ));
-                dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE ), log );
+                log.log( Level.SEVERE, i18n.get("watchdogthread.10" )); // Paper
+                dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( server.serverThread.getId(), Integer.MAX_VALUE ), log );
                 log.log( Level.SEVERE, "------------------------------" );
                 //
                 // Paper start - Only print full dump on long timeouts
                 if ( isLongTimeout )
                 {
-                log.log( Level.SEVERE, i18n.get("watchdogthread.11" ));
-                ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads( true, true );
-                for ( ThreadInfo thread : threads )
-                {
-                    dumpThread( thread, log );
-                }
+                    log.log( Level.SEVERE, i18n.get("watchdogthread.11" ));
+                    ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads( true, true );
+                    for ( ThreadInfo thread : threads )
+                    {
+                        dumpThread( thread, log );
+                    }
                 } else {
                     log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - THIS IS NOT A BUG OR A CRASH ---");
                 }
+
+
                 log.log( Level.SEVERE, "------------------------------" );
 
-                if ( isLongTimeout ) {
-                    if (restart && !MinecraftServer.getServer().hasStopped()) {
-                        RestartCommand.restart();
+                if ( isLongTimeout )
+                {
+                    if ( !server.hasStopped() )
+                    {
+                        AsyncCatcher.enabled = false; // Disable async catcher incase it interferes with us
+                        AsyncCatcher.shuttingDown = true;
+                        if (restart) {
+                            RestartCommand.restart( SpigotConfig.restartScript );
+                        }
+                        // try one last chance to safe shutdown on main incase it 'comes back'
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (!server.hasStopped()) {
+                            server.close();
+                        }
                     }
                     break;
                 } // Paper end

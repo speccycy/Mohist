@@ -40,7 +40,7 @@ public class RestartCommand extends Command
         restart( SpigotConfig.restartScript );
     }
 
-    private static void restart(final String restartScript)
+    public static void restart(final String restartScript) // Paper private -> public
     {
         try
         {
