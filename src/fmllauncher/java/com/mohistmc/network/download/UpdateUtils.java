@@ -33,7 +33,7 @@ public class UpdateUtils {
         System.out.println(i18n.get("update.stopcheck"));
 
         try {
-            JsonElement root = new JsonParser().parse(new InputStreamReader(getInput("https://ci.codemc.io/job/MohistMC/job/Mohist-1.16.5/lastSuccessfulBuild/api/json")));
+            JsonElement root = new JsonParser().parse(new InputStreamReader(getInput("https://ci.codemc.io/job/MohistMC/job/Mohist-1.16.5-paper/lastSuccessfulBuild/api/json")));
 
             String jar_sha = MohistMCStart.getVersion();
             String build_number = "1.16.5-" + root.getAsJsonObject().get("number").toString();
@@ -44,7 +44,7 @@ public class UpdateUtils {
             else {
                 System.out.println(i18n.get("update.detect", build_number, jar_sha, time));
                 if (bMohist("check_update_auto_download", "false")) {
-                    downloadFile("https://ci.codemc.io/job/MohistMC/job/Mohist-1.16.5/lastSuccessfulBuild/artifact/projects/mohist/build/libs/mohist-" + build_number + "-server.jar", JarTool.getFile());
+                    downloadFile("https://ci.codemc.io/job/MohistMC/job/Mohist-1.16.5-paper/lastSuccessfulBuild/artifact/projects/mohist/build/libs/mohist-" + build_number + "-server.jar", JarTool.getFile());
                     restartServer(new ArrayList<>(Arrays.asList("java", "-jar", JarTool.getJarName())), true);
                 }
             }
