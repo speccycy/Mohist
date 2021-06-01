@@ -57,7 +57,7 @@
  import net.minecraft.world.gen.feature.template.TemplateManager;
  import net.minecraft.world.spawner.WorldEntitySpawner;
  import net.minecraft.world.storage.DimensionSavedDataManager;
-@@ -47,24 +_,185 @@
+@@ -47,24 +_,186 @@
  import net.minecraftforge.api.distmarker.OnlyIn;
  
  public class ServerChunkProvider extends AbstractChunkProvider {
@@ -193,14 +193,15 @@
 +         throw new IllegalStateException();
 +      }
 +      ChunkPos chunkPos = new ChunkPos(x, z);
-+      Long identifier = this.chunkFutureAwaitCounter++;
++      Long identifier = this.chunkFutureAwaitCounter;
 +      this.field_217240_d.addTicketAtLevel(TicketType.FUTURE_AWAIT, chunkPos, ticketLevel, identifier);
 +      this.func_217235_l();
 +
 +      ChunkHolder chunk = this.field_217237_a.func_219220_a(chunkPos.func_201841_a());
 +
 +      if (chunk == null) {
-+         throw new IllegalStateException("Expected playerchunk " + chunkPos + " in world '" + this.field_73251_h.getWorld().getName() + "'");
++         throw new IllegalStateException("Expected playerchunk "+chunkPos+" in world '"+ this.field_73251_h.getWorld().getName() +
++         "'");
 +      }
 +
 +      CompletableFuture<Either<Chunk, ChunkHolder.IChunkLoadingError>> future = futureGet.apply(chunk);
@@ -211,9 +212,9 @@
 +               if (throwable instanceof ThreadDeath) {
 +                  throw (ThreadDeath) throwable;
 +               }
-+               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Failed to complete future await for chunk " + chunkPos.toString() + " in world '" + ServerChunkProvider.this.field_73251_h.getWorld().getName() + "'", throwable);
++               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Failed to complete future await for chunk "+chunkPos.toString()+" in world '"+ServerChunkProvider.this.field_73251_h.getWorld().getName()+"'", throwable);
 +            } else if (either.right().isPresent()) {
-+               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Failed to complete future await for chunk " + chunkPos.toString() + " in world '" + ServerChunkProvider.this.field_73251_h.getWorld().getName() + "': " + either.right().get().toString());
++               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Failed to complete future await for chunk "+chunkPos.toString()+" in world '"+ServerChunkProvider.this.field_73251_h.getWorld().getName()+"': "+either.right().get().toString());
 +            }
 +
 +            try {
@@ -226,7 +227,7 @@
 +               if (thr instanceof ThreadDeath) {
 +                  throw (ThreadDeath) thr;
 +               }
-+               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Load callback for future await failed " + chunkPos.toString() + " in world '" + ServerChunkProvider.this.field_73251_h.getWorld().getName() + "'", thr);
++               net.minecraft.server.MinecraftServer.field_147145_h.fatal("Load callback for future await failed "+chunkPos.toString()+" in world '"+ServerChunkProvider.this.field_73251_h.getWorld().getName()+"'", thr);
 +               return;
 +            }
 +         } finally {

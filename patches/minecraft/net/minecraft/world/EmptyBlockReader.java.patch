@@ -15,11 +15,11 @@
 +
 +   // Paper start - if loaded util
 +   public Fluid getFluidIfLoaded(BlockPos blockposition) {
-+      return null;
++      return this.func_204610_c(blockposition).func_206886_c();
 +   }
 +
 +   public BlockState getTypeIfLoaded(BlockPos blockposition) {
-+      return null;
++      return this.func_180495_p(blockposition);
 +   }
 +   // Paper end
  }

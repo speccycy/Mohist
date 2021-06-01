@@ -16,7 +16,7 @@
  import net.minecraft.block.BlockState;
  import net.minecraft.block.Blocks;
  import net.minecraft.entity.Entity;
-@@ -46,437 +_,561 @@
+@@ -46,437 +_,552 @@
  import net.minecraft.world.gen.feature.structure.Structure;
  import net.minecraft.world.gen.feature.structure.StructureManager;
  import net.minecraft.world.server.ServerWorld;
@@ -169,15 +169,6 @@
 +                difference = (minDiff == Integer.MAX_VALUE) ? 0 : minDiff;
 +            }
 +            // Paper end
-+
-+            if ((p_234979_3_ || !entityclassification.func_75599_d()) && (p_234979_4_ || entityclassification.func_75599_d()) && (p_234979_5_ || !entityclassification.func_82705_e()) && p_234979_2_.canSpawnForCategory(entityclassification, limit)) {
-+                // CraftBukkit end
-+                func_234967_a_(entityclassification, p_234979_0_, p_234979_1_, (p_234969_1_, p_234969_2_, p_234969_3_) -> {
-+                    return p_234979_2_.func_234989_a_(p_234969_1_, p_234969_2_, p_234969_3_);
-+                }, (p_234970_1_, p_234970_2_) -> {
-+                    p_234979_2_.func_234990_a_(p_234970_1_, p_234970_2_);
-+                });
-+            }
 +
 +            // Paper start - per player mob spawning
 +            if ((p_234979_3_ || !entityclassification.func_75599_d()) && (p_234979_4_ || entityclassification.func_75599_d()) && (p_234979_5_ || !entityclassification.func_82705_e()) && difference > 0) {

@@ -9,7 +9,7 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  import org.apache.logging.log4j.Marker;
-@@ -25,19 +_,21 @@
+@@ -25,19 +_,22 @@
        } else {
           Integer integer = protocoltype.func_179246_a(this.field_152500_c, p_encode_2_);
           if (field_150798_a.isDebugEnabled()) {
@@ -30,6 +30,7 @@
              } catch (Throwable throwable) {
 -               field_150798_a.error(throwable);
 +               field_150798_a.error("Error encoding packet", throwable); // Forge: Get Minecraft to spit out more information about the Throwable we got.
++               throwable.printStackTrace(); // Paper - WHAT WAS IT? WHO DID THIS TO YOU? WHAT DID YOU SEE?
                 if (p_encode_2_.func_211402_a()) {
                    throw new SkipableEncoderException(throwable);
                 } else {
