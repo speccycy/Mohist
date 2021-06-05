@@ -124,7 +124,7 @@ public class ActivationRange
         int maxRange = Math.max( monsterActivationRange, animalActivationRange );
         maxRange = Math.max( maxRange, raiderActivationRange );
         maxRange = Math.max( maxRange, miscActivationRange );
-        maxRange = Math.min( ( ((ServerWorld)world).getChunkSource().chunkMap.getEffectiveViewDistance() << 4 ) - 8, maxRange ); // Paper - no-tick view distance
+        maxRange = Math.min( ( world.spigotConfig.viewDistance << 4 ) - 8, maxRange );
 
         for ( PlayerEntity player : world.players() )
         {

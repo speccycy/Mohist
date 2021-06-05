@@ -240,10 +240,11 @@
     protected void func_219354_b(int p_219354_1_) {
        this.field_219382_j.func_215508_a(p_219354_1_);
     }
-@@ -242,6 +_,29 @@
+@@ -241,6 +_,29 @@
+    public String func_225412_c() {
        return this.field_219384_l.func_225396_a();
     }
- 
++
 +   public boolean shouldForceTicks(long chunkPos) {
 +       SortedArraySet<Ticket<?>> tickets = forcedTickets.get(chunkPos);
 +       return tickets != null && !tickets.isEmpty();
@@ -266,16 +267,6 @@
 +      }
 +   }
 +   // CraftBukkit end
-+
+ 
     class ChunkTicketTracker extends ChunkDistanceGraph {
        public ChunkTicketTracker() {
-          super(ChunkManager.field_219249_a + 2, 16, 256);
-@@ -353,7 +_,7 @@
- 
-       private void func_215504_a(long p_215504_1_, int p_215504_3_, boolean p_215504_4_, boolean p_215504_5_) {
-          if (p_215504_4_ != p_215504_5_) {
--            Ticket<?> ticket = new Ticket<>(TicketType.field_219490_c, TicketManager.field_219374_b, new ChunkPos(p_215504_1_));
-+            Ticket<?> ticket = new Ticket<>(TicketType.field_219490_c, 33, new ChunkPos(p_215504_1_)); // Paper - no-tick view distance
-             if (p_215504_5_) {
-                TicketManager.this.field_219385_m.func_212871_a_(ChunkTaskPriorityQueueSorter.func_219069_a(() -> {
-                   TicketManager.this.field_219388_p.execute(() -> {

@@ -146,11 +146,6 @@ public class PaperWorldConfig {
         perPlayerMobSpawns = getBoolean("per-player-mob-spawns", false);
     }
 
-    public int noTickViewDistance;
-    private void viewDistance() {
-        this.noTickViewDistance = this.getInt("viewdistances.no-tick-view-distance", -1);
-    }
-
     public boolean useEigencraftRedstone = false;
     private void useEigencraftRedstone() {
         useEigencraftRedstone = this.getBoolean("use-faster-eigencraft-redstone", false);

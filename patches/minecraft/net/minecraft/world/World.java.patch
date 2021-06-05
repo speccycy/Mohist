@@ -278,7 +278,7 @@
        if (func_189509_E(p_241211_1_)) {
           return false;
        } else if (!this.field_72995_K && this.func_234925_Z_()) {
-@@ -180,24 +_,81 @@
+@@ -180,17 +_,66 @@
        } else {
           Chunk chunk = this.func_175726_f(p_241211_1_);
           Block block = p_241211_2_.func_177230_c();
@@ -347,22 +347,6 @@
              if (blockstate1 == p_241211_2_) {
                 if (blockstate != blockstate1) {
                    this.func_225319_b(p_241211_1_, blockstate, blockstate1);
-                }
- 
--               if ((p_241211_3_ & 2) != 0 && (!this.field_72995_K || (p_241211_3_ & 4) == 0) && (this.field_72995_K || chunk.func_217321_u() != null && chunk.func_217321_u().func_219065_a(ChunkHolder.LocationType.TICKING))) {
-+               /*if ((p_241211_3_ & 2) != 0 && (!this.isClientSide || (p_241211_3_ & 4) == 0) && (this.isClientSide || chunk.getFullStatus() != null && chunk.getFullStatus().isOrAfter(ChunkHolder.LocationType.TICKING))) {
-+                  this.sendBlockUpdated(p_241211_1_, blockstate, p_241211_2_, p_241211_3_);
-+               }*/
-+               if ((p_241211_3_ & 2) != 0 && (!this.field_72995_K || (p_241211_3_ & 4) == 0) && (this.field_72995_K || chunk == null || (chunk.func_217321_u() != null && chunk.func_217321_u().func_219065_a(ChunkHolder.LocationType.TICKING)))) { // allow chunk to be null here as chunk.isReady() is false when we send our notification during block placement // Paper - diff on change, see below
-                   this.func_184138_a(p_241211_1_, blockstate, p_241211_2_, p_241211_3_);
-+                  // Paper start - per player view distance - allow block updates for non-ticking chunks in player view distance
-+                  // if copied from above
-+               } else if ((p_241211_3_ & 2) != 0 && (!this.field_72995_K || (p_241211_3_ & 4) == 0) && (this.field_72995_K || chunk == null || ((ServerWorld)this).func_72863_F().field_217237_a.playerViewDistanceBroadcastMap.getObjectsInRange(MCUtil.getCoordinateKey(p_241211_1_)) != null)) {
-+                  ((ServerWorld)this).func_72863_F().func_217217_a(p_241211_1_);
-+                  // Paper end - per player view distance
-                }
- 
-                if ((p_241211_3_ & 1) != 0) {
 @@ -210,14 +_,24 @@
                 if ((p_241211_3_ & 16) == 0 && p_241211_4_ > 0) {
                    int i = p_241211_3_ & -34;

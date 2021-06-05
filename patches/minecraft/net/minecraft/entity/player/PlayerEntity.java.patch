@@ -87,7 +87,7 @@
     protected boolean field_204230_bP;
     public final PlayerAbilities field_71075_bZ = new PlayerAbilities();
     public int field_71068_ca;
-@@ -150,8 +_,35 @@
+@@ -150,8 +_,33 @@
     private final CooldownTracker field_184832_bU = this.func_184815_l();
     @Nullable
     public FishingBobberEntity field_71104_cf;
@@ -110,8 +110,6 @@
 +   public final int[] mobCounts = new int[ENUMCREATURETYPE_TOTAL_ENUMS]; // Paper
 +   public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<PlayerEntity> cachedSingleMobDistanceMap;
 +   // Paper end
-+
-+   public boolean needsChunkCenterUpdate; // Paper - no-tick view distance
 +
 +   @Override
 +   public CraftHumanEntity getBukkitEntity() {

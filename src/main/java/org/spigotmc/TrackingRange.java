@@ -27,25 +27,26 @@ public class TrackingRange
         if ( entity instanceof PlayerEntity )
         {
             return config.playerTrackingRange;
-        }
-        switch (entity.activationType) {
-            case RAIDER:
-            case MONSTER:
-            case FLYING_MONSTER:
+        }  else if ( entity.activationType == ActivationRange.ActivationType.MONSTER || entity.activationType == ActivationRange.ActivationType.RAIDER )
+        {
+            return config.monsterTrackingRange;
+        } else if ( entity instanceof GhastEntity )
+        {
+            if ( config.monsterTrackingRange > config.monsterActivationRange )
+            {
                 return config.monsterTrackingRange;
-            case WATER:
-            case VILLAGER:
-            case ANIMAL:
-                return config.animalTrackingRange;
-            case MISC:
-        }
-        if ( entity instanceof ItemFrameEntity || entity instanceof PaintingEntity || entity instanceof ItemEntity || entity instanceof ExperienceOrbEntity )
-        // Paper end
+            } else
+            {
+                return config.monsterActivationRange;
+            }
+        } else if ( entity.activationType == ActivationRange.ActivationType.ANIMAL )
+        {
+            return config.animalTrackingRange;
+        } else if ( entity instanceof ItemFrameEntity || entity instanceof PaintingEntity || entity instanceof ItemEntity || entity instanceof ExperienceOrbEntity )
         {
             return config.miscTrackingRange;
         } else
         {
-            if (entity instanceof EnderDragonEntity) return ((ServerWorld)(entity.getEntity().level)).getChunkSource().chunkMap.getLoadViewDistance(); // Paper - enderdragon is exempt
             return config.otherTrackingRange;
         }
     }
