@@ -1,14 +1,15 @@
 package org.bukkit.craftbukkit.inventory;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.ChatComponentText;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.sounds.SoundEffect;
+import net.minecraft.sounds.SoundEffects;
+import net.minecraft.world.entity.player.PlayerEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.Merchant;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.item.trading.MerchantOffers;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.trading.IMerchant;
+import net.minecraft.world.item.trading.MerchantRecipe;
+import net.minecraft.world.item.trading.MerchantRecipeList;
+import net.minecraft.world.level.World;
 import org.apache.commons.lang.Validate;
 
 public class CraftMerchantCustom extends CraftMerchant {
@@ -28,17 +29,17 @@ public class CraftMerchantCustom extends CraftMerchant {
         return (MinecraftMerchant) super.getMerchant();
     }
 
-    public static class MinecraftMerchant implements Merchant {
+    public static class MinecraftMerchant implements IMerchant {
 
-        private final Component title;
-        private final MerchantOffers trades = new MerchantOffers();
-        private net.minecraft.world.entity.player.Player tradingPlayer;
-        private Level tradingWorld;
+        private final IChatBaseComponent title;
+        private final MerchantRecipeList trades = new MerchantRecipeList();
+        private PlayerEntity tradingPlayer;
+        private World tradingWorld;
         protected CraftMerchant craftMerchant;
 
         public MinecraftMerchant(String title) {
             Validate.notNull(title, "Title cannot be null");
-            this.title = new TextComponent(title);
+            this.title = new ChatComponentText(title);
         }
 
         @Override
@@ -47,7 +48,7 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public void setTradingPlayer(net.minecraft.world.entity.player.Player entityhuman) {
+        public void setTradingPlayer(PlayerEntity entityhuman) {
             this.tradingPlayer = entityhuman;
             if (entityhuman != null) {
                 this.tradingWorld = entityhuman.level;
@@ -55,57 +56,55 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public net.minecraft.world.entity.player.Player getTradingPlayer() {
+        public PlayerEntity getTrader() {
             return this.tradingPlayer;
         }
 
         @Override
-        public MerchantOffers getOffers() {
+        public MerchantRecipeList getOffers() {
             return this.trades;
         }
 
         @Override
-        public void overrideOffers(MerchantOffers p_45306_) {
-
-        }
-
-        @Override
-        public void notifyTrade(MerchantOffer merchantrecipe) {
+        public void a(MerchantRecipe merchantrecipe) {
             // increase recipe's uses
             merchantrecipe.increaseUses();
         }
 
         @Override
-        public void notifyTradeUpdated(ItemStack p_45308_) {
-
+        public void m(ItemStack itemstack) {
         }
 
-        public Component getScoreboardDisplayName() {
+        public IChatBaseComponent getScoreboardDisplayName() {
             return title;
         }
 
         @Override
-        public Level getLevel() {
+        public World getWorld() {
             return this.tradingWorld;
         }
 
         @Override
-        public int getVillagerXp() {
+        public int getExperience() {
             return 0; // xp
         }
 
         @Override
-        public void overrideXp(int i) {
+        public void setForcedExperience(int i) {
         }
 
         @Override
-        public boolean showProgressBar() {
+        public boolean isRegularVillager() {
             return false; // is-regular-villager flag (hides some gui elements: xp bar, name suffix)
         }
 
         @Override
-        public SoundEvent getNotifyTradeSound() {
-            return SoundEvents.VILLAGER_YES;
+        public SoundEffect getTradeSound() {
+            return SoundEffects.VILLAGER_YES;
+        }
+
+        @Override
+        public void a(MerchantRecipeList merchantrecipelist) {
         }
     }
 }

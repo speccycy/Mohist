@@ -1,7 +1,8 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.world.entity.vehicle.EntityMinecartAbstract;
+import net.minecraft.world.entity.vehicle.EntityMinecartContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftServer;
@@ -11,13 +12,13 @@ import org.bukkit.loot.Lootable;
 
 public abstract class CraftMinecartContainer extends CraftMinecart implements Lootable {
 
-    public CraftMinecartContainer(CraftServer server, net.minecraft.world.entity.vehicle.AbstractMinecart entity) {
+    public CraftMinecartContainer(CraftServer server, EntityMinecartAbstract entity) {
         super(server, entity);
     }
 
     @Override
-    public AbstractMinecartContainer getHandle() {
-        return (AbstractMinecartContainer) entity;
+    public EntityMinecartContainer getHandle() {
+        return (EntityMinecartContainer) entity;
     }
 
     @Override
@@ -27,7 +28,7 @@ public abstract class CraftMinecartContainer extends CraftMinecart implements Lo
 
     @Override
     public LootTable getLootTable() {
-        ResourceLocation nmsTable = getHandle().lootTable;
+        MinecraftKey nmsTable = getHandle().lootTable;
         if (nmsTable == null) {
             return null; // return empty loot table?
         }
@@ -47,7 +48,7 @@ public abstract class CraftMinecartContainer extends CraftMinecart implements Lo
     }
 
     private void setLootTable(LootTable table, long seed) {
-        ResourceLocation newKey = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
+        MinecraftKey newKey = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
         getHandle().setLootTable(newKey, seed);
     }
 }

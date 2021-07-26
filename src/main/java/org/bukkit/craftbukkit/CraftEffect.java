@@ -59,7 +59,7 @@ public class CraftEffect {
             break;
         case STEP_SOUND:
             Validate.isTrue(((Material) data).isBlock(), "Material is not a block!");
-            datavalue = Block.getId(CraftMagicNumbers.getBlock((Material) data).defaultBlockState());
+            datavalue = Block.getCombinedId(CraftMagicNumbers.getBlock((Material) data).getBlockData());
             break;
         default:
             datavalue = 0;

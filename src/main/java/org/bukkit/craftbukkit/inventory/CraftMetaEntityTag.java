@@ -2,8 +2,8 @@ package org.bukkit.craftbukkit.inventory;
 
 import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Map;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
 public class CraftMetaEntityTag extends CraftMetaItem {
 
     static final ItemMetaKey ENTITY_TAG = new ItemMetaKey("EntityTag", "entity-tag");
-    CompoundTag entityTag;
+    NBTTagCompound entityTag;
 
     CraftMetaEntityTag(CraftMetaItem meta) {
         super(meta);
@@ -25,10 +25,10 @@ public class CraftMetaEntityTag extends CraftMetaItem {
         this.entityTag = entity.entityTag;
     }
 
-    CraftMetaEntityTag(CompoundTag tag) {
+    CraftMetaEntityTag(NBTTagCompound tag) {
         super(tag);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
+        if (tag.hasKey(ENTITY_TAG.NBT)) {
             entityTag = tag.getCompound(ENTITY_TAG.NBT);
         }
     }
@@ -38,27 +38,27 @@ public class CraftMetaEntityTag extends CraftMetaItem {
     }
 
     @Override
-    void deserializeInternal(CompoundTag tag, Object context) {
+    void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
+        if (tag.hasKey(ENTITY_TAG.NBT)) {
             entityTag = tag.getCompound(ENTITY_TAG.NBT);
         }
     }
 
     @Override
-    void serializeInternal(Map<String, Tag> internalTags) {
+    void serializeInternal(Map<String, NBTBase> internalTags) {
         if (entityTag != null && !entityTag.isEmpty()) {
             internalTags.put(ENTITY_TAG.NBT, entityTag);
         }
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (entityTag != null) {
-            tag.put(ENTITY_TAG.NBT, entityTag);
+            tag.set(ENTITY_TAG.NBT, entityTag);
         }
     }
 
@@ -128,7 +128,7 @@ public class CraftMetaEntityTag extends CraftMetaItem {
         CraftMetaEntityTag clone = (CraftMetaEntityTag) super.clone();
 
         if (entityTag != null) {
-            clone.entityTag = entityTag.copy();
+            clone.entityTag = entityTag.clone();
         }
 
         return clone;

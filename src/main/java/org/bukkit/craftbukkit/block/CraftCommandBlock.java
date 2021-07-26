@@ -1,18 +1,18 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.entity.CommandBlockEntity;
+import net.minecraft.world.level.block.entity.TileEntityCommand;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 
-public class CraftCommandBlock extends CraftBlockEntityState<CommandBlockEntity> implements CommandBlock {
+public class CraftCommandBlock extends CraftBlockEntityState<TileEntityCommand> implements CommandBlock {
 
     public CraftCommandBlock(Block block) {
-        super(block, CommandBlockEntity.class);
+        super(block, TileEntityCommand.class);
     }
 
-    public CraftCommandBlock(final Material material, final CommandBlockEntity te) {
+    public CraftCommandBlock(final Material material, final TileEntityCommand te) {
         super(material, te);
     }
 

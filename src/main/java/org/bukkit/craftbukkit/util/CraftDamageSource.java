@@ -8,8 +8,8 @@ public final class CraftDamageSource extends DamageSource {
         CraftDamageSource newSource = new CraftDamageSource(original.msgId);
 
         // Check ignoresArmor
-        if (original.isBypassArmor()) {
-            newSource.bypassArmor();
+        if (original.ignoresArmor()) {
+            newSource.setIgnoreArmor();
         }
 
         // Check magic

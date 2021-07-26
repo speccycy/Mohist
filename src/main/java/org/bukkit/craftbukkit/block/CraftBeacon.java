@@ -2,10 +2,11 @@ package org.bukkit.craftbukkit.block;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import net.minecraft.world.LockCode;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.ChestLock;
+import net.minecraft.world.effect.MobEffectList;
+import net.minecraft.world.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntityBeacon;
 import org.bukkit.Material;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
@@ -14,26 +15,26 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implements Beacon {
+public class CraftBeacon extends CraftBlockEntityState<TileEntityBeacon> implements Beacon {
 
     public CraftBeacon(final Block block) {
-        super(block, BeaconBlockEntity.class);
+        super(block, TileEntityBeacon.class);
     }
 
-    public CraftBeacon(final Material material, final BeaconBlockEntity te) {
+    public CraftBeacon(final Material material, final TileEntityBeacon te) {
         super(material, te);
     }
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        BlockEntity tileEntity = this.getTileEntityFromWorld();
-        if (tileEntity instanceof BeaconBlockEntity) {
-            BeaconBlockEntity beacon = (BeaconBlockEntity) tileEntity;
+        TileEntity tileEntity = this.getTileEntityFromWorld();
+        if (tileEntity instanceof TileEntityBeacon) {
+            TileEntityBeacon beacon = (TileEntityBeacon) tileEntity;
 
-            Collection<net.minecraft.world.entity.player.Player> nms = BeaconBlockEntity.getHumansInRange(beacon.getLevel(), beacon.getBlockPos(), beacon.levels);
+            Collection<PlayerEntity> nms = TileEntityBeacon.getHumansInRange(beacon.getWorld(), beacon.getPosition(), beacon.levels);
             Collection<LivingEntity> bukkit = new ArrayList<LivingEntity>(nms.size());
 
-            for (net.minecraft.world.entity.player.Player human : nms) {
+            for (PlayerEntity human : nms) {
                 bukkit.add(human.getBukkitEntity());
             }
 
@@ -56,7 +57,7 @@ public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implem
 
     @Override
     public void setPrimaryEffect(PotionEffectType effect) {
-        this.getSnapshot().primaryPower = (effect != null) ? MobEffect.byId(effect.getId()) : null;
+        this.getSnapshot().primaryPower = (effect != null) ? MobEffectList.fromId(effect.getId()) : null;
     }
 
     @Override
@@ -66,12 +67,12 @@ public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implem
 
     @Override
     public void setSecondaryEffect(PotionEffectType effect) {
-        this.getSnapshot().secondaryPower = (effect != null) ? MobEffect.byId(effect.getId()) : null;
+        this.getSnapshot().secondaryPower = (effect != null) ? MobEffectList.fromId(effect.getId()) : null;
     }
 
     @Override
     public String getCustomName() {
-        BeaconBlockEntity beacon = this.getSnapshot();
+        TileEntityBeacon beacon = this.getSnapshot();
         return beacon.name != null ? CraftChatMessage.fromComponent(beacon.name) : null;
     }
 
@@ -92,6 +93,6 @@ public class CraftBeacon extends CraftBlockEntityState<BeaconBlockEntity> implem
 
     @Override
     public void setLock(String key) {
-        this.getSnapshot().lockKey = (key == null) ? LockCode.NO_LOCK : new LockCode(key);
+        this.getSnapshot().lockKey = (key == null) ? ChestLock.NO_LOCK : new ChestLock(key);
     }
 }

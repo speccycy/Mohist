@@ -1,9 +1,11 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.core.Rotations;
+import net.minecraft.core.Vector3f;
+import net.minecraft.world.entity.decoration.EntityArmorStand;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +13,7 @@ import org.bukkit.util.EulerAngle;
 
 public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
-    public CraftArmorStand(CraftServer server, net.minecraft.world.entity.decoration.ArmorStand entity) {
+    public CraftArmorStand(CraftServer server, EntityArmorStand entity) {
         super(server, entity);
     }
 
@@ -26,8 +28,8 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
     }
 
     @Override
-    public net.minecraft.world.entity.decoration.ArmorStand getHandle() {
-        return (net.minecraft.world.entity.decoration.ArmorStand) super.getHandle();
+    public EntityArmorStand getHandle() {
+        return (EntityArmorStand) super.getHandle();
     }
 
     @Override
@@ -142,12 +144,12 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
     @Override
     public boolean hasBasePlate() {
-        return !getHandle().isNoBasePlate();
+        return !getHandle().hasBasePlate();
     }
 
     @Override
     public void setBasePlate(boolean basePlate) {
-        getHandle().setNoBasePlate(!basePlate);
+        getHandle().setBasePlate(!basePlate);
     }
 
     @Override
@@ -169,12 +171,12 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
     @Override
     public boolean hasArms() {
-        return getHandle().isShowArms();
+        return getHandle().hasArms();
     }
 
     @Override
     public void setArms(boolean arms) {
-        getHandle().setShowArms(arms);
+        getHandle().setArms(arms);
     }
 
     @Override
@@ -187,7 +189,7 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
         getHandle().setSmall(small);
     }
 
-    private static EulerAngle fromNMS(Rotations old) {
+    private static EulerAngle fromNMS(Vector3f old) {
         return new EulerAngle(
             Math.toRadians(old.getX()),
             Math.toRadians(old.getY()),
@@ -195,8 +197,8 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
         );
     }
 
-    private static Rotations toNMS(EulerAngle old) {
-        return new Rotations(
+    private static Vector3f toNMS(EulerAngle old) {
+        return new Vector3f(
             (float) Math.toDegrees(old.getX()),
             (float) Math.toDegrees(old.getY()),
             (float) Math.toDegrees(old.getZ())
@@ -215,16 +217,16 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
     @Override
     public void addEquipmentLock(EquipmentSlot equipmentSlot, LockType lockType) {
-        getHandle().disabledSlots |= (1 << CraftEquipmentSlot.getNMS(equipmentSlot).getFilterFlag() + lockType.ordinal() * 8);
+        getHandle().disabledSlots |= (1 << CraftEquipmentSlot.getNMS(equipmentSlot).getSlotFlag() + lockType.ordinal() * 8);
     }
 
     @Override
     public void removeEquipmentLock(EquipmentSlot equipmentSlot, LockType lockType) {
-        getHandle().disabledSlots &= ~(1 << CraftEquipmentSlot.getNMS(equipmentSlot).getFilterFlag() + lockType.ordinal() * 8);
+        getHandle().disabledSlots &= ~(1 << CraftEquipmentSlot.getNMS(equipmentSlot).getSlotFlag() + lockType.ordinal() * 8);
     }
 
     @Override
     public boolean hasEquipmentLock(EquipmentSlot equipmentSlot, LockType lockType) {
-        return (getHandle().disabledSlots & (1 << CraftEquipmentSlot.getNMS(equipmentSlot).getFilterFlag() + lockType.ordinal() * 8)) != 0;
+        return (getHandle().disabledSlots & (1 << CraftEquipmentSlot.getNMS(equipmentSlot).getSlotFlag() + lockType.ordinal() * 8)) != 0;
     }
 }

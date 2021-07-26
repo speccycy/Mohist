@@ -1,7 +1,8 @@
 package org.bukkit.craftbukkit.enchantments;
 
-import net.minecraft.world.item.enchantment.BindingCurseEnchantment;
-import net.minecraft.world.item.enchantment.VanishingCurseEnchantment;
+import net.minecraft.core.IRegistry;
+import net.minecraft.world.item.enchantment.EnchantmentBinding;
+import net.minecraft.world.item.enchantment.EnchantmentVanishing;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -13,7 +14,7 @@ public class CraftEnchantment extends Enchantment {
     private final net.minecraft.world.item.enchantment.Enchantment target;
 
     public CraftEnchantment(net.minecraft.world.item.enchantment.Enchantment target) {
-        super(CraftNamespacedKey.fromMinecraft(net.minecraft.core.Registry.ENCHANTMENT.getKey(target)));
+        super(CraftNamespacedKey.fromMinecraft(IRegistry.ENCHANTMENT.getKey(target)));
         this.target = target;
     }
 
@@ -24,7 +25,7 @@ public class CraftEnchantment extends Enchantment {
 
     @Override
     public int getStartLevel() {
-        return target.getMinLevel();
+        return target.getStartLevel();
     }
 
     @Override
@@ -65,12 +66,12 @@ public class CraftEnchantment extends Enchantment {
 
     @Override
     public boolean isTreasure() {
-        return target.isTreasureOnly();
+        return target.isTreasure();
     }
 
     @Override
     public boolean isCursed() {
-        return target instanceof BindingCurseEnchantment || target instanceof VanishingCurseEnchantment;
+        return target instanceof EnchantmentBinding || target instanceof EnchantmentVanishing;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CraftEnchantment extends Enchantment {
     @Override
     public String getName() {
         // PAIL: migration paths
-        switch (net.minecraft.core.Registry.ENCHANTMENT.getId(target)) {
+        switch (IRegistry.ENCHANTMENT.getId(target)) {
         case 0:
             return "PROTECTION_ENVIRONMENTAL";
         case 1:
@@ -159,7 +160,7 @@ public class CraftEnchantment extends Enchantment {
         case 37:
             return "VANISHING_CURSE";
         default:
-            return "UNKNOWN_ENCHANT_" + net.minecraft.core.Registry.ENCHANTMENT.getId(target);
+            return "UNKNOWN_ENCHANT_" + IRegistry.ENCHANTMENT.getId(target);
         }
     }
 
@@ -184,7 +185,7 @@ public class CraftEnchantment extends Enchantment {
             return false;
         }
         CraftEnchantment ench = (CraftEnchantment) other;
-        return !target.isCompatibleWith(ench.target);
+        return !target.isCompatible(ench.target);
     }
 
     public net.minecraft.world.item.enchantment.Enchantment getHandle() {

@@ -1,12 +1,12 @@
 package org.bukkit.craftbukkit.inventory;
 
-import net.minecraft.world.Container;
+import net.minecraft.world.IInventory;
 import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftInventoryAbstractHorse extends CraftInventory implements AbstractHorseInventory {
 
-    public CraftInventoryAbstractHorse(Container inventory) {
+    public CraftInventoryAbstractHorse(IInventory inventory) {
         super(inventory);
     }
 

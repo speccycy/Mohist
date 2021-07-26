@@ -23,8 +23,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator; // CraftBukkit
+import net.minecraft.command.CommandSource;
 
 public abstract class CommandNode<S> implements Comparable<CommandNode<S>> {
     private Map<String, CommandNode<S>> children = Maps.newLinkedHashMap();
@@ -73,12 +72,12 @@ public abstract class CommandNode<S> implements Comparable<CommandNode<S>> {
 
     // CraftBukkit start
     public synchronized boolean canUse(final S source) {
-        if (source instanceof BinomialDistributionGenerator) {
+        if (source instanceof CommandSource) {
             try {
-                ((BinomialDistributionGenerator) source).currentCommand = this;
+                ((CommandSource) source).currentCommand = this;
                 return requirement.test(source);
             } finally {
-                ((BinomialDistributionGenerator) source).currentCommand = null;
+                ((CommandSource) source).currentCommand = null;
             }
         }
         // CraftBukkit end

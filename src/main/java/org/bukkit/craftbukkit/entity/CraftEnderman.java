@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.monster.EntityEnderman;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftServer;
@@ -11,35 +12,35 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
 
 public class CraftEnderman extends CraftMonster implements Enderman {
-    public CraftEnderman(CraftServer server, net.minecraft.world.entity.monster.EnderMan entity) {
+    public CraftEnderman(CraftServer server, EntityEnderman entity) {
         super(server, entity);
     }
 
     @Override
     public MaterialData getCarriedMaterial() {
-        BlockState blockData = getHandle().getCarriedBlock();
+        IBlockData blockData = getHandle().getCarried();
         return (blockData == null) ? Material.AIR.getNewData((byte) 0) : CraftMagicNumbers.getMaterial(blockData);
     }
 
     @Override
     public BlockData getCarriedBlock() {
-        BlockState blockData = getHandle().getCarriedBlock();
+        IBlockData blockData = getHandle().getCarried();
         return (blockData == null) ? null : CraftBlockData.fromData(blockData);
     }
 
     @Override
     public void setCarriedMaterial(MaterialData data) {
-        getHandle().setCarriedBlock(CraftMagicNumbers.getBlock(data));
+        getHandle().setCarried(CraftMagicNumbers.getBlock(data));
     }
 
     @Override
     public void setCarriedBlock(BlockData blockData) {
-        getHandle().setCarriedBlock(blockData == null ? null : ((CraftBlockData) blockData).getState());
+        getHandle().setCarried(blockData == null ? null : ((CraftBlockData) blockData).getState());
     }
 
     @Override
-    public net.minecraft.world.entity.monster.EnderMan getHandle() {
-        return (net.minecraft.world.entity.monster.EnderMan) entity;
+    public EntityEnderman getHandle() {
+        return (EntityEnderman) entity;
     }
 
     @Override

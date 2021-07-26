@@ -1,9 +1,9 @@
 package org.bukkit.craftbukkit.command;
 
-import net.minecraft.Util;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.SystemUtils;
+import net.minecraft.commands.CommandListenerWrapper;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.world.level.block.entity.TileEntity;
 import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -13,10 +13,10 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
  * Represents input from a command block
  */
 public class CraftBlockCommandSender extends ServerCommandSender implements BlockCommandSender {
-    private final CommandSourceStack block;
-    private final BlockEntity tile;
+    private final CommandListenerWrapper block;
+    private final TileEntity tile;
 
-    public CraftBlockCommandSender(CommandSourceStack commandBlockListenerAbstract, BlockEntity tile) {
+    public CraftBlockCommandSender(CommandListenerWrapper commandBlockListenerAbstract, TileEntity tile) {
         super();
         this.block = commandBlockListenerAbstract;
         this.tile = tile;
@@ -24,13 +24,13 @@ public class CraftBlockCommandSender extends ServerCommandSender implements Bloc
 
     @Override
     public Block getBlock() {
-        return CraftBlock.at(tile.getLevel(), tile.getBlockPos());
+        return CraftBlock.at(tile.getWorld(), tile.getPosition());
     }
 
     @Override
     public void sendMessage(String message) {
-        for (Component component : CraftChatMessage.fromString(message)) {
-            block.source.sendMessage(component, Util.NIL_UUID);
+        for (IChatBaseComponent component : CraftChatMessage.fromString(message)) {
+            block.source.sendMessage(component, SystemUtils.NIL_UUID);
         }
     }
 
@@ -43,7 +43,7 @@ public class CraftBlockCommandSender extends ServerCommandSender implements Bloc
 
     @Override
     public String getName() {
-        return block.getTextName();
+        return block.getName();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CraftBlockCommandSender extends ServerCommandSender implements Bloc
         throw new UnsupportedOperationException("Cannot change operator status of a block");
     }
 
-    public CommandSourceStack getWrapper() {
+    public CommandListenerWrapper getWrapper() {
         return block;
     }
 }

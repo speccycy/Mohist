@@ -1,20 +1,23 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.animal.EntityCat;
+import net.minecraft.world.item.EnumColor;
 import org.bukkit.DyeColor;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Cat;
+import org.bukkit.entity.Cat.Type;
 import org.bukkit.entity.EntityType;
 
 public class CraftCat extends CraftTameableAnimal implements Cat {
 
-    public CraftCat(CraftServer server, net.minecraft.world.entity.animal.Cat entity) {
+    public CraftCat(CraftServer server, EntityCat entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.animal.Cat getHandle() {
-        return (net.minecraft.world.entity.animal.Cat) super.getHandle();
+    public EntityCat getHandle() {
+        return (EntityCat) super.getHandle();
     }
 
     @Override
@@ -41,11 +44,11 @@ public class CraftCat extends CraftTameableAnimal implements Cat {
 
     @Override
     public DyeColor getCollarColor() {
-        return DyeColor.getByWoolData((byte) getHandle().getCollarColor().getId());
+        return DyeColor.getByWoolData((byte) getHandle().getCollarColor().getColorIndex());
     }
 
     @Override
     public void setCollarColor(DyeColor color) {
-        getHandle().setCollarColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
+        getHandle().setCollarColor(EnumColor.fromColorIndex(color.getWoolData()));
     }
 }

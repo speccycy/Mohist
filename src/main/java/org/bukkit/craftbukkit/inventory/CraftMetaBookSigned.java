@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.inventory;
 
 import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.SerializableMeta;
@@ -16,7 +16,7 @@ class CraftMetaBookSigned extends CraftMetaBook implements BookMeta {
         super(meta);
     }
 
-    CraftMetaBookSigned(CompoundTag tag) {
+    CraftMetaBookSigned(NBTTagCompound tag) {
         super(tag);
     }
 
@@ -40,7 +40,7 @@ class CraftMetaBookSigned extends CraftMetaBook implements BookMeta {
     }
 
     @Override
-    void applyToItem(CompoundTag itemData) {
+    void applyToItem(NBTTagCompound itemData) {
         super.applyToItem(itemData);
     }
 

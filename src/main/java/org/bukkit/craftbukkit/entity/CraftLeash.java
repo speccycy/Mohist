@@ -1,17 +1,18 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.decoration.EntityLeash;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LeashHitch;
 
 public class CraftLeash extends CraftHanging implements LeashHitch {
-    public CraftLeash(CraftServer server, net.minecraft.world.entity.decoration.LeashFenceKnotEntity entity) {
+    public CraftLeash(CraftServer server, EntityLeash entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.decoration.LeashFenceKnotEntity getHandle() {
-        return (net.minecraft.world.entity.decoration.LeashFenceKnotEntity) entity;
+    public EntityLeash getHandle() {
+        return (EntityLeash) entity;
     }
 
     @Override

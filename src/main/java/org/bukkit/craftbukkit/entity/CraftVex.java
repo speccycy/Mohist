@@ -1,18 +1,19 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.monster.EntityVex;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vex;
 
 public class CraftVex extends CraftMonster implements Vex {
 
-    public CraftVex(CraftServer server, net.minecraft.world.entity.monster.Vex entity) {
+    public CraftVex(CraftServer server, EntityVex entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.monster.Vex getHandle() {
-        return (net.minecraft.world.entity.monster.Vex) super.getHandle();
+    public EntityVex getHandle() {
+        return (EntityVex) super.getHandle();
     }
 
     @Override
@@ -32,6 +33,6 @@ public class CraftVex extends CraftMonster implements Vex {
 
     @Override
     public void setCharging(boolean charging) {
-        getHandle().setIsCharging(charging);
+        getHandle().setCharging(charging);
     }
 }

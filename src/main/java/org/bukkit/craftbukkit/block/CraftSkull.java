@@ -3,7 +3,7 @@ package org.bukkit.craftbukkit.block;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.level.block.entity.TileEntitySkull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -16,21 +16,21 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
-public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implements Skull {
+public class CraftSkull extends CraftBlockEntityState<TileEntitySkull> implements Skull {
 
     private static final int MAX_OWNER_LENGTH = 16;
     private GameProfile profile;
 
     public CraftSkull(final Block block) {
-        super(block, SkullBlockEntity.class);
+        super(block, TileEntitySkull.class);
     }
 
-    public CraftSkull(final Material material, final SkullBlockEntity te) {
+    public CraftSkull(final Material material, final TileEntitySkull te) {
         super(material, te);
     }
 
     @Override
-    public void load(SkullBlockEntity skull) {
+    public void load(TileEntitySkull skull) {
         super.load(skull);
 
         profile = skull.owner;
@@ -70,7 +70,7 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
             return false;
         }
 
-        GameProfile profile = MinecraftServer.getServer().getProfileCache().get(name);
+        GameProfile profile = MinecraftServer.getServer().getUserCache().getProfile(name).orElse(null);
         if (profile == null) {
             return false;
         }
@@ -154,11 +154,11 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
     }
 
     @Override
-    public void applyTo(SkullBlockEntity skull) {
+    public void applyTo(TileEntitySkull skull) {
         super.applyTo(skull);
 
         if (getSkullType() == SkullType.PLAYER) {
-            skull.setOwner(profile);
+            skull.setGameProfile(profile);
         }
     }
 }

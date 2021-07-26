@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.projectile.EntityFireball;
 import org.apache.commons.lang.Validate;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
@@ -8,7 +9,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class CraftFireball extends AbstractProjectile implements Fireball {
-    public CraftFireball(CraftServer server, net.minecraft.world.entity.projectile.AbstractHurtingProjectile entity) {
+    public CraftFireball(CraftServer server, EntityFireball entity) {
         super(server, entity);
     }
 
@@ -40,9 +41,9 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
     @Override
     public void setShooter(ProjectileSource shooter) {
         if (shooter instanceof CraftLivingEntity) {
-            getHandle().setOwner(((CraftLivingEntity) shooter).getHandle());
+            getHandle().setShooter(((CraftLivingEntity) shooter).getHandle());
         } else {
-            getHandle().setOwner(null);
+            getHandle().setShooter(null);
         }
         getHandle().projectileSource = shooter;
     }
@@ -60,8 +61,8 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
     }
 
     @Override
-    public net.minecraft.world.entity.projectile.AbstractHurtingProjectile getHandle() {
-        return (net.minecraft.world.entity.projectile.AbstractHurtingProjectile) entity;
+    public EntityFireball getHandle() {
+        return (EntityFireball) entity;
     }
 
     @Override

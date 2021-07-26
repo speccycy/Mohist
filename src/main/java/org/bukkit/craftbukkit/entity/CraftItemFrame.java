@@ -1,8 +1,10 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.Direction;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.EnumDirection;
+import net.minecraft.network.syncher.DataWatcher;
+import net.minecraft.world.entity.decoration.EntityHanging;
+import net.minecraft.world.entity.decoration.EntityItemFrame;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Rotation;
@@ -14,15 +16,15 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 
 public class CraftItemFrame extends CraftHanging implements ItemFrame {
-    public CraftItemFrame(CraftServer server, net.minecraft.world.entity.decoration.ItemFrame entity) {
+    public CraftItemFrame(CraftServer server, EntityItemFrame entity) {
         super(server, entity);
     }
 
     @Override
     public boolean setFacingDirection(BlockFace face, boolean force) {
-        net.minecraft.world.entity.decoration.HangingEntity hanging = getHandle();
-        Direction oldDir = hanging.getDirection();
-        Direction newDir = CraftBlock.blockFaceToNotch(face);
+        EntityHanging hanging = getHandle();
+        EnumDirection oldDir = hanging.getDirection();
+        EnumDirection newDir = CraftBlock.blockFaceToNotch(face);
 
         getHandle().setDirection(newDir);
         if (!force && !hanging.survives()) {
@@ -40,12 +42,12 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
         super.update();
 
         // mark dirty, so that the client gets updated with item and rotation
-        for (SynchedEntityData.DataItem<?> dataItem : getHandle().getEntityData().getAll()) {
-            getHandle().getEntityData().markDirty(dataItem.getAccessor());
+        for (DataWatcher.Item<?> dataItem : getHandle().getDataWatcher().getAll()) {
+            getHandle().getDataWatcher().markDirty(dataItem.a());
         }
 
         // update redstone
-        getHandle().getCommandSenderWorld().updateNeighbourForOutputSignal(getHandle().pos, Blocks.AIR);
+        getHandle().getWorld().updateAdjacentComparators(getHandle().pos, Blocks.AIR);
     }
 
     @Override
@@ -154,8 +156,8 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
     }
 
     @Override
-    public net.minecraft.world.entity.decoration.ItemFrame getHandle() {
-        return (net.minecraft.world.entity.decoration.ItemFrame) entity;
+    public EntityItemFrame getHandle() {
+        return (EntityItemFrame) entity;
     }
 
     @Override

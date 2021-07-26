@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.world.entity.monster.piglin.EntityPiglin;
 import net.minecraft.world.item.Item;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
@@ -15,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftPiglin extends CraftPiglinAbstract implements Piglin {
 
-    public CraftPiglin(CraftServer server, net.minecraft.world.entity.monster.piglin.Piglin entity) {
+    public CraftPiglin(CraftServer server, EntityPiglin entity) {
         super(server, entity);
     }
 
@@ -77,8 +78,8 @@ public class CraftPiglin extends CraftPiglinAbstract implements Piglin {
     }
 
     @Override
-    public net.minecraft.world.entity.monster.piglin.Piglin getHandle() {
-        return (net.minecraft.world.entity.monster.piglin.Piglin) super.getHandle();
+    public EntityPiglin getHandle() {
+        return (EntityPiglin) super.getHandle();
     }
 
     @Override

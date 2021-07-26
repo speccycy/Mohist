@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.IInventory;
+import net.minecraft.world.entity.player.PlayerEntity;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -31,7 +31,7 @@ public class CraftInventoryCustom extends CraftInventory {
         super(new MinecraftInventory(owner, size, title));
     }
 
-    static class MinecraftInventory implements Container {
+    static class MinecraftInventory implements IInventory {
         private final NonNullList<ItemStack> items;
         private int maxStack = MAX_STACK;
         private final List<HumanEntity> viewers;
@@ -55,7 +55,7 @@ public class CraftInventoryCustom extends CraftInventory {
 
         public MinecraftInventory(InventoryHolder owner, int size, String title) {
             Validate.notNull(title, "Title cannot be null");
-            this.items = NonNullList.withSize(size, ItemStack.EMPTY);
+            this.items = NonNullList.a(size, ItemStack.EMPTY);
             this.title = title;
             this.viewers = new ArrayList<HumanEntity>();
             this.owner = owner;
@@ -63,7 +63,7 @@ public class CraftInventoryCustom extends CraftInventory {
         }
 
         @Override
-        public int getContainerSize() {
+        public int getSize() {
             return items.size();
         }
 
@@ -73,7 +73,7 @@ public class CraftInventoryCustom extends CraftInventory {
         }
 
         @Override
-        public ItemStack removeItem(int i, int j) {
+        public ItemStack splitStack(int i, int j) {
             ItemStack stack = this.getItem(i);
             ItemStack result;
             if (stack == ItemStack.EMPTY) return stack;
@@ -82,14 +82,14 @@ public class CraftInventoryCustom extends CraftInventory {
                 result = stack;
             } else {
                 result = CraftItemStack.copyNMSStack(stack, j);
-                stack.shrink(j);
+                stack.subtract(j);
             }
-            this.setChanged();
+            this.update();
             return result;
         }
 
         @Override
-        public ItemStack removeItemNoUpdate(int i) {
+        public ItemStack splitWithoutUpdate(int i) {
             ItemStack stack = this.getItem(i);
             ItemStack result;
             if (stack == ItemStack.EMPTY) return stack;
@@ -98,7 +98,7 @@ public class CraftInventoryCustom extends CraftInventory {
                 result = stack;
             } else {
                 result = CraftItemStack.copyNMSStack(stack, 1);
-                stack.shrink(1);
+                stack.subtract(1);
             }
             return result;
         }
@@ -122,10 +122,10 @@ public class CraftInventoryCustom extends CraftInventory {
         }
 
         @Override
-        public void setChanged() {}
+        public void update() {}
 
         @Override
-        public boolean stillValid(net.minecraft.world.entity.player.Player entityhuman) {
+        public boolean a(PlayerEntity entityhuman) {
             return true;
         }
 
@@ -159,22 +159,22 @@ public class CraftInventoryCustom extends CraftInventory {
         }
 
         @Override
-        public boolean canPlaceItem(int i, ItemStack itemstack) {
+        public boolean b(int i, ItemStack itemstack) {
             return true;
         }
 
         @Override
-        public void startOpen(net.minecraft.world.entity.player.Player entityHuman) {
+        public void startOpen(PlayerEntity entityHuman) {
 
         }
 
         @Override
-        public void stopOpen(net.minecraft.world.entity.player.Player entityHuman) {
+        public void closeContainer(PlayerEntity entityHuman) {
 
         }
 
         @Override
-        public void clearContent() {
+        public void clear() {
             items.clear();
         }
 

@@ -3,9 +3,9 @@ package org.bukkit.craftbukkit.inventory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -45,25 +45,25 @@ class CraftMetaMap extends CraftMetaItem implements MapMeta {
         this.color = map.color;
     }
 
-    CraftMetaMap(CompoundTag tag) {
+    CraftMetaMap(NBTTagCompound tag) {
         super(tag);
 
-        if (tag.contains(MAP_ID.NBT, CraftMagicNumbers.NBT.TAG_ANY_NUMBER)) {
+        if (tag.hasKeyOfType(MAP_ID.NBT, CraftMagicNumbers.NBT.TAG_ANY_NUMBER)) {
             this.mapId = tag.getInt(MAP_ID.NBT);
         }
 
-        if (tag.contains(MAP_SCALING.NBT)) {
+        if (tag.hasKey(MAP_SCALING.NBT)) {
             this.scaling = tag.getBoolean(MAP_SCALING.NBT) ? SCALING_TRUE : SCALING_FALSE;
         }
 
-        if (tag.contains(DISPLAY.NBT)) {
-            CompoundTag display = tag.getCompound(DISPLAY.NBT);
+        if (tag.hasKey(DISPLAY.NBT)) {
+            NBTTagCompound display = tag.getCompound(DISPLAY.NBT);
 
-            if (display.contains(MAP_LOC_NAME.NBT)) {
+            if (display.hasKey(MAP_LOC_NAME.NBT)) {
                 locName = display.getString(MAP_LOC_NAME.NBT);
             }
 
-            if (display.contains(MAP_COLOR.NBT)) {
+            if (display.hasKey(MAP_COLOR.NBT)) {
                 try {
                     color = Color.fromRGB(display.getInt(MAP_COLOR.NBT));
                 } catch (IllegalArgumentException ex) {
@@ -98,23 +98,23 @@ class CraftMetaMap extends CraftMetaItem implements MapMeta {
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (hasMapId()) {
-            tag.putInt(MAP_ID.NBT, getMapId());
+            tag.setInt(MAP_ID.NBT, getMapId());
         }
 
         if (hasScaling()) {
-            tag.putBoolean(MAP_SCALING.NBT, isScaling());
+            tag.setBoolean(MAP_SCALING.NBT, isScaling());
         }
 
         if (hasLocationName()) {
-            setDisplayTag(tag, MAP_LOC_NAME.NBT, StringTag.valueOf(getLocationName()));
+            setDisplayTag(tag, MAP_LOC_NAME.NBT, NBTTagString.a(getLocationName()));
         }
 
         if (hasColor()) {
-            setDisplayTag(tag, MAP_COLOR.NBT, IntTag.valueOf(color.asRGB()));
+            setDisplayTag(tag, MAP_COLOR.NBT, NBTTagInt.a(color.asRGB()));
         }
     }
 

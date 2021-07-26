@@ -1,17 +1,17 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.entity.ConduitBlockEntity;
+import net.minecraft.world.level.block.entity.TileEntityConduit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Conduit;
 
-public class CraftConduit extends CraftBlockEntityState<ConduitBlockEntity> implements Conduit {
+public class CraftConduit extends CraftBlockEntityState<TileEntityConduit> implements Conduit {
 
     public CraftConduit(Block block) {
-        super(block, ConduitBlockEntity.class);
+        super(block, TileEntityConduit.class);
     }
 
-    public CraftConduit(Material material, ConduitBlockEntity te) {
+    public CraftConduit(Material material, TileEntityConduit te) {
         super(material, te);
     }
 }

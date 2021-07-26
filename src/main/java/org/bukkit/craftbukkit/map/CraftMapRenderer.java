@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.map;
 
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.saveddata.maps.MapIcon;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.entity.Player;
@@ -12,9 +12,9 @@ import org.bukkit.map.MapView;
 
 public class CraftMapRenderer extends MapRenderer {
 
-    private final MapItemSavedData worldMap;
+    private final WorldMap worldMap;
 
-    public CraftMapRenderer(CraftMapView mapView, MapItemSavedData worldMap) {
+    public CraftMapRenderer(CraftMapView mapView, WorldMap worldMap) {
         super(false);
         this.worldMap = worldMap;
     }
@@ -41,8 +41,8 @@ public class CraftMapRenderer extends MapRenderer {
                 continue;
             }
 
-            MapDecoration decoration = worldMap.decorations.get(key);
-            cursors.addCursor(decoration.getX(), decoration.getY(), (byte) (decoration.getRot() & 15), decoration.getType().getIcon(), true, CraftChatMessage.fromComponent(decoration.getName()));
+            MapIcon decoration = worldMap.decorations.get(key);
+            cursors.addCursor(decoration.getX(), decoration.getY(), (byte) (decoration.getRotation() & 15), decoration.getType().a(), true, CraftChatMessage.fromComponent(decoration.getName()));
         }
     }
 

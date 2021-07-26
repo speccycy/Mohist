@@ -8,13 +8,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MapView.Scale;
@@ -24,16 +23,16 @@ public final class CraftMapView implements MapView {
     private final Map<CraftPlayer, RenderData> renderCache = new HashMap<CraftPlayer, RenderData>();
     private final List<MapRenderer> renderers = new ArrayList<MapRenderer>();
     private final Map<MapRenderer, Map<CraftPlayer, CraftMapCanvas>> canvases = new HashMap<MapRenderer, Map<CraftPlayer, CraftMapCanvas>>();
-    protected final MapItemSavedData worldMap;
+    protected final WorldMap worldMap;
 
-    public CraftMapView(MapItemSavedData worldMap) {
+    public CraftMapView(WorldMap worldMap) {
         this.worldMap = worldMap;
         addRenderer(new CraftMapRenderer(this, worldMap));
     }
 
     @Override
     public int getId() {
-        String text = worldMap.getId(); //TODO
+        String text = worldMap.id;
         if (text.startsWith("map_")) {
             try {
                 return Integer.parseInt(text.substring("map_".length()));
@@ -62,15 +61,15 @@ public final class CraftMapView implements MapView {
 
     @Override
     public World getWorld() {
-        ResourceKey<net.minecraft.world.level.Level> dimension = worldMap.dimension;
-        ServerLevel world = MinecraftServer.getServer().getLevel(dimension);
+        ResourceKey<net.minecraft.world.level.World> dimension = worldMap.dimension;
+        WorldServer world = MinecraftServer.getServer().getWorldServer(dimension);
 
         return (world == null) ? null : world.getWorld();
     }
 
     @Override
     public void setWorld(World world) {
-        worldMap.dimension = ((CraftWorld) world).getHandle().dimension();
+        worldMap.dimension = ((CraftWorld) world).getHandle().getDimensionKey();
     }
 
     @Override
@@ -157,7 +156,7 @@ public final class CraftMapView implements MapView {
 
             canvas.setBase(render.buffer);
             try {
-                renderer.render(this, canvas, (Player) player); //TODO
+                renderer.render(this, canvas, player);
             } catch (Throwable ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Could not render map using renderer " + renderer.getClass().getName(), ex);
             }

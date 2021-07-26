@@ -3,7 +3,9 @@ package org.bukkit.craftbukkit.entity;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectList;
+import net.minecraft.world.entity.EntityAreaEffectCloud;
+import net.minecraft.world.entity.EntityLiving;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -20,13 +22,13 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud {
 
-    public CraftAreaEffectCloud(CraftServer server, net.minecraft.world.entity.AreaEffectCloud entity) {
+    public CraftAreaEffectCloud(CraftServer server, EntityAreaEffectCloud entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.AreaEffectCloud getHandle() {
-        return (net.minecraft.world.entity.AreaEffectCloud) super.getHandle();
+    public EntityAreaEffectCloud getHandle() {
+        return (EntityAreaEffectCloud) super.getHandle();
     }
 
     @Override
@@ -131,15 +133,15 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
 
     @Override
     public void setColor(Color color) {
-        getHandle().setFixedColor(color.asRGB());
+        getHandle().setColor(color.asRGB());
     }
 
     @Override
     public boolean addCustomEffect(PotionEffect effect, boolean override) {
         int effectId = effect.getType().getId();
-        MobEffectInstance existing = null;
-        for (MobEffectInstance mobEffect : getHandle().effects) {
-            if (MobEffect.getId(mobEffect.getEffect()) == effectId) {
+        MobEffect existing = null;
+        for (MobEffect mobEffect : getHandle().effects) {
+            if (MobEffectList.getId(mobEffect.getMobEffect()) == effectId) {
                 existing = mobEffect;
             }
         }
@@ -163,7 +165,7 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
     @Override
     public List<PotionEffect> getCustomEffects() {
         ImmutableList.Builder<PotionEffect> builder = ImmutableList.builder();
-        for (MobEffectInstance effect : getHandle().effects) {
+        for (MobEffect effect : getHandle().effects) {
             builder.add(CraftPotionUtil.toBukkit(effect));
         }
         return builder.build();
@@ -171,8 +173,8 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
 
     @Override
     public boolean hasCustomEffect(PotionEffectType type) {
-        for (MobEffectInstance effect : getHandle().effects) {
-            if (CraftPotionUtil.equals(effect.getEffect(), type)) {
+        for (MobEffect effect : getHandle().effects) {
+            if (CraftPotionUtil.equals(effect.getMobEffect(), type)) {
                 return true;
             }
         }
@@ -187,9 +189,9 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
     @Override
     public boolean removeCustomEffect(PotionEffectType effect) {
         int effectId = effect.getId();
-        MobEffectInstance existing = null;
-        for (MobEffectInstance mobEffect : getHandle().effects) {
-            if (MobEffect.getId(mobEffect.getEffect()) == effectId) {
+        MobEffect existing = null;
+        for (MobEffect mobEffect : getHandle().effects) {
+            if (MobEffectList.getId(mobEffect.getMobEffect()) == effectId) {
                 existing = mobEffect;
             }
         }
@@ -209,21 +211,21 @@ public class CraftAreaEffectCloud extends CraftEntity implements AreaEffectCloud
 
     @Override
     public PotionData getBasePotionData() {
-        return CraftPotionUtil.toBukkit(getHandle().getTypeCB());
+        return CraftPotionUtil.toBukkit(getHandle().getType());
     }
 
     @Override
     public ProjectileSource getSource() {
-        net.minecraft.world.entity.LivingEntity source = getHandle().getOwner();
+        EntityLiving source = getHandle().getSource();
         return (source == null) ? null : (LivingEntity) source.getBukkitEntity();
     }
 
     @Override
     public void setSource(ProjectileSource shooter) {
         if (shooter instanceof CraftLivingEntity) {
-            getHandle().setOwner((net.minecraft.world.entity.LivingEntity) ((CraftLivingEntity) shooter).getHandle());
+            getHandle().setSource((EntityLiving) ((CraftLivingEntity) shooter).getHandle());
         } else {
-            getHandle().setOwner((net.minecraft.world.entity.LivingEntity) null);
+            getHandle().setSource((EntityLiving) null);
         }
     }
 }

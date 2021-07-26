@@ -8,13 +8,37 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.EnumHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.effect.MobEffectList;
+import net.minecraft.world.entity.EntityInsentient;
+import net.minecraft.world.entity.EntityLiving;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EnumMonsterType;
+import net.minecraft.world.entity.ai.attributes.GenericAttributes;
+import net.minecraft.world.entity.boss.wither.EntityWither;
+import net.minecraft.world.entity.decoration.EntityArmorStand;
+import net.minecraft.world.entity.player.PlayerEntity;
+import net.minecraft.world.entity.projectile.EntityArrow;
+import net.minecraft.world.entity.projectile.EntityDragonFireball;
+import net.minecraft.world.entity.projectile.EntityEgg;
+import net.minecraft.world.entity.projectile.EntityEnderPearl;
+import net.minecraft.world.entity.projectile.EntityFireball;
+import net.minecraft.world.entity.projectile.EntityFireworks;
+import net.minecraft.world.entity.projectile.EntityFishingHook;
+import net.minecraft.world.entity.projectile.EntityLargeFireball;
+import net.minecraft.world.entity.projectile.EntityLlamaSpit;
+import net.minecraft.world.entity.projectile.EntityPotion;
+import net.minecraft.world.entity.projectile.EntityProjectile;
+import net.minecraft.world.entity.projectile.EntityShulkerBullet;
+import net.minecraft.world.entity.projectile.EntitySmallFireball;
+import net.minecraft.world.entity.projectile.EntitySnowball;
+import net.minecraft.world.entity.projectile.EntitySpectralArrow;
+import net.minecraft.world.entity.projectile.EntityThrownExpBottle;
+import net.minecraft.world.entity.projectile.EntityThrownTrident;
+import net.minecraft.world.entity.projectile.EntityTippedArrow;
+import net.minecraft.world.entity.projectile.EntityWitherSkull;
 import org.apache.commons.lang.Validate;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -70,10 +94,10 @@ import org.bukkit.util.Vector;
 public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     private CraftEntityEquipment equipment;
 
-    public CraftLivingEntity(final CraftServer server, final net.minecraft.world.entity.LivingEntity entity) {
+    public CraftLivingEntity(final CraftServer server, final EntityLiving entity) {
         super(server, entity);
 
-        if (entity instanceof Mob || entity instanceof net.minecraft.world.entity.decoration.ArmorStand) {
+        if (entity instanceof EntityInsentient || entity instanceof EntityArmorStand) {
             equipment = new CraftEntityEquipment(this);
         }
     }
@@ -99,14 +123,14 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public double getAbsorptionAmount() {
-        return getHandle().getAbsorptionAmount();
+        return getHandle().getAbsorptionHearts();
     }
 
     @Override
     public void setAbsorptionAmount(double amount) {
         Preconditions.checkArgument(amount >= 0 && Double.isFinite(amount), "amount < 0 or non-finite");
 
-        getHandle().setAbsorptionAmount((float) amount);
+        getHandle().setAbsorptionHearts((float) amount);
     }
 
     @Override
@@ -118,7 +142,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     public void setMaxHealth(double amount) {
         Validate.isTrue(amount > 0, "Max health must be greater than 0");
 
-        getHandle().getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(amount);
+        getHandle().getAttributeInstance(GenericAttributes.MAX_HEALTH).setValue(amount);
 
         if (getHealth() > amount) {
             setHealth(amount);
@@ -127,12 +151,12 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void resetMaxHealth() {
-        setMaxHealth(getHandle().getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).getAttribute().getDefaultValue());
+        setMaxHealth(getHandle().getAttributeInstance(GenericAttributes.MAX_HEALTH).getAttribute().getDefault());
     }
 
     @Override
     public double getEyeHeight() {
-        return getHandle().getEyeHeight();
+        return getHandle().getHeadHeight();
     }
 
     @Override
@@ -204,12 +228,12 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public int getRemainingAir() {
-        return getHandle().getAirSupply();
+        return getHandle().getAirTicks();
     }
 
     @Override
     public void setRemainingAir(int ticks) {
-        getHandle().setAirSupply(ticks);
+        getHandle().setAirTicks(ticks);
     }
 
     @Override
@@ -240,7 +264,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     @Override
     public void setArrowsInBody(int count) {
         Preconditions.checkArgument(count >= 0, "New arrow amount must be >= 0");
-        getHandle().getEntityData().set(net.minecraft.world.entity.LivingEntity.DATA_ARROW_COUNT_ID, count);
+        getHandle().getDataWatcher().set(EntityLiving.DATA_ARROW_COUNT_ID, count);
     }
 
     @Override
@@ -258,7 +282,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             reason = DamageSource.mobAttack(((CraftLivingEntity) source).getHandle());
         }
 
-        entity.hurt(reason, (float) amount);
+        entity.damageEntity(reason, (float) amount);
     }
 
     @Override
@@ -299,11 +323,11 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     @Override
-    public net.minecraft.world.entity.LivingEntity getHandle() {
-        return (net.minecraft.world.entity.LivingEntity) entity;
+    public EntityLiving getHandle() {
+        return (EntityLiving) entity;
     }
 
-    public void setHandle(final net.minecraft.world.entity.LivingEntity entity) {
+    public void setHandle(final EntityLiving entity) {
         super.setHandle(entity);
     }
 
@@ -324,7 +348,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean addPotionEffect(PotionEffect effect, boolean force) {
-        getHandle().addEffect(new MobEffectInstance(MobEffect.byId(effect.getType().getId()), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()), EntityPotionEffectEvent.Cause.PLUGIN);
+        getHandle().addEffect(new MobEffect(MobEffectList.fromId(effect.getType().getId()), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()), EntityPotionEffectEvent.Cause.PLUGIN);
         return true;
     }
 
@@ -339,25 +363,25 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean hasPotionEffect(PotionEffectType type) {
-        return getHandle().hasEffect(MobEffect.byId(type.getId()));
+        return getHandle().hasEffect(MobEffectList.fromId(type.getId()));
     }
 
     @Override
     public PotionEffect getPotionEffect(PotionEffectType type) {
-        MobEffectInstance handle = getHandle().getEffect(MobEffect.byId(type.getId()));
-        return (handle == null) ? null : new PotionEffect(PotionEffectType.getById(MobEffect.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible());
+        MobEffect handle = getHandle().getEffect(MobEffectList.fromId(type.getId()));
+        return (handle == null) ? null : new PotionEffect(PotionEffectType.getById(MobEffectList.getId(handle.getMobEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isShowParticles());
     }
 
     @Override
     public void removePotionEffect(PotionEffectType type) {
-        getHandle().removeEffect(MobEffect.byId(type.getId()), EntityPotionEffectEvent.Cause.PLUGIN);
+        getHandle().removeEffect(MobEffectList.fromId(type.getId()), EntityPotionEffectEvent.Cause.PLUGIN);
     }
 
     @Override
     public Collection<PotionEffect> getActivePotionEffects() {
         List<PotionEffect> effects = new ArrayList<PotionEffect>();
-        for (MobEffectInstance handle : getHandle().activeEffects.values()) {
-            effects.add(new PotionEffect(PotionEffectType.getById(MobEffect.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible()));
+        for (MobEffect handle : getHandle().activeEffects.values()) {
+            effects.add(new PotionEffect(PotionEffectType.getById(MobEffectList.getId(handle.getMobEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isShowParticles()));
         }
         return effects;
     }
@@ -370,79 +394,79 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
-        net.minecraft.world.level.Level world = ((CraftWorld) getWorld()).getHandle();
+        net.minecraft.world.level.World world = ((CraftWorld) getWorld()).getHandle();
         net.minecraft.world.entity.Entity launch = null;
 
         if (Snowball.class.isAssignableFrom(projectile)) {
-            launch = new net.minecraft.world.entity.projectile.Snowball(world, getHandle());
-            ((net.minecraft.world.entity.projectile.ThrowableProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemSnowball
+            launch = new EntitySnowball(world, getHandle());
+            ((EntityProjectile) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemSnowball
         } else if (Egg.class.isAssignableFrom(projectile)) {
-            launch = new net.minecraft.world.entity.projectile.ThrownEgg(world, getHandle());
-            ((net.minecraft.world.entity.projectile.ThrowableProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemEgg
+            launch = new EntityEgg(world, getHandle());
+            ((EntityProjectile) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemEgg
         } else if (EnderPearl.class.isAssignableFrom(projectile)) {
-            launch = new net.minecraft.world.entity.projectile.ThrownEnderpearl(world, getHandle());
-            ((net.minecraft.world.entity.projectile.ThrowableProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemEnderPearl
+            launch = new EntityEnderPearl(world, getHandle());
+            ((EntityProjectile) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 1.5F, 1.0F); // ItemEnderPearl
         } else if (AbstractArrow.class.isAssignableFrom(projectile)) {
             if (TippedArrow.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.Arrow(world, getHandle());
-                ((net.minecraft.world.entity.projectile.Arrow) launch).setType(CraftPotionUtil.fromBukkit(new PotionData(PotionType.WATER, false, false)));
+                launch = new EntityTippedArrow(world, getHandle());
+                ((EntityTippedArrow) launch).setType(CraftPotionUtil.fromBukkit(new PotionData(PotionType.WATER, false, false)));
             } else if (SpectralArrow.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.SpectralArrow(world, getHandle());
+                launch = new EntitySpectralArrow(world, getHandle());
             } else if (Trident.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.ThrownTrident(world, getHandle(), new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TRIDENT));
+                launch = new EntityThrownTrident(world, getHandle(), new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TRIDENT));
             } else {
-                launch = new net.minecraft.world.entity.projectile.Arrow(world, getHandle());
+                launch = new EntityTippedArrow(world, getHandle());
             }
-            ((net.minecraft.world.entity.projectile.AbstractArrow) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 3.0F, 1.0F); // ItemBow
+            ((EntityArrow) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), 0.0F, 3.0F, 1.0F); // ItemBow
         } else if (ThrownPotion.class.isAssignableFrom(projectile)) {
             if (LingeringPotion.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.ThrownPotion(world, getHandle());
-                ((net.minecraft.world.entity.projectile.ThrownPotion) launch).setItem(CraftItemStack.asNMSCopy(new ItemStack(org.bukkit.Material.LINGERING_POTION, 1)));
+                launch = new EntityPotion(world, getHandle());
+                ((EntityPotion) launch).setItem(CraftItemStack.asNMSCopy(new ItemStack(org.bukkit.Material.LINGERING_POTION, 1)));
             } else {
-                launch = new net.minecraft.world.entity.projectile.ThrownPotion(world, getHandle());
-                ((net.minecraft.world.entity.projectile.ThrownPotion) launch).setItem(CraftItemStack.asNMSCopy(new ItemStack(org.bukkit.Material.SPLASH_POTION, 1)));
+                launch = new EntityPotion(world, getHandle());
+                ((EntityPotion) launch).setItem(CraftItemStack.asNMSCopy(new ItemStack(org.bukkit.Material.SPLASH_POTION, 1)));
             }
-            ((net.minecraft.world.entity.projectile.ThrowableProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), -20.0F, 0.5F, 1.0F); // ItemSplashPotion
+            ((EntityProjectile) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), -20.0F, 0.5F, 1.0F); // ItemSplashPotion
         } else if (ThrownExpBottle.class.isAssignableFrom(projectile)) {
-            launch = new net.minecraft.world.entity.projectile.ThrownExperienceBottle(world, getHandle());
-            ((net.minecraft.world.entity.projectile.ThrowableProjectile) launch).shootFromRotation(getHandle(), getHandle().getXRot(), getHandle().getYRot(), -20.0F, 0.7F, 1.0F); // ItemExpBottle
-        } else if (FishHook.class.isAssignableFrom(projectile) && getHandle() instanceof net.minecraft.world.entity.player.Player) {
-            launch = new net.minecraft.world.entity.projectile.FishingHook((net.minecraft.world.entity.player.Player) getHandle(), world, 0, 0);
+            launch = new EntityThrownExpBottle(world, getHandle());
+            ((EntityProjectile) launch).a(getHandle(), getHandle().getXRot(), getHandle().getYRot(), -20.0F, 0.7F, 1.0F); // ItemExpBottle
+        } else if (FishHook.class.isAssignableFrom(projectile) && getHandle() instanceof PlayerEntity) {
+            launch = new EntityFishingHook((PlayerEntity) getHandle(), world, 0, 0);
         } else if (Fireball.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
             Vector direction = location.getDirection().multiply(10);
 
             if (SmallFireball.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.SmallFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
+                launch = new EntitySmallFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else if (WitherSkull.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.WitherSkull(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
+                launch = new EntityWitherSkull(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else if (DragonFireball.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.projectile.DragonFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
+                launch = new EntityDragonFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else {
-                launch = new net.minecraft.world.entity.projectile.LargeFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ(), 1);
+                launch = new EntityLargeFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ(), 1);
             }
 
-            ((AbstractHurtingProjectile) launch).projectileSource = this;
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            ((EntityFireball) launch).projectileSource = this;
+            launch.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (LlamaSpit.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
             Vector direction = location.getDirection();
 
-            launch = net.minecraft.world.entity.EntityType.LLAMA_SPIT.create(world);
+            launch = EntityTypes.LLAMA_SPIT.a(world);
 
-            ((net.minecraft.world.entity.projectile.LlamaSpit) launch).setOwner(getHandle());
-            ((net.minecraft.world.entity.projectile.LlamaSpit) launch).shoot(direction.getX(), direction.getY(), direction.getZ(), 1.5F, 10.0F); // net.minecraft.world.entity.animal.horse.Llama
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            ((EntityLlamaSpit) launch).setShooter(getHandle());
+            ((EntityLlamaSpit) launch).shoot(direction.getX(), direction.getY(), direction.getZ(), 1.5F, 10.0F); // EntityLlama
+            launch.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (ShulkerBullet.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
 
-            launch = new net.minecraft.world.entity.projectile.ShulkerBullet(world, getHandle(), null, null);
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch = new EntityShulkerBullet(world, getHandle(), null, null);
+            launch.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (Firework.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
 
-            launch = new FireworkRocketEntity(world, net.minecraft.world.item.ItemStack.EMPTY, getHandle());
-            launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+            launch = new EntityFireworks(world, net.minecraft.world.item.ItemStack.EMPTY, getHandle());
+            launch.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         }
 
         Validate.notNull(launch, "Projectile not supported");
@@ -451,7 +475,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             ((T) launch.getBukkitEntity()).setVelocity(velocity);
         }
 
-        world.addFreshEntity(launch);
+        world.addEntity(launch);
         return (T) launch.getBukkitEntity();
     }
 
@@ -467,13 +491,13 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean getRemoveWhenFarAway() {
-        return getHandle() instanceof Mob && !((Mob) getHandle()).isPersistent();
+        return getHandle() instanceof EntityInsentient && !((EntityInsentient) getHandle()).isPersistent();
     }
 
     @Override
     public void setRemoveWhenFarAway(boolean remove) {
-        if (getHandle() instanceof Mob) {
-            ((Mob) getHandle()).setPersistenceRequired(!remove);
+        if (getHandle() instanceof EntityInsentient) {
+            ((EntityInsentient) getHandle()).setPersistenceRequired(!remove);
         }
     }
 
@@ -484,8 +508,8 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void setCanPickupItems(boolean pickup) {
-        if (getHandle() instanceof Mob) {
-            ((Mob) getHandle()).setCanPickUpLoot(pickup);
+        if (getHandle() instanceof EntityInsentient) {
+            ((EntityInsentient) getHandle()).setCanPickupLoot(pickup);
         } else {
             getHandle().bukkitPickUpLoot = pickup;
         }
@@ -493,8 +517,8 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean getCanPickupItems() {
-        if (getHandle() instanceof Mob) {
-            return ((Mob) getHandle()).canPickUpLoot();
+        if (getHandle() instanceof EntityInsentient) {
+            return ((EntityInsentient) getHandle()).canPickupLoot();
         } else {
             return getHandle().bukkitPickUpLoot;
         }
@@ -511,10 +535,10 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean isLeashed() {
-        if (!(getHandle() instanceof Mob)) {
+        if (!(getHandle() instanceof EntityInsentient)) {
             return false;
         }
-        return ((Mob) getHandle()).getLeashHolder() != null;
+        return ((EntityInsentient) getHandle()).getLeashHolder() != null;
     }
 
     @Override
@@ -522,20 +546,20 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         if (!isLeashed()) {
             throw new IllegalStateException("Entity not leashed");
         }
-        return ((Mob) getHandle()).getLeashHolder().getBukkitEntity();
+        return ((EntityInsentient) getHandle()).getLeashHolder().getBukkitEntity();
     }
 
     private boolean unleash() {
         if (!isLeashed()) {
             return false;
         }
-        ((Mob) getHandle()).dropLeash(true, false);
+        ((EntityInsentient) getHandle()).unleash(true, false);
         return true;
     }
 
     @Override
     public boolean setLeashHolder(Entity holder) {
-        if ((getHandle() instanceof net.minecraft.world.entity.boss.wither.WitherBoss) || !(getHandle() instanceof Mob)) {
+        if ((getHandle() instanceof EntityWither) || !(getHandle() instanceof EntityInsentient)) {
             return false;
         }
 
@@ -548,18 +572,18 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         }
 
         unleash();
-        ((Mob) getHandle()).setLeashedTo(((CraftEntity) holder).getHandle(), true);
+        ((EntityInsentient) getHandle()).setLeashHolder(((CraftEntity) holder).getHandle(), true);
         return true;
     }
 
     @Override
     public boolean isGliding() {
-        return getHandle().getSharedFlag(7);
+        return getHandle().getFlag(7);
     }
 
     @Override
     public void setGliding(boolean gliding) {
-        getHandle().setSharedFlag(7, gliding);
+        getHandle().setFlag(7, gliding);
     }
 
     @Override
@@ -574,7 +598,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean isRiptiding() {
-        return getHandle().isAutoSpinAttack();
+        return getHandle().isRiptiding();
     }
 
     @Override
@@ -584,7 +608,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean isClimbing() {
-        return getHandle().onClimbable();
+        return getHandle().isClimbing();
     }
 
     @Override
@@ -594,31 +618,31 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public void setAI(boolean ai) {
-        if (this.getHandle() instanceof Mob) {
-            ((Mob) this.getHandle()).setNoAi(!ai);
+        if (this.getHandle() instanceof EntityInsentient) {
+            ((EntityInsentient) this.getHandle()).setNoAI(!ai);
         }
     }
 
     @Override
     public boolean hasAI() {
-        return (this.getHandle() instanceof Mob) ? !((Mob) this.getHandle()).isNoAi() : false;
+        return (this.getHandle() instanceof EntityInsentient) ? !((EntityInsentient) this.getHandle()).isNoAI() : false;
     }
 
     @Override
     public void attack(Entity target) {
         Preconditions.checkArgument(target != null, "target == null");
 
-        getHandle().doHurtTarget(((CraftEntity) target).getHandle());
+        getHandle().attackEntity(((CraftEntity) target).getHandle());
     }
 
     @Override
     public void swingMainHand() {
-        getHandle().swing(InteractionHand.MAIN_HAND, true);
+        getHandle().swingHand(EnumHand.MAIN_HAND, true);
     }
 
     @Override
     public void swingOffHand() {
-        getHandle().swing(InteractionHand.OFF_HAND, true);
+        getHandle().swingHand(EnumHand.OFF_HAND, true);
     }
 
     @Override
@@ -638,27 +662,27 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public <T> T getMemory(MemoryKey<T> memoryKey) {
-        return (T) getHandle().getBrain().getMemory(CraftMemoryKey.fromMemoryKey(memoryKey)).map(CraftMemoryMapper::fromNms).orElse(null);
+        return (T) getHandle().getBehaviorController().getMemory(CraftMemoryKey.fromMemoryKey(memoryKey)).map(CraftMemoryMapper::fromNms).orElse(null);
     }
 
     @Override
     public <T> void setMemory(MemoryKey<T> memoryKey, T t) {
-        getHandle().getBrain().setMemory(CraftMemoryKey.fromMemoryKey(memoryKey), CraftMemoryMapper.toNms(t));
+        getHandle().getBehaviorController().setMemory(CraftMemoryKey.fromMemoryKey(memoryKey), CraftMemoryMapper.toNms(t));
     }
 
     @Override
     public EntityCategory getCategory() {
-        net.minecraft.world.entity.MobType type = getHandle().getMobType(); // Not actually an enum?
+        EnumMonsterType type = getHandle().getMonsterType(); // Not actually an enum?
 
-        if (type == net.minecraft.world.entity.MobType.UNDEFINED) {
+        if (type == EnumMonsterType.UNDEFINED) {
             return EntityCategory.NONE;
-        } else if (type == net.minecraft.world.entity.MobType.UNDEAD) {
+        } else if (type == EnumMonsterType.UNDEAD) {
             return EntityCategory.UNDEAD;
-        } else if (type == net.minecraft.world.entity.MobType.ARTHROPOD) {
+        } else if (type == EnumMonsterType.ARTHROPOD) {
             return EntityCategory.ARTHROPOD;
-        } else if (type == net.minecraft.world.entity.MobType.ILLAGER) {
+        } else if (type == EnumMonsterType.ILLAGER) {
             return EntityCategory.ILLAGER;
-        } else if (type == net.minecraft.world.entity.MobType.WATER) {
+        } else if (type == EnumMonsterType.WATER) {
             return EntityCategory.WATER;
         }
 
@@ -673,6 +697,6 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     @Override
     public void setInvisible(boolean invisible) {
         getHandle().persistentInvisibility = invisible;
-        getHandle().setSharedFlag(5, invisible);
+        getHandle().setFlag(5, invisible);
     }
 }

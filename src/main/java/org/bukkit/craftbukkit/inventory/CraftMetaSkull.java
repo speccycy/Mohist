@@ -4,15 +4,16 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.mojang.authlib.GameProfile;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.nbt.GameProfileSerializer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.level.block.entity.TileEntitySkull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.SerializableMeta;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -27,7 +28,7 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
     static final int MAX_OWNER_LENGTH = 16;
 
     private GameProfile profile;
-    private CompoundTag serializedProfile;
+    private NBTTagCompound serializedProfile;
 
     CraftMetaSkull(CraftMetaItem meta) {
         super(meta);
@@ -38,12 +39,12 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
         this.setProfile(skullMeta.profile);
     }
 
-    CraftMetaSkull(CompoundTag tag) {
+    CraftMetaSkull(NBTTagCompound tag) {
         super(tag);
 
-        if (tag.contains(SKULL_OWNER.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-            this.setProfile(NbtUtils.readGameProfile(tag.getCompound(SKULL_OWNER.NBT)));
-        } else if (tag.contains(SKULL_OWNER.NBT, CraftMagicNumbers.NBT.TAG_STRING) && !tag.getString(SKULL_OWNER.NBT).isEmpty()) {
+        if (tag.hasKeyOfType(SKULL_OWNER.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
+            this.setProfile(GameProfileSerializer.deserialize(tag.getCompound(SKULL_OWNER.NBT)));
+        } else if (tag.hasKeyOfType(SKULL_OWNER.NBT, CraftMagicNumbers.NBT.TAG_STRING) && !tag.getString(SKULL_OWNER.NBT).isEmpty()) {
             this.setProfile(new GameProfile(null, tag.getString(SKULL_OWNER.NBT)));
         }
     }
@@ -56,23 +57,23 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
     }
 
     @Override
-    void deserializeInternal(CompoundTag tag, Object context) {
+    void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(SKULL_PROFILE.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
-            CompoundTag skullTag = tag.getCompound(SKULL_PROFILE.NBT);
+        if (tag.hasKeyOfType(SKULL_PROFILE.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND)) {
+            NBTTagCompound skullTag = tag.getCompound(SKULL_PROFILE.NBT);
             // convert type of stored Id from String to UUID for backwards compatibility
-            if (skullTag.contains("Id", CraftMagicNumbers.NBT.TAG_STRING)) {
+            if (skullTag.hasKeyOfType("Id", CraftMagicNumbers.NBT.TAG_STRING)) {
                 UUID uuid = UUID.fromString(skullTag.getString("Id"));
-                skullTag.putUUID("Id", uuid);
+                skullTag.a("Id", uuid);
             }
 
-            this.setProfile(NbtUtils.readGameProfile(skullTag));
+            this.setProfile(GameProfileSerializer.deserialize(skullTag));
         }
     }
 
     @Override
-    void serializeInternal(final Map<String, Tag> internalTags) {
+    void serializeInternal(final Map<String, NBTBase> internalTags) {
         if (profile != null) {
             internalTags.put(SKULL_PROFILE.NBT, serializedProfile);
         }
@@ -80,20 +81,20 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
 
     private void setProfile(GameProfile profile) {
         this.profile = profile;
-        this.serializedProfile = (profile == null) ? null : NbtUtils.writeGameProfile(new CompoundTag(), profile);
+        this.serializedProfile = (profile == null) ? null : GameProfileSerializer.serialize(new NBTTagCompound(), profile);
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (profile != null) {
             // SPIGOT-6558: Set initial textures
-            tag.put(SKULL_OWNER.NBT, serializedProfile);
+            tag.set(SKULL_OWNER.NBT, serializedProfile);
             // Fill in textures
-            SkullBlockEntity.updateGameprofile(profile, (filledProfile) -> {
+            TileEntitySkull.a(profile, (filledProfile) -> {
                 setProfile(filledProfile);
-                tag.put(SKULL_OWNER.NBT, serializedProfile);
+                tag.set(SKULL_OWNER.NBT, serializedProfile);
             });
         }
     }

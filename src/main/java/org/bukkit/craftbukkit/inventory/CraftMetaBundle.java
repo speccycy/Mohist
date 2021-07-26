@@ -6,8 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
@@ -37,19 +37,19 @@ public class CraftMetaBundle extends CraftMetaItem implements BundleMeta {
         }
     }
 
-    CraftMetaBundle(CompoundTag tag) {
+    CraftMetaBundle(NBTTagCompound tag) {
         super(tag);
 
-        if (tag.contains(ITEMS.NBT, CraftMagicNumbers.NBT.TAG_LIST)) {
-            ListTag list = tag.getList(ITEMS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
+        if (tag.hasKeyOfType(ITEMS.NBT, CraftMagicNumbers.NBT.TAG_LIST)) {
+            NBTTagList list = tag.getList(ITEMS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
 
             if (list != null && !list.isEmpty()) {
                 items = new ArrayList<>();
 
                 for (int i = 0; i < list.size(); i++) {
-                    CompoundTag nbttagcompound1 = list.getCompound(i);
+                    NBTTagCompound nbttagcompound1 = list.getCompound(i);
 
-                    addItem(CraftItemStack.asCraftMirror(net.minecraft.world.item.ItemStack.of(nbttagcompound1)));
+                    addItem(CraftItemStack.asCraftMirror(net.minecraft.world.item.ItemStack.a(nbttagcompound1)));
                 }
             }
         }
@@ -69,19 +69,19 @@ public class CraftMetaBundle extends CraftMetaItem implements BundleMeta {
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (hasItems()) {
-            ListTag list = new ListTag();
+            NBTTagList list = new NBTTagList();
 
             for (ItemStack item : items) {
-                CompoundTag saved = new CompoundTag();
+                NBTTagCompound saved = new NBTTagCompound();
                 CraftItemStack.asNMSCopy(item).save(saved);
                 list.add(saved);
             }
 
-            tag.put(ITEMS.NBT, list);
+            tag.set(ITEMS.NBT, list);
         }
     }
 

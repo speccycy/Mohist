@@ -3,11 +3,13 @@ package org.bukkit.craftbukkit;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import java.util.function.Predicate;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkBiomeContainer;
-import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.IRegistry;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.chunk.BiomeStorage;
+import net.minecraft.world.level.chunk.DataPaletteBlock;
+import net.minecraft.world.level.levelgen.HeightMap;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -24,15 +26,15 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
     private final int x, z;
     private final int minHeight, maxHeight;
     private final String worldname;
-    private final PalettedContainer<BlockState>[] blockids;
+    private final DataPaletteBlock<IBlockData>[] blockids;
     private final byte[][] skylight;
     private final byte[][] emitlight;
     private final boolean[] empty;
-    private final Heightmap hmap; // Height map
+    private final HeightMap hmap; // Height map
     private final long captureFulltime;
-    private final ChunkBiomeContainer biome;
+    private final BiomeStorage biome;
 
-    CraftChunkSnapshot(int x, int z, int minHeight, int maxHeight, String wname, long wtime, PalettedContainer<BlockState>[] sectionBlockIDs, byte[][] sectionSkyLights, byte[][] sectionEmitLights, boolean[] sectionEmpty, Heightmap hmap, ChunkBiomeContainer biome) {
+    CraftChunkSnapshot(int x, int z, int minHeight, int maxHeight, String wname, long wtime, DataPaletteBlock<IBlockData>[] sectionBlockIDs, byte[][] sectionSkyLights, byte[][] sectionEmitLights, boolean[] sectionEmpty, HeightMap hmap, BiomeStorage biome) {
         this.x = x;
         this.z = z;
         this.minHeight = minHeight;
@@ -66,9 +68,9 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
     public boolean contains(BlockData block) {
         Preconditions.checkArgument(block != null, "Block cannot be null");
 
-        Predicate<BlockState> nms = Predicates.equalTo(((CraftBlockData) block).getState());
-        for (PalettedContainer<BlockState> palette : blockids) {
-            if (palette.maybeHas(nms)) {
+        Predicate<IBlockData> nms = Predicates.equalTo(((CraftBlockData) block).getState());
+        for (DataPaletteBlock<IBlockData> palette : blockids) {
+            if (palette.contains(nms)) {
                 return true;
             }
         }
@@ -80,21 +82,21 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
     public Material getBlockType(int x, int y, int z) {
         validateChunkCoordinates(x, y, z);
 
-        return CraftMagicNumbers.getMaterial(blockids[getSectionIndex(y)].get(x, y & 0xF, z).getBlock());
+        return CraftMagicNumbers.getMaterial(blockids[getSectionIndex(y)].a(x, y & 0xF, z).getBlock());
     }
 
     @Override
     public final BlockData getBlockData(int x, int y, int z) {
         validateChunkCoordinates(x, y, z);
 
-        return CraftBlockData.fromData(blockids[getSectionIndex(y)].get(x, y & 0xF, z));
+        return CraftBlockData.fromData(blockids[getSectionIndex(y)].a(x, y & 0xF, z));
     }
 
     @Override
     public final int getData(int x, int y, int z) {
         validateChunkCoordinates(x, y, z);
 
-        return CraftMagicNumbers.toLegacyData(blockids[getSectionIndex(y)].get(x, y & 0xF, z));
+        return CraftMagicNumbers.toLegacyData(blockids[getSectionIndex(y)].a(x, y & 0xF, z));
     }
 
     @Override
@@ -118,7 +120,7 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
         Preconditions.checkState(hmap != null, "ChunkSnapshot created without height map. Please call getSnapshot with includeMaxblocky=true");
         validateChunkCoordinates(x, 0, z);
 
-        return hmap.getFirstAvailable(x, z);
+        return hmap.a(x, z);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
         Preconditions.checkState(biome != null, "ChunkSnapshot created without biome. Please call getSnapshot with includeBiome=true");
         validateChunkCoordinates(x, y, z);
 
-        return CraftBlock.biomeBaseToBiome((net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome>) biome.biomeRegistry, biome.getNoiseBiome(x >> 2, y >> 2, z >> 2));
+        return CraftBlock.biomeBaseToBiome((IRegistry<BiomeBase>) biome.biomeRegistry, biome.getBiome(x >> 2, y >> 2, z >> 2));
     }
 
     @Override
@@ -144,7 +146,7 @@ public class CraftChunkSnapshot implements ChunkSnapshot {
         Preconditions.checkState(biome != null, "ChunkSnapshot created without biome. Please call getSnapshot with includeBiome=true");
         validateChunkCoordinates(x, y, z);
 
-        return biome.getNoiseBiome(x >> 2, y >> 2, z >> 2).getTemperature(new BlockPos((this.x << 4) | x, y, (this.z << 4) | z));
+        return biome.getBiome(x >> 2, y >> 2, z >> 2).getAdjustedTemperature(new BlockPosition((this.x << 4) | x, y, (this.z << 4) | z));
     }
 
     @Override

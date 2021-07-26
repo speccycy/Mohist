@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.monster.EntityGuardian;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Guardian;
@@ -7,13 +8,13 @@ import org.bukkit.entity.LivingEntity;
 
 public class CraftGuardian extends CraftMonster implements Guardian {
 
-    public CraftGuardian(CraftServer server, net.minecraft.world.entity.monster.Guardian entity) {
+    public CraftGuardian(CraftServer server, EntityGuardian entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.monster.Guardian getHandle() {
-        return (net.minecraft.world.entity.monster.Guardian) super.getHandle();
+    public EntityGuardian getHandle() {
+        return (EntityGuardian) super.getHandle();
     }
 
     @Override
@@ -32,7 +33,7 @@ public class CraftGuardian extends CraftMonster implements Guardian {
 
         // clean up laser target, when target is removed
         if (target == null) {
-            getHandle().setTarget(0); // PAIL rename setLaserTarget
+            getHandle().a(0); // PAIL rename setLaserTarget
         }
     }
 

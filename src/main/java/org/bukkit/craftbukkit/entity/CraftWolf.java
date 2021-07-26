@@ -1,12 +1,14 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.animal.EntityWolf;
+import net.minecraft.world.item.EnumColor;
 import org.bukkit.DyeColor;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
 public class CraftWolf extends CraftTameableAnimal implements Wolf {
-    public CraftWolf(CraftServer server, net.minecraft.world.entity.animal.Wolf wolf) {
+    public CraftWolf(CraftServer server, EntityWolf wolf) {
         super(server, wolf);
     }
 
@@ -18,15 +20,15 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
     @Override
     public void setAngry(boolean angry) {
         if (angry) {
-            getHandle().startPersistentAngerTimer();
+            getHandle().anger();
         } else {
-            getHandle().stopBeingAngry();
+            getHandle().pacify();
         }
     }
 
     @Override
-    public net.minecraft.world.entity.animal.Wolf getHandle() {
-        return (net.minecraft.world.entity.animal.Wolf) entity;
+    public EntityWolf getHandle() {
+        return (EntityWolf) entity;
     }
 
     @Override
@@ -36,11 +38,11 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
 
     @Override
     public DyeColor getCollarColor() {
-        return DyeColor.getByWoolData((byte) getHandle().getCollarColor().getId());
+        return DyeColor.getByWoolData((byte) getHandle().getCollarColor().getColorIndex());
     }
 
     @Override
     public void setCollarColor(DyeColor color) {
-        getHandle().setCollarColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
+        getHandle().setCollarColor(EnumColor.fromColorIndex(color.getWoolData()));
     }
 }

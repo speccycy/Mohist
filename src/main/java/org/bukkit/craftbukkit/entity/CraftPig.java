@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.animal.EntityPig;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
@@ -8,13 +9,13 @@ import org.bukkit.entity.Pig;
 
 public class CraftPig extends CraftAnimals implements Pig {
 
-    public CraftPig(CraftServer server, net.minecraft.world.entity.animal.Pig entity) {
+    public CraftPig(CraftServer server, EntityPig entity) {
         super(server, entity);
     }
 
     @Override
     public boolean hasSaddle() {
-        return getHandle().isSaddled();
+        return getHandle().hasSaddle();
     }
 
     @Override
@@ -57,8 +58,8 @@ public class CraftPig extends CraftAnimals implements Pig {
     }
 
     @Override
-    public net.minecraft.world.entity.animal.Pig getHandle() {
-        return (net.minecraft.world.entity.animal.Pig) entity;
+    public EntityPig getHandle() {
+        return (EntityPig) entity;
     }
 
     @Override

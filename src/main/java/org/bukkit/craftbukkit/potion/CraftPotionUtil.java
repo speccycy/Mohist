@@ -3,8 +3,8 @@ package org.bukkit.craftbukkit.potion;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -99,13 +99,13 @@ public class CraftPotionUtil {
         return new PotionData(PotionType.UNCRAFTABLE, false, false);
     }
 
-    public static MobEffectInstance fromBukkit(PotionEffect effect) {
-        MobEffect type = MobEffect.byId(effect.getType().getId());
-        return new MobEffectInstance(type, effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles());
+    public static EffectInstance fromBukkit(PotionEffect effect) {
+        Effect type = Effect.byId(effect.getType().getId());
+        return new EffectInstance(type, effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles());
     }
 
-    public static PotionEffect toBukkit(MobEffectInstance effect) {
-        PotionEffectType type = PotionEffectType.getById(MobEffect.getId(effect.getEffect()));
+    public static PotionEffect toBukkit(EffectInstance effect) {
+        PotionEffectType type = PotionEffectType.getById(Effect.getId(effect.getEffect()));
         int amp = effect.getAmplifier();
         int duration = effect.getDuration();
         boolean ambient = effect.isAmbient();
@@ -113,8 +113,8 @@ public class CraftPotionUtil {
         return new PotionEffect(type, duration, amp, ambient, particles);
     }
 
-    public static boolean equals(MobEffect mobEffect, PotionEffectType type) {
-        PotionEffectType typeV = PotionEffectType.getById(MobEffect.getId(mobEffect));
+    public static boolean equals(Effect mobEffect, PotionEffectType type) {
+        PotionEffectType typeV = PotionEffectType.getById(Effect.getId(mobEffect));
         return typeV.equals(type);
     }
 }

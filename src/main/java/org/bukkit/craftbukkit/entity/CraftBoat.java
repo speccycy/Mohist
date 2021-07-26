@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.vehicle.EntityBoat;
 import org.bukkit.TreeSpecies;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Boat;
@@ -7,13 +8,13 @@ import org.bukkit.entity.EntityType;
 
 public class CraftBoat extends CraftVehicle implements Boat {
 
-    public CraftBoat(CraftServer server, net.minecraft.world.entity.vehicle.Boat entity) {
+    public CraftBoat(CraftServer server, EntityBoat entity) {
         super(server, entity);
     }
 
     @Override
     public TreeSpecies getWoodType() {
-        return getTreeSpecies(getHandle().getBoatType());
+        return getTreeSpecies(getHandle().getType());
     }
 
     @Override
@@ -66,8 +67,8 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Override
-    public net.minecraft.world.entity.vehicle.Boat getHandle() {
-        return (net.minecraft.world.entity.vehicle.Boat) entity;
+    public EntityBoat getHandle() {
+        return (EntityBoat) entity;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
         return EntityType.BOAT;
     }
 
-    public static TreeSpecies getTreeSpecies(net.minecraft.world.entity.vehicle.Boat.Type boatType) {
+    public static TreeSpecies getTreeSpecies(EntityBoat.EnumBoatType boatType) {
         switch (boatType) {
             case SPRUCE:
                 return TreeSpecies.REDWOOD;
@@ -98,21 +99,21 @@ public class CraftBoat extends CraftVehicle implements Boat {
         }
     }
 
-    public static net.minecraft.world.entity.vehicle.Boat.Type getBoatType(TreeSpecies species) {
+    public static EntityBoat.EnumBoatType getBoatType(TreeSpecies species) {
         switch (species) {
             case REDWOOD:
-                return net.minecraft.world.entity.vehicle.Boat.Type.SPRUCE;
+                return EntityBoat.EnumBoatType.SPRUCE;
             case BIRCH:
-                return net.minecraft.world.entity.vehicle.Boat.Type.BIRCH;
+                return EntityBoat.EnumBoatType.BIRCH;
             case JUNGLE:
-                return net.minecraft.world.entity.vehicle.Boat.Type.JUNGLE;
+                return EntityBoat.EnumBoatType.JUNGLE;
             case ACACIA:
-                return net.minecraft.world.entity.vehicle.Boat.Type.ACACIA;
+                return EntityBoat.EnumBoatType.ACACIA;
             case DARK_OAK:
-                return net.minecraft.world.entity.vehicle.Boat.Type.DARK_OAK;
+                return EntityBoat.EnumBoatType.DARK_OAK;
             case GENERIC:
             default:
-                return net.minecraft.world.entity.vehicle.Boat.Type.OAK;
+                return EntityBoat.EnumBoatType.OAK;
         }
     }
 }

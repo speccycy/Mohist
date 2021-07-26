@@ -2,9 +2,9 @@ package org.bukkit.craftbukkit.inventory;
 
 import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Map;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.resources.MinecraftKey;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
@@ -22,7 +22,7 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
     static final ItemMetaKey ENTITY_ID = new ItemMetaKey("id");
 
     private EntityType spawnedType;
-    private CompoundTag entityTag;
+    private NBTTagCompound entityTag;
 
     CraftMetaSpawnEgg(CraftMetaItem meta) {
         super(meta);
@@ -37,10 +37,10 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
         updateMaterial(null); // Trigger type population
     }
 
-    CraftMetaSpawnEgg(CompoundTag tag) {
+    CraftMetaSpawnEgg(NBTTagCompound tag) {
         super(tag);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
+        if (tag.hasKey(ENTITY_TAG.NBT)) {
             entityTag = tag.getCompound(ENTITY_TAG.NBT);
         }
     }
@@ -55,10 +55,10 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
     }
 
     @Override
-    void deserializeInternal(CompoundTag tag, Object context) {
+    void deserializeInternal(NBTTagCompound tag, Object context) {
         super.deserializeInternal(tag, context);
 
-        if (tag.contains(ENTITY_TAG.NBT)) {
+        if (tag.hasKey(ENTITY_TAG.NBT)) {
             entityTag = tag.getCompound(ENTITY_TAG.NBT);
 
             if (context instanceof Map) {
@@ -79,33 +79,33 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
             // Tag still has some other data, lets try our luck with a conversion
             if (!entityTag.isEmpty()) {
                 // SPIGOT-4128: This is hopeless until we start versioning stacks. RIP data.
-                // entityTag = (CompoundTag) MinecraftServer.getServer().dataConverterManager.update(References.ENTITY, new Dynamic(NbtOps.a, entityTag), -1, CraftMagicNumbers.DATA_VERSION).getValue();
+                // entityTag = (NBTTagCompound) MinecraftServer.getServer().dataConverterManager.update(DataConverterTypes.ENTITY, new Dynamic(DynamicOpsNBT.a, entityTag), -1, CraftMagicNumbers.DATA_VERSION).getValue();
             }
 
             // See if we can read a converted ID tag
-            if (entityTag.contains(ENTITY_ID.NBT)) {
-                this.spawnedType = EntityType.fromName(new ResourceLocation(entityTag.getString(ENTITY_ID.NBT)).getNamespace());
+            if (entityTag.hasKey(ENTITY_ID.NBT)) {
+                this.spawnedType = EntityType.fromName(new MinecraftKey(entityTag.getString(ENTITY_ID.NBT)).getKey());
             }
         }
     }
 
     @Override
-    void serializeInternal(Map<String, Tag> internalTags) {
+    void serializeInternal(Map<String, NBTBase> internalTags) {
         if (entityTag != null && !entityTag.isEmpty()) {
             internalTags.put(ENTITY_TAG.NBT, entityTag);
         }
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (!isSpawnEggEmpty() && entityTag == null) {
-            entityTag = new CompoundTag();
+            entityTag = new NBTTagCompound();
         }
 
         if (entityTag != null) {
-            tag.put(ENTITY_TAG.NBT, entityTag);
+            tag.set(ENTITY_TAG.NBT, entityTag);
         }
     }
 
@@ -251,7 +251,7 @@ public class CraftMetaSpawnEgg extends CraftMetaItem implements SpawnEggMeta {
 
         clone.spawnedType = spawnedType;
         if (entityTag != null) {
-            clone.entityTag = entityTag.copy();
+            clone.entityTag = entityTag.clone();
         }
 
         return clone;

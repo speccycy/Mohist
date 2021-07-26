@@ -1,28 +1,29 @@
 package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.level.block.entity.TileEntityMobSpawner;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
-public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEntity> implements CreatureSpawner {
+public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpawner> implements CreatureSpawner {
 
     public CraftCreatureSpawner(final Block block) {
-        super(block, SpawnerBlockEntity.class);
+        super(block, TileEntityMobSpawner.class);
     }
 
-    public CraftCreatureSpawner(final Material material, SpawnerBlockEntity te) {
+    public CraftCreatureSpawner(final Material material, TileEntityMobSpawner te) {
         super(material, te);
     }
 
     @Override
     public EntityType getSpawnedType() {
-        ResourceLocation key = this.getSnapshot().getSpawner().getEntityId(null, BlockPos.ZERO);
-        return (key == null) ? EntityType.PIG : EntityType.fromName(key.getPath());
+        MinecraftKey key = this.getSnapshot().getSpawner().getMobName(null, BlockPosition.ZERO);
+        return (key == null) ? EntityType.PIG : EntityType.fromName(key.getKey());
     }
 
     @Override
@@ -31,12 +32,12 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEnti
             throw new IllegalArgumentException("Can't spawn EntityType " + entityType + " from mobspawners!");
         }
 
-        this.getSnapshot().getSpawner().setEntityId(net.minecraft.world.entity.EntityType.byString(entityType.getName()).get());
+        this.getSnapshot().getSpawner().setMobName(EntityTypes.a(entityType.getName()).get());
     }
 
     @Override
     public String getCreatureTypeName() {
-        return this.getSnapshot().getSpawner().getEntityId(null, BlockPos.ZERO).getPath();
+        return this.getSnapshot().getSpawner().getMobName(null, BlockPosition.ZERO).getKey();
     }
 
     @Override

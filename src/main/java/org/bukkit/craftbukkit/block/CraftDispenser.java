@@ -1,8 +1,8 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.BlockDispenser;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.entity.TileEntityDispenser;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
@@ -12,13 +12,13 @@ import org.bukkit.craftbukkit.projectiles.CraftBlockProjectileSource;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.projectiles.BlockProjectileSource;
 
-public class CraftDispenser extends CraftLootable<DispenserBlockEntity> implements Dispenser {
+public class CraftDispenser extends CraftLootable<TileEntityDispenser> implements Dispenser {
 
     public CraftDispenser(final Block block) {
-        super(block, DispenserBlockEntity.class);
+        super(block, TileEntityDispenser.class);
     }
 
-    public CraftDispenser(final Material material, final DispenserBlockEntity te) {
+    public CraftDispenser(final Material material, final TileEntityDispenser te) {
         super(material, te);
     }
 
@@ -44,7 +44,7 @@ public class CraftDispenser extends CraftLootable<DispenserBlockEntity> implemen
             return null;
         }
 
-        return new CraftBlockProjectileSource((DispenserBlockEntity) this.getTileEntityFromWorld());
+        return new CraftBlockProjectileSource((TileEntityDispenser) this.getTileEntityFromWorld());
     }
 
     @Override
@@ -53,9 +53,9 @@ public class CraftDispenser extends CraftLootable<DispenserBlockEntity> implemen
 
         if (block.getType() == Material.DISPENSER) {
             CraftWorld world = (CraftWorld) this.getWorld();
-            DispenserBlock dispense = (DispenserBlock) Blocks.DISPENSER;
+            BlockDispenser dispense = (BlockDispenser) Blocks.DISPENSER;
 
-            dispense.dispenseFrom(world.getHandle(), this.getPosition());
+            dispense.dispense(world.getHandle(), this.getPosition());
             return true;
         } else {
             return false;

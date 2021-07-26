@@ -1,11 +1,11 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.sounds.SoundEffects;
+import net.minecraft.world.ITileInventory;
+import net.minecraft.world.level.block.BlockChest;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.TileEntityChest;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -14,13 +14,13 @@ import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest;
 import org.bukkit.inventory.Inventory;
 
-public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest {
+public class CraftChest extends CraftLootable<TileEntityChest> implements Chest {
 
     public CraftChest(final Block block) {
-        super(block, ChestBlockEntity.class);
+        super(block, TileEntityChest.class);
     }
 
-    public CraftChest(final Material material, final ChestBlockEntity te) {
+    public CraftChest(final Material material, final TileEntityChest te) {
         super(material, te);
     }
 
@@ -45,14 +45,14 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
             return inventory;
         }
 
-        // The logic here is basically identical to the logic in ChestBlock.interact
+        // The logic here is basically identical to the logic in BlockChest.interact
         CraftWorld world = (CraftWorld) this.getWorld();
 
-        ChestBlock blockChest= (ChestBlock) (this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
-        MenuProvider nms = blockChest.getMenuProvider(data, world.getHandle(), this.getPosition());
+        BlockChest blockChest = (BlockChest) (this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
+        ITileInventory nms = blockChest.getInventory(data, world.getHandle(), this.getPosition());
 
-        if (nms instanceof ChestBlock.DoubleInventory) {
-            inventory = new CraftInventoryDoubleChest((ChestBlock.DoubleInventory) nms);
+        if (nms instanceof BlockChest.DoubleInventory) {
+            inventory = new CraftInventoryDoubleChest((BlockChest.DoubleInventory) nms);
         }
         return inventory;
     }
@@ -61,9 +61,9 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
     public void open() {
         requirePlaced();
         if (!getTileEntity().openersCounter.opened) {
-            BlockState block = getTileEntity().getBlockState();
-            getTileEntity().getLevel().blockEvent(getPosition(), block.getBlock(), 1, getTileEntity().openersCounter.getOpenerCount() + 1);
-            ChestBlockEntity.playSound(getTileEntity().getLevel(), getPosition(), block, SoundEvents.CHEST_OPEN);
+            IBlockData block = getTileEntity().getBlock();
+            getTileEntity().getWorld().playBlockAction(getPosition(), block.getBlock(), 1, getTileEntity().openersCounter.getOpenerCount() + 1);
+            TileEntityChest.playOpenSound(getTileEntity().getWorld(), getPosition(), block, SoundEffects.CHEST_OPEN);
         }
         getTileEntity().openersCounter.opened = true;
     }
@@ -72,9 +72,9 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
     public void close() {
         requirePlaced();
         if (getTileEntity().openersCounter.opened) {
-            BlockState block = getTileEntity().getBlockState();
-            getTileEntity().getLevel().blockEvent(getPosition(), block.getBlock(), 1, 0);
-            ChestBlockEntity.playSound(getTileEntity().getLevel(), getPosition(), block, SoundEvents.CHEST_CLOSE);
+            IBlockData block = getTileEntity().getBlock();
+            getTileEntity().getWorld().playBlockAction(getPosition(), block.getBlock(), 1, 0);
+            TileEntityChest.playOpenSound(getTileEntity().getWorld(), getPosition(), block, SoundEffects.CHEST_CLOSE);
         }
         getTileEntity().openersCounter.opened = false;
     }

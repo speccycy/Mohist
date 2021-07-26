@@ -1,7 +1,8 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.world.entity.raid.EntityRaider;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -9,13 +10,13 @@ import org.bukkit.entity.Raider;
 
 public abstract class CraftRaider extends CraftMonster implements Raider {
 
-    public CraftRaider(CraftServer server, net.minecraft.world.entity.raid.Raider entity) {
+    public CraftRaider(CraftServer server, EntityRaider entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.raid.Raider getHandle() {
-        return (net.minecraft.world.entity.raid.Raider) super.getHandle();
+    public EntityRaider getHandle() {
+        return (EntityRaider) super.getHandle();
     }
 
     @Override
@@ -31,11 +32,11 @@ public abstract class CraftRaider extends CraftMonster implements Raider {
     @Override
     public void setPatrolTarget(Block block) {
         if (block == null) {
-            getHandle().setPatrolTarget((BlockPos) null);
+            getHandle().setPatrolTarget((BlockPosition) null);
         } else {
             Preconditions.checkArgument(block.getWorld().equals(this.getWorld()), "Block must be in same world");
 
-            getHandle().setPatrolTarget(new BlockPos(block.getX(), block.getY(), block.getZ()));
+            getHandle().setPatrolTarget(new BlockPosition(block.getX(), block.getY(), block.getZ()));
         }
     }
 
@@ -51,7 +52,7 @@ public abstract class CraftRaider extends CraftMonster implements Raider {
 
     @Override
     public boolean isCanJoinRaid() {
-        return getHandle().canJoinRaid();
+        return getHandle().isCanJoinRaid();
     }
 
     @Override

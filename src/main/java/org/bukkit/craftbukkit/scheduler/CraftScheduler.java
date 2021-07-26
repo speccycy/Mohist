@@ -58,7 +58,6 @@ public class CraftScheduler implements BukkitScheduler {
         }
         return previous + 1;
     };
-
     /**
      * Counter for IDs. Order doesn't matter, only uniqueness.
      */

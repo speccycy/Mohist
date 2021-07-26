@@ -1,20 +1,20 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.world.entity.monster.SpellcasterIllager;
+import net.minecraft.world.entity.monster.EntityIllagerWizard;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.entity.Spellcaster.Spell;
 
 public class CraftSpellcaster extends CraftIllager implements Spellcaster {
 
-    public CraftSpellcaster(CraftServer server, SpellcasterIllager entity) {
+    public CraftSpellcaster(CraftServer server, EntityIllagerWizard entity) {
         super(server, entity);
     }
 
     @Override
-    public SpellcasterIllager getHandle() {
-        return (SpellcasterIllager) super.getHandle();
+    public EntityIllagerWizard getHandle() {
+        return (EntityIllagerWizard) super.getHandle();
     }
 
     @Override
@@ -24,21 +24,21 @@ public class CraftSpellcaster extends CraftIllager implements Spellcaster {
 
     @Override
     public Spell getSpell() {
-        return toBukkitSpell(getHandle().getCurrentSpell());
+        return toBukkitSpell(getHandle().getSpell());
     }
 
     @Override
     public void setSpell(Spell spell) {
         Preconditions.checkArgument(spell != null, "Use Spell.NONE");
 
-        getHandle().setIsCastingSpell(toNMSSpell(spell));
+        getHandle().setSpell(toNMSSpell(spell));
     }
 
-    public static Spell toBukkitSpell(SpellcasterIllager.IllagerSpell spell) {
+    public static Spell toBukkitSpell(EntityIllagerWizard.Spell spell) {
         return Spell.valueOf(spell.name());
     }
 
-    public static SpellcasterIllager.IllagerSpell toNMSSpell(Spell spell) {
-        return SpellcasterIllager.IllagerSpell.byId(spell.ordinal());
+    public static EntityIllagerWizard.Spell toNMSSpell(Spell spell) {
+        return EntityIllagerWizard.Spell.a(spell.ordinal());
     }
 }

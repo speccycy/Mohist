@@ -20,7 +20,7 @@ public class CraftAdvancement implements org.bukkit.advancement.Advancement {
 
     @Override
     public NamespacedKey getKey() {
-        return CraftNamespacedKey.fromMinecraft(handle.getId());
+        return CraftNamespacedKey.fromMinecraft(handle.getName());
     }
 
     @Override

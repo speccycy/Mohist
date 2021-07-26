@@ -4,43 +4,45 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.world.level.World;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.material.Fluid;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.block.CraftBlockState;
 
 public class BlockStateListPopulator extends DummyGeneratorAccess {
-    private final Level world;
-    private final LinkedHashMap<net.minecraft.core.BlockPos, CraftBlockState> list;
+    private final World world;
+    private final LinkedHashMap<BlockPosition, CraftBlockState> list;
 
-    public BlockStateListPopulator(Level world) {
+    public BlockStateListPopulator(World world) {
         this(world, new LinkedHashMap<>());
     }
 
-    public BlockStateListPopulator(Level world, LinkedHashMap<net.minecraft.core.BlockPos, CraftBlockState> list) {
+    public BlockStateListPopulator(World world, LinkedHashMap<BlockPosition, CraftBlockState> list) {
         this.world = world;
         this.list = list;
     }
 
     @Override
-    public net.minecraft.world.level.block.state.BlockState getType(net.minecraft.core.BlockPos bp) {
+    public IBlockData getType(BlockPosition bp) {
         CraftBlockState state = list.get(bp);
-        return (state != null) ? state.getHandle() : world.getBlockState(bp);
+        return (state != null) ? state.getHandle() : world.getType(bp);
     }
 
     @Override
-    public FluidState getFluid(net.minecraft.core.BlockPos bp) {
+    public Fluid getFluid(BlockPosition bp) {
         CraftBlockState state = list.get(bp);
-        return (state != null) ? state.getHandle().getFluidState() : world.getFluidState(bp);
+        return (state != null) ? state.getHandle().getFluid() : world.getFluid(bp);
     }
 
     @Override
-    public boolean setBlock(net.minecraft.core.BlockPos position, net.minecraft.world.level.block.state.BlockState data, int flag) {
+    public boolean setTypeAndData(BlockPosition position, IBlockData data, int flag) {
         CraftBlockState state = CraftBlockState.getBlockState(world, position, flag);
         state.setData(data);
         // remove first to keep insertion order
         list.remove(position);
-        list.put(position.immutable(), state);
+        list.put(position.immutableCopy(), state);
         return true;
     }
 
@@ -50,7 +52,7 @@ public class BlockStateListPopulator extends DummyGeneratorAccess {
         }
     }
 
-    public Set<net.minecraft.core.BlockPos> getBlocks() {
+    public Set<BlockPosition> getBlocks() {
         return list.keySet();
     }
 
@@ -58,7 +60,7 @@ public class BlockStateListPopulator extends DummyGeneratorAccess {
         return new ArrayList<>(list.values());
     }
 
-    public Level getWorld() {
+    public World getWorld() {
         return world;
     }
 }

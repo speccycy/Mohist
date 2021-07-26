@@ -1,18 +1,19 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.animal.EntityTurtle;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Turtle;
 
 public class CraftTurtle extends CraftAnimals implements Turtle {
 
-    public CraftTurtle(CraftServer server, net.minecraft.world.entity.animal.Turtle entity) {
+    public CraftTurtle(CraftServer server, EntityTurtle entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.animal.Turtle getHandle() {
-        return (net.minecraft.world.entity.animal.Turtle) super.getHandle();
+    public EntityTurtle getHandle() {
+        return (EntityTurtle) super.getHandle();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.monster.EntityStrider;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
@@ -8,23 +9,23 @@ import org.bukkit.entity.Strider;
 
 public class CraftStrider extends CraftAnimals implements Strider {
 
-    public CraftStrider(CraftServer server, net.minecraft.world.entity.monster.Strider entity) {
+    public CraftStrider(CraftServer server, EntityStrider entity) {
         super(server, entity);
     }
 
     @Override
     public boolean isShivering() {
-        return getHandle().isSuffocating();
+        return getHandle().isShivering();
     }
 
     @Override
     public void setShivering(boolean shivering) {
-        this.getHandle().setSuffocating(shivering);
+        this.getHandle().setShivering(shivering);
     }
 
     @Override
     public boolean hasSaddle() {
-        return getHandle().isSaddleable();
+        return getHandle().hasSaddle();
     }
 
     @Override
@@ -67,8 +68,8 @@ public class CraftStrider extends CraftAnimals implements Strider {
     }
 
     @Override
-    public net.minecraft.world.entity.monster.Strider getHandle() {
-        return (net.minecraft.world.entity.monster.Strider) entity;
+    public EntityStrider getHandle() {
+        return (EntityStrider) entity;
     }
 
     @Override

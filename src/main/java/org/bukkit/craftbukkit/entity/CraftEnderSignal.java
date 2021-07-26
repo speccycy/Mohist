@@ -1,7 +1,8 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.world.entity.projectile.EntityEnderSignal;
 import net.minecraft.world.item.Items;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
@@ -11,13 +12,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftEnderSignal extends CraftEntity implements EnderSignal {
-    public CraftEnderSignal(CraftServer server, net.minecraft.world.entity.projectile.EyeOfEnder entity) {
+    public CraftEnderSignal(CraftServer server, EntityEnderSignal entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.projectile.EyeOfEnder getHandle() {
-        return (net.minecraft.world.entity.projectile.EyeOfEnder) entity;
+    public EntityEnderSignal getHandle() {
+        return (EntityEnderSignal) entity;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CraftEnderSignal extends CraftEntity implements EnderSignal {
     @Override
     public void setTargetLocation(Location location) {
         Preconditions.checkArgument(getWorld().equals(location.getWorld()), "Cannot target EnderSignal across worlds");
-        getHandle().signalTo(new BlockPos(location.getX(), location.getY(), location.getZ()));
+        getHandle().a(new BlockPosition(location.getX(), location.getY(), location.getZ()));
     }
 
     @Override
@@ -53,12 +54,12 @@ public class CraftEnderSignal extends CraftEntity implements EnderSignal {
 
     @Override
     public ItemStack getItem() {
-        return CraftItemStack.asBukkitCopy(getHandle().getItem());
+        return CraftItemStack.asBukkitCopy(getHandle().getSuppliedItem());
     }
 
     @Override
     public void setItem(ItemStack item) {
-        getHandle().setItem(item != null ? CraftItemStack.asNMSCopy(item) : Items.ENDER_EYE.getDefaultInstance());
+        getHandle().setItem(item != null ? CraftItemStack.asNMSCopy(item) : Items.ENDER_EYE.createItemStack());
     }
 
     @Override

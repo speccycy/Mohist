@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.entity;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.world.entity.animal.EntityTropicalFish;
 import org.bukkit.DyeColor;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
@@ -10,13 +11,13 @@ import org.bukkit.entity.TropicalFish.Pattern;
 
 public class CraftTropicalFish extends CraftFish implements TropicalFish {
 
-    public CraftTropicalFish(CraftServer server, net.minecraft.world.entity.animal.TropicalFish entity) {
+    public CraftTropicalFish(CraftServer server, EntityTropicalFish entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.animal.TropicalFish getHandle() {
-        return (net.minecraft.world.entity.animal.TropicalFish) entity;
+    public EntityTropicalFish getHandle() {
+        return (EntityTropicalFish) entity;
     }
 
     @Override

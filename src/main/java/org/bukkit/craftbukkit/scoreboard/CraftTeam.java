@@ -2,7 +2,9 @@ package org.bukkit.craftbukkit.scoreboard;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.ScoreboardTeam;
+import net.minecraft.world.scores.ScoreboardTeamBase;
+import net.minecraft.world.scores.ScoreboardTeamBase.EnumNameTagVisibility;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,9 +16,9 @@ import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
 final class CraftTeam extends CraftScoreboardComponent implements Team {
-    private final PlayerTeam team;
+    private final ScoreboardTeam team;
 
-    CraftTeam(CraftScoreboard scoreboard, PlayerTeam team) {
+    CraftTeam(CraftScoreboard scoreboard, ScoreboardTeam team) {
         super(scoreboard);
         this.team = team;
     }
@@ -48,7 +50,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
     public String getPrefix() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        return CraftChatMessage.fromComponent(team.getPlayerPrefix());
+        return CraftChatMessage.fromComponent(team.getPrefix());
     }
 
     @Override
@@ -57,14 +59,14 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
         Validate.isTrue(ChatColor.stripColor(prefix).length() <= 64, "Prefix '" + prefix + "' is longer than the limit of 64 characters");
         CraftScoreboard scoreboard = checkState();
 
-        team.setPlayerPrefix(CraftChatMessage.fromStringOrNull(prefix));
+        team.setPrefix(CraftChatMessage.fromStringOrNull(prefix));
     }
 
     @Override
     public String getSuffix() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        return CraftChatMessage.fromComponent(team.getPlayerSuffix());
+        return CraftChatMessage.fromComponent(team.getSuffix());
     }
 
     @Override
@@ -73,7 +75,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
         Validate.isTrue(ChatColor.stripColor(suffix).length() <= 64, "Suffix '" + suffix + "' is longer than the limit of 64 characters");
         CraftScoreboard scoreboard = checkState();
 
-        team.setPlayerSuffix(CraftChatMessage.fromStringOrNull(suffix));
+        team.setSuffix(CraftChatMessage.fromStringOrNull(suffix));
     }
 
     @Override
@@ -95,7 +97,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
     public boolean allowFriendlyFire() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        return team.isAllowFriendlyFire();
+        return team.allowFriendlyFire();
     }
 
     @Override
@@ -116,7 +118,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
     public void setCanSeeFriendlyInvisibles(boolean enabled) throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        team.setAllowFriendlyFire(enabled);
+        team.setCanSeeFriendlyInvisibles(enabled);
     }
 
     @Override
@@ -138,7 +140,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
         CraftScoreboard scoreboard = checkState();
 
         ImmutableSet.Builder<OfflinePlayer> players = ImmutableSet.builder();
-        for (String playerName : team.getPlayers()) {
+        for (String playerName : team.getPlayerNameSet()) {
             players.add(Bukkit.getOfflinePlayer(playerName));
         }
         return players.build();
@@ -149,7 +151,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
         CraftScoreboard scoreboard = checkState();
 
         ImmutableSet.Builder<String> entries = ImmutableSet.builder();
-        for (String playerName : team.getPlayers()) {
+        for (String playerName : team.getPlayerNameSet()) {
             entries.add(playerName);
         }
         return entries.build();
@@ -159,7 +161,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
     public int getSize() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        return team.getPlayers().size();
+        return team.getPlayerNameSet().size();
     }
 
     @Override
@@ -187,7 +189,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
         Validate.notNull(entry, "Entry cannot be null");
         CraftScoreboard scoreboard = checkState();
 
-        if (!team.getPlayers().contains(entry)) {
+        if (!team.getPlayerNameSet().contains(entry)) {
             return false;
         }
 
@@ -207,14 +209,14 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
 
         CraftScoreboard scoreboard = checkState();
 
-        return team.getPlayers().contains(entry);
+        return team.getPlayerNameSet().contains(entry);
     }
 
     @Override
     public void unregister() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        scoreboard.board.removePlayerTeam(team);
+        scoreboard.board.removeTeam(team);
     }
 
     @Override
@@ -239,35 +241,35 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
 
         switch (option) {
             case NAME_TAG_VISIBILITY:
-                team.setNameTagVisibility(net.minecraft.world.scores.Team.Visibility.values()[status.ordinal()]);
+                team.setNameTagVisibility(EnumNameTagVisibility.values()[status.ordinal()]);
                 break;
             case DEATH_MESSAGE_VISIBILITY:
-                team.setDeathMessageVisibility(net.minecraft.world.scores.Team.Visibility.values()[status.ordinal()]);
+                team.setDeathMessageVisibility(EnumNameTagVisibility.values()[status.ordinal()]);
                 break;
             case COLLISION_RULE:
-                team.setCollisionRule(net.minecraft.world.scores.Team.CollisionRule.values()[status.ordinal()]);
+                team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.values()[status.ordinal()]);
                 break;
             default:
                 throw new IllegalArgumentException("Unrecognised option " + option);
         }
     }
 
-    public static net.minecraft.world.scores.Team.Visibility bukkitToNotch(NameTagVisibility visibility) {
+    public static EnumNameTagVisibility bukkitToNotch(NameTagVisibility visibility) {
         switch (visibility) {
             case ALWAYS:
-                return net.minecraft.world.scores.Team.Visibility.ALWAYS;
+                return EnumNameTagVisibility.ALWAYS;
             case NEVER:
-                return net.minecraft.world.scores.Team.Visibility.NEVER;
+                return EnumNameTagVisibility.NEVER;
             case HIDE_FOR_OTHER_TEAMS:
-                return net.minecraft.world.scores.Team.Visibility.HIDE_FOR_OTHER_TEAMS;
+                return EnumNameTagVisibility.HIDE_FOR_OTHER_TEAMS;
             case HIDE_FOR_OWN_TEAM:
-                return net.minecraft.world.scores.Team.Visibility.HIDE_FOR_OWN_TEAM;
+                return EnumNameTagVisibility.HIDE_FOR_OWN_TEAM;
             default:
                 throw new IllegalArgumentException("Unknown visibility level " + visibility);
         }
     }
 
-    public static NameTagVisibility notchToBukkit(net.minecraft.world.scores.Team.Visibility visibility) {
+    public static NameTagVisibility notchToBukkit(EnumNameTagVisibility visibility) {
         switch (visibility) {
             case ALWAYS:
                 return NameTagVisibility.ALWAYS;
@@ -284,7 +286,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
 
     @Override
     CraftScoreboard checkState() throws IllegalStateException {
-        if (getScoreboard().board.getPlayerTeam(team.getName()) == null) {
+        if (getScoreboard().board.getTeam(team.getName()) == null) {
             throw new IllegalStateException("Unregistered scoreboard component");
         }
 

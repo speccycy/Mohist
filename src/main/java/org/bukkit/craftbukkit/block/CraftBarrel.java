@@ -1,22 +1,22 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.block.BarrelBlock;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.sounds.SoundEffects;
+import net.minecraft.world.level.block.BlockBarrel;
+import net.minecraft.world.level.block.entity.TileEntityBarrel;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.inventory.Inventory;
 
-public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Barrel {
+public class CraftBarrel extends CraftLootable<TileEntityBarrel> implements Barrel {
 
     public CraftBarrel(Block block) {
-        super(block, BarrelBlockEntity.class);
+        super(block, TileEntityBarrel.class);
     }
 
-    public CraftBarrel(Material material, BarrelBlockEntity te) {
+    public CraftBarrel(Material material, TileEntityBarrel te) {
         super(material, te);
     }
 
@@ -31,19 +31,19 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
             return this.getSnapshotInventory();
         }
 
-        return new CraftInventory(this.getSnapshot());
+        return new CraftInventory(this.getTileEntity());
     }
 
     @Override
     public void open() {
         requirePlaced();
         if (!getTileEntity().openersCounter.opened) {
-            BlockState blockData = getTileEntity().getBlockState();
-            boolean open = blockData.getValue(BarrelBlock.OPEN);
+            IBlockData blockData = getTileEntity().getBlock();
+            boolean open = blockData.get(BlockBarrel.OPEN);
 
             if (!open) {
-                getTileEntity().updateBlockState(blockData, true);
-                getTileEntity().playSound(blockData, SoundEvents.BARREL_OPEN);
+                getTileEntity().setOpenFlag(blockData, true);
+                getTileEntity().playOpenSound(blockData, SoundEffects.BARREL_OPEN);
             }
         }
         getTileEntity().openersCounter.opened = true;
@@ -53,9 +53,9 @@ public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Bar
     public void close() {
         requirePlaced();
         if (getTileEntity().openersCounter.opened) {
-            BlockState blockData = getTileEntity().getBlockState();
-            getTileEntity().updateBlockState(blockData, false);
-            getTileEntity().playSound(blockData, SoundEvents.BARREL_CLOSE);
+            IBlockData blockData = getTileEntity().getBlock();
+            getTileEntity().setOpenFlag(blockData, false);
+            getTileEntity().playOpenSound(blockData, SoundEffects.BARREL_CLOSE);
         }
         getTileEntity().openersCounter.opened = false;
     }

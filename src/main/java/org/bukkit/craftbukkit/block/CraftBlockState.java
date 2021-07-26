@@ -2,14 +2,15 @@ package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
 import java.util.List;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.world.level.GeneratorAccess;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
@@ -19,10 +20,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-public class CraftBlockState implements org.bukkit.block.BlockState {
+public class CraftBlockState implements BlockState {
     protected final CraftWorld world;
-    private final BlockPos position;
-    protected BlockState data;
+    private final BlockPosition position;
+    protected IBlockData data;
     protected int flag;
 
     public CraftBlockState(final Block block) {
@@ -39,15 +40,15 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
 
     public CraftBlockState(Material material) {
         world = null;
-        data = CraftMagicNumbers.getBlock(material).defaultBlockState();
-        position = BlockPos.ZERO;
+        data = CraftMagicNumbers.getBlock(material).getBlockData();
+        position = BlockPosition.ZERO;
     }
 
-    public static CraftBlockState getBlockState(LevelAccessor world, net.minecraft.core.BlockPos pos) {
+    public static CraftBlockState getBlockState(GeneratorAccess world, net.minecraft.core.BlockPosition pos) {
         return new CraftBlockState(CraftBlock.at(world, pos));
     }
 
-    public static CraftBlockState getBlockState(LevelAccessor world, net.minecraft.core.BlockPos pos, int flag) {
+    public static CraftBlockState getBlockState(GeneratorAccess world, net.minecraft.core.BlockPosition pos, int flag) {
         return new CraftBlockState(CraftBlock.at(world, pos), flag);
     }
 
@@ -78,15 +79,15 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
         return world.getChunkAt(getX() >> 4, getZ() >> 4);
     }
 
-    public void setData(BlockState data) {
+    public void setData(IBlockData data) {
         this.data = data;
     }
 
-    public BlockPos getPosition() {
+    public BlockPosition getPosition() {
         return this.position;
     }
 
-    public BlockState getHandle() {
+    public IBlockData getHandle() {
         return this.data;
     }
 
@@ -128,7 +129,7 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
         Preconditions.checkArgument(type.isBlock(), "Material must be a block!");
 
         if (this.getType() != type) {
-            this.data = CraftMagicNumbers.getBlock(type).defaultBlockState();
+            this.data = CraftMagicNumbers.getBlock(type).getBlockData();
         }
     }
 
@@ -179,9 +180,9 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
             }
         }
 
-        BlockState newBlock = this.data;
+        IBlockData newBlock = this.data;
         block.setTypeAndData(newBlock, applyPhysics);
-        world.getHandle().sendBlockUpdated(
+        world.getHandle().notify(
                 position,
                 block.getNMS(),
                 newBlock,
@@ -190,7 +191,7 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
 
         // Update levers etc
         if (false && applyPhysics && getData() instanceof Attachable) { // Call does not map to new API
-            world.getHandle().updateNeighborsAt(position.relative(CraftBlock.blockFaceToNotch(((Attachable) getData()).getAttachedFace())), newBlock.getBlock());
+            world.getHandle().applyPhysics(position.shift(CraftBlock.blockFaceToNotch(((Attachable) getData()).getAttachedFace())), newBlock.getBlock());
         }
 
         return true;

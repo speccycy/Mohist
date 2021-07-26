@@ -1,19 +1,20 @@
 package org.bukkit.craftbukkit.entity;
 
 import java.util.UUID;
+import net.minecraft.world.entity.EntityTameableAnimal;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Tameable;
 
 public class CraftTameableAnimal extends CraftAnimals implements Tameable, Creature {
-    public CraftTameableAnimal(CraftServer server, net.minecraft.world.entity.TamableAnimal entity) {
+    public CraftTameableAnimal(CraftServer server, EntityTameableAnimal entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.TamableAnimal getHandle() {
-        return (net.minecraft.world.entity.TamableAnimal) super.getHandle();
+    public EntityTameableAnimal getHandle() {
+        return (EntityTameableAnimal) super.getHandle();
     }
 
     public UUID getOwnerUUID() {
@@ -44,7 +45,7 @@ public class CraftTameableAnimal extends CraftAnimals implements Tameable, Creat
 
     @Override
     public boolean isTamed() {
-        return getHandle().isTame();
+        return getHandle().isTamed();
     }
 
     @Override
@@ -61,19 +62,19 @@ public class CraftTameableAnimal extends CraftAnimals implements Tameable, Creat
 
     @Override
     public void setTamed(boolean tame) {
-        getHandle().setTame(tame);
+        getHandle().setTamed(tame);
         if (!tame) {
             setOwnerUUID(null);
         }
     }
 
     public boolean isSitting() {
-        return getHandle().isOrderedToSit();
+        return getHandle().isSitting();
     }
 
     public void setSitting(boolean sitting) {
-        getHandle().setInSittingPose(sitting);
-        getHandle().setOrderedToSit(sitting);
+        getHandle().setSitting(sitting);
+        getHandle().setWillSit(sitting);
     }
 
     @Override

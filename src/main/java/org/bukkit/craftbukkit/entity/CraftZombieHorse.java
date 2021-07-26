@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.animal.horse.EntityHorseZombie;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse.Variant;
@@ -7,7 +8,7 @@ import org.bukkit.entity.ZombieHorse;
 
 public class CraftZombieHorse extends CraftAbstractHorse implements ZombieHorse {
 
-    public CraftZombieHorse(CraftServer server, net.minecraft.world.entity.animal.horse.ZombieHorse entity) {
+    public CraftZombieHorse(CraftServer server, EntityHorseZombie entity) {
         super(server, entity);
     }
 

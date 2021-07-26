@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.command;
 
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandListenerWrapper;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ProxiedCommandSender;
@@ -13,17 +13,17 @@ import org.bukkit.plugin.Plugin;
 
 public class ProxiedNativeCommandSender implements ProxiedCommandSender {
 
-    private final CommandSourceStack orig;
+    private final CommandListenerWrapper orig;
     private final CommandSender caller;
     private final CommandSender callee;
 
-    public ProxiedNativeCommandSender(CommandSourceStack orig, CommandSender caller, CommandSender callee) {
+    public ProxiedNativeCommandSender(CommandListenerWrapper orig, CommandSender caller, CommandSender callee) {
         this.orig = orig;
         this.caller = caller;
         this.callee = callee;
     }
 
-    public CommandSourceStack getHandle() {
+    public CommandListenerWrapper getHandle() {
         return orig;
     }
 
@@ -53,7 +53,7 @@ public class ProxiedNativeCommandSender implements ProxiedCommandSender {
     }
 
     @Override
-    public void sendMessage(UUID sender, String[] messages) {
+    public void sendMessage(UUID sender, String... messages) {
         getCaller().sendMessage(sender, messages);
     }
 

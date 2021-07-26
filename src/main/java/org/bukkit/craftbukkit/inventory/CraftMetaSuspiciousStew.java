@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -38,15 +38,15 @@ public class CraftMetaSuspiciousStew extends CraftMetaItem implements Suspicious
         }
     }
 
-    CraftMetaSuspiciousStew(CompoundTag tag) {
+    CraftMetaSuspiciousStew(NBTTagCompound tag) {
         super(tag);
-        if (tag.contains(EFFECTS.NBT)) {
-            ListTag list = tag.getList(EFFECTS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
+        if (tag.hasKey(EFFECTS.NBT)) {
+            NBTTagList list = tag.getList(EFFECTS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
             int length = list.size();
             customEffects = new ArrayList<PotionEffect>(length);
 
             for (int i = 0; i < length; i++) {
-                CompoundTag effect = list.getCompound(i);
+                NBTTagCompound effect = list.getCompound(i);
                 PotionEffectType type = PotionEffectType.getById(effect.getByte(ID.NBT));
                 if (type == null) {
                     continue;
@@ -74,17 +74,17 @@ public class CraftMetaSuspiciousStew extends CraftMetaItem implements Suspicious
     }
 
     @Override
-    void applyToItem(CompoundTag tag) {
+    void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
         if (customEffects != null) {
-            ListTag effectList = new ListTag();
-            tag.put(EFFECTS.NBT, effectList);
+            NBTTagList effectList = new NBTTagList();
+            tag.set(EFFECTS.NBT, effectList);
 
             for (PotionEffect effect : customEffects) {
-                CompoundTag effectData = new CompoundTag();
-                effectData.putByte(ID.NBT, ((byte) effect.getType().getId()));
-                effectData.putInt(DURATION.NBT, effect.getDuration());
+                NBTTagCompound effectData = new NBTTagCompound();
+                effectData.setByte(ID.NBT, ((byte) effect.getType().getId()));
+                effectData.setInt(DURATION.NBT, effect.getDuration());
                 effectList.add(effectData);
             }
         }

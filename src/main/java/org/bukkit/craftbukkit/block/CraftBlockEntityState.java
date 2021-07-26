@@ -1,16 +1,16 @@
 package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.level.block.entity.TileEntity;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.persistence.PersistentDataContainer;
 
-public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockState implements TileState {
+public class CraftBlockEntityState<T extends TileEntity> extends CraftBlockState implements TileState {
 
     private final Class<T> tileEntityClass;
     private final T tileEntity;
@@ -23,7 +23,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
 
         // get tile entity from block:
         CraftWorld world = (CraftWorld) this.getWorld();
-        this.tileEntity = tileEntityClass.cast(world.getHandle().getBlockEntity(this.getPosition()));
+        this.tileEntity = tileEntityClass.cast(world.getHandle().getTileEntity(this.getPosition()));
         Preconditions.checkState(this.tileEntity != null, "Tile is null, asynchronous access? %s", block);
 
         // copy tile entity data:
@@ -47,16 +47,16 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
             return null;
         }
 
-        CompoundTag nbtTagCompound = tileEntity.save(new CompoundTag());
-        T snapshot = (T) BlockEntity.loadStatic(getPosition(), getHandle(), nbtTagCompound);
+        NBTTagCompound nbtTagCompound = tileEntity.save(new NBTTagCompound());
+        T snapshot = (T) TileEntity.create(getPosition(), getHandle(), nbtTagCompound);
 
         return snapshot;
     }
 
     // copies the TileEntity-specific data, retains the position
     private void copyData(T from, T to) {
-        BlockPos pos = to.getBlockPos();
-        CompoundTag nbtTagCompound = from.save(new CompoundTag());
+        BlockPosition pos = to.getPosition();
+        NBTTagCompound nbtTagCompound = from.save(new NBTTagCompound());
         to.load(nbtTagCompound);
     }
 
@@ -71,18 +71,18 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
     }
 
     // gets the current TileEntity from the world at this position
-    protected BlockEntity getTileEntityFromWorld() {
+    protected TileEntity getTileEntityFromWorld() {
         requirePlaced();
 
-        return ((CraftWorld) this.getWorld()).getHandle().getBlockEntity(this.getPosition());
+        return ((CraftWorld) this.getWorld()).getHandle().getTileEntity(this.getPosition());
     }
 
     // gets the NBT data of the TileEntity represented by this block state
-    public CompoundTag getSnapshotNBT() {
+    public NBTTagCompound getSnapshotNBT() {
         // update snapshot
         applyTo(snapshot);
 
-        return snapshot.save(new CompoundTag());
+        return snapshot.save(new NBTTagCompound());
     }
 
     // copies the data of the given tile entity to this block state
@@ -99,7 +99,7 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
         }
     }
 
-    protected boolean isApplicable(BlockEntity tileEntity) {
+    protected boolean isApplicable(TileEntity tileEntity) {
         return tileEntityClass.isInstance(tileEntity);
     }
 
@@ -108,11 +108,11 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
         boolean result = super.update(force, applyPhysics);
 
         if (result && this.isPlaced()) {
-            BlockEntity tile = getTileEntityFromWorld();
+            TileEntity tile = getTileEntityFromWorld();
 
             if (isApplicable(tile)) {
                 applyTo(tileEntityClass.cast(tile));
-                tile.setChanged();
+                tile.update();
             }
         }
 

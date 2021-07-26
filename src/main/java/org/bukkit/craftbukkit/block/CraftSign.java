@@ -1,25 +1,26 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.network.chat.ChatComponentText;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.world.item.EnumColor;
+import net.minecraft.world.level.block.entity.TileEntitySign;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 
-public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements Sign {
+public class CraftSign extends CraftBlockEntityState<TileEntitySign> implements Sign {
 
     // Lazily initialized only if requested:
     private String[] originalLines = null;
     private String[] lines = null;
 
     public CraftSign(final Block block) {
-        super(block, SignBlockEntity.class);
+        super(block, TileEntitySign.class);
     }
 
-    public CraftSign(final Material material, final SignBlockEntity te) {
+    public CraftSign(final Material material, final TileEntitySign te) {
         super(material, te);
     }
 
@@ -27,7 +28,7 @@ public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements
     public String[] getLines() {
         if (lines == null) {
             // Lazy initialization:
-            SignBlockEntity sign = this.getSnapshot();
+            TileEntitySign sign = this.getSnapshot();
             lines = new String[sign.messages.length];
             System.arraycopy(revertComponents(sign.messages), 0, lines, 0, lines.length);
             originalLines = new String[lines.length];
@@ -68,16 +69,16 @@ public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements
 
     @Override
     public DyeColor getColor() {
-        return DyeColor.getByWoolData((byte) getSnapshot().getColor().getId());
+        return DyeColor.getByWoolData((byte) getSnapshot().getColor().getColorIndex());
     }
 
     @Override
     public void setColor(DyeColor color) {
-        getSnapshot().setColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
+        getSnapshot().setColor(EnumColor.fromColorIndex(color.getWoolData()));
     }
 
     @Override
-    public void applyTo(SignBlockEntity sign) {
+    public void applyTo(TileEntitySign sign) {
         super.applyTo(sign);
 
         if (lines != null) {
@@ -86,26 +87,26 @@ public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements
                 if (line.equals(originalLines[i])) {
                     continue; // The line contents are still the same, skip.
                 }
-                sign.setMessage(i, CraftChatMessage.fromString(line)[0]);
+                sign.a(i, CraftChatMessage.fromString(line)[0]);
             }
         }
     }
 
-    public static Component[] sanitizeLines(String[] lines) {
-        Component[] components = new Component[4];
+    public static IChatBaseComponent[] sanitizeLines(String[] lines) {
+        IChatBaseComponent[] components = new IChatBaseComponent[4];
 
         for (int i = 0; i < 4; i++) {
             if (i < lines.length && lines[i] != null) {
                 components[i] = CraftChatMessage.fromString(lines[i])[0];
             } else {
-                components[i] = new TextComponent("");
+                components[i] = new ChatComponentText("");
             }
         }
 
         return components;
     }
 
-    public static String[] revertComponents(Component[] components) {
+    public static String[] revertComponents(IChatBaseComponent[] components) {
         String[] lines = new String[components.length];
         for (int i = 0; i < lines.length; i++) {
             lines[i] = revertComponent(components[i]);
@@ -113,7 +114,7 @@ public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements
         return lines;
     }
 
-    private static String revertComponent(Component component) {
+    private static String revertComponent(IChatBaseComponent component) {
         return CraftChatMessage.fromComponent(component);
     }
 }

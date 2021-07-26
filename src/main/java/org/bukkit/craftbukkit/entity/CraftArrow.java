@@ -1,25 +1,27 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.world.entity.projectile.EntityArrow;
 import org.apache.commons.lang.Validate;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class CraftArrow extends AbstractProjectile implements AbstractArrow {
 
-    public CraftArrow(CraftServer server, net.minecraft.world.entity.projectile.AbstractArrow entity) {
+    public CraftArrow(CraftServer server, EntityArrow entity) {
         super(server, entity);
     }
 
     @Override
     public void setKnockbackStrength(int knockbackStrength) {
         Validate.isTrue(knockbackStrength >= 0, "Knockback cannot be negative");
-        getHandle().setKnockback(knockbackStrength);
+        getHandle().setKnockbackStrength(knockbackStrength);
     }
 
     @Override
@@ -29,13 +31,13 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
 
     @Override
     public double getDamage() {
-        return getHandle().getBaseDamage();
+        return getHandle().getDamage();
     }
 
     @Override
     public void setDamage(double damage) {
         Preconditions.checkArgument(damage >= 0, "Damage must be positive");
-        getHandle().setBaseDamage(damage);
+        getHandle().setDamage(damage);
     }
 
     @Override
@@ -52,12 +54,12 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
 
     @Override
     public boolean isCritical() {
-        return getHandle().isCritArrow();
+        return getHandle().isCritical();
     }
 
     @Override
     public void setCritical(boolean critical) {
-        getHandle().setCritArrow(critical);
+        getHandle().setCritical(critical);
     }
 
     @Override
@@ -68,9 +70,9 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     @Override
     public void setShooter(ProjectileSource shooter) {
         if (shooter instanceof Entity) {
-            getHandle().setOwner(((CraftEntity) shooter).getHandle());
+            getHandle().setShooter(((CraftEntity) shooter).getHandle());
         } else {
-            getHandle().setOwner(null);
+            getHandle().setShooter(null);
         }
         getHandle().projectileSource = shooter;
     }
@@ -86,7 +88,7 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
             return null;
         }
 
-        BlockPos pos = getHandle().blockPosition();
+        BlockPosition pos = getHandle().getChunkCoordinates();
         return getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -98,20 +100,20 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     @Override
     public void setPickupStatus(PickupStatus status) {
         Preconditions.checkNotNull(status, "status");
-        getHandle().pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.byOrdinal(status.ordinal());
+        getHandle().pickup = EntityArrow.PickupStatus.a(status.ordinal());
     }
 
     @Override
     public void setTicksLived(int value) {
         super.setTicksLived(value);
 
-        // Second field for net.minecraft.world.entity.projectile.AbstractArrow
+        // Second field for EntityArrow
         getHandle().life = value;
     }
 
     @Override
     public boolean isShotFromCrossbow() {
-        return getHandle().shotFromCrossbow();
+        return getHandle().isShotFromCrossbow();
     }
 
     @Override
@@ -120,8 +122,8 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     }
 
     @Override
-    public net.minecraft.world.entity.projectile.AbstractArrow getHandle() {
-        return (net.minecraft.world.entity.projectile.AbstractArrow) entity;
+    public EntityArrow getHandle() {
+        return (EntityArrow) entity;
     }
 
     @Override

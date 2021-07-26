@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * on the next tick.  Also be aware that this is not an exhaustive list, and
  * other methods could potentially create issues as well.
  * <p>
- * Assuming the EntityHuman associated with this event is an instance of a
+ * Assuming the PlayerEntity associated with this event is an instance of a
  * Player, manipulating the MaxStackSize or contents of an Inventory will
  * require an Invocation of {@link Player#updateInventory()}.
  * <p>

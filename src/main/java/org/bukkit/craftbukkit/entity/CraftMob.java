@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import net.minecraft.world.entity.EntityInsentient;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftServer;
@@ -9,13 +10,13 @@ import org.bukkit.entity.Mob;
 import org.bukkit.loot.LootTable;
 
 public abstract class CraftMob extends CraftLivingEntity implements Mob {
-    public CraftMob(CraftServer server, net.minecraft.world.entity.Mob entity) {
+    public CraftMob(CraftServer server, EntityInsentient entity) {
         super(server, entity);
     }
 
     @Override
     public void setTarget(LivingEntity target) {
-        net.minecraft.world.entity.Mob entity = getHandle();
+        EntityInsentient entity = getHandle();
         if (target == null) {
             entity.setGoalTarget(null, null, false);
         } else if (target instanceof CraftLivingEntity) {
@@ -25,9 +26,9 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
 
     @Override
     public CraftLivingEntity getTarget() {
-        if (getHandle().getTarget() == null) return null;
+        if (getHandle().getGoalTarget() == null) return null;
 
-        return (CraftLivingEntity) getHandle().getTarget().getBukkitEntity();
+        return (CraftLivingEntity) getHandle().getGoalTarget().getBukkitEntity();
     }
 
     @Override
@@ -41,8 +42,8 @@ public abstract class CraftMob extends CraftLivingEntity implements Mob {
     }
 
     @Override
-    public net.minecraft.world.entity.Mob getHandle() {
-        return (net.minecraft.world.entity.Mob) entity;
+    public EntityInsentient getHandle() {
+        return (EntityInsentient) entity;
     }
 
     @Override
