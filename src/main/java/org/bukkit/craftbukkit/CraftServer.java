@@ -48,20 +48,25 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import jline.console.ConsoleReader;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.commands.CommandDispatcher;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.players.StoredUserEntry;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
-import net.minecraft.commands.arguments.ArgumentEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryMaterials;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.RegistryReadOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerCommand;
 import net.minecraft.server.bossevents.CustomBossEvent;
-import net.minecraft.server.commands.CommandReload;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerProperties;
@@ -69,41 +74,15 @@ import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.players.JsonListEntry;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.tags.Tags;
-import net.minecraft.tags.TagsBlock;
-import net.minecraft.tags.TagsFluid;
-import net.minecraft.tags.TagsItem;
 import net.minecraft.util.datafix.DataFixers;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.village.VillageSiege;
-import net.minecraft.world.entity.npc.MobSpawnerCat;
-import net.minecraft.world.entity.npc.MobSpawnerTrader;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemWorldMap;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.IRecipe;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.EnumGamemode;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.MobSpawner;
-import net.minecraft.world.level.WorldSettings;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.dimension.DimensionManager;
-import net.minecraft.world.level.dimension.WorldDimension;
-import net.minecraft.world.level.levelgen.GeneratorSettings;
-import net.minecraft.world.level.levelgen.MobSpawnerPatrol;
-import net.minecraft.world.level.levelgen.MobSpawnerPhantom;
-import net.minecraft.world.level.material.net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.saveddata.maps.MapIcon;
-import net.minecraft.world.level.saveddata.maps.WorldMap;
-import net.minecraft.world.level.storage.Convertable;
-import net.minecraft.world.level.storage.WorldDataServer;
-import net.minecraft.world.level.storage.WorldNBTStorage;
-import net.minecraft.world.level.storage.loot.LootTableRegistry;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
@@ -122,7 +101,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.bossBossBarColor;
+import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -783,7 +762,7 @@ public final class CraftServer implements Server {
             logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
         }
 
-        for (ServerLevel world : console.getWorlds()) {
+        for (ServerLevel world : console.getAllLevels()) {
             world.serverLevelData.setDifficulty(config.difficulty);
             world.setSpawnFlags(config.spawnMonsters, config.spawnAnimals);
             if (this.getTicksPerAnimalSpawns() < 0) {
@@ -1427,10 +1406,10 @@ public final class CraftServer implements Server {
     public CraftMapView createMap(World world) {
         Validate.notNull(world, "World cannot be null");
 
-        net.minecraft.world.level.LevelminecraftWorld = ((CraftWorld) world).getHandle();
+        net.minecraft.world.level.Level minecraftWorld = ((CraftWorld) world).getHandle();
         // creates a new map at world spawn with the scale of 3, with out tracking position and unlimited tracking
-        int newId = ItemWorldMap.a(minecraftWorld, minecraftWorld.getWorldData().a(), minecraftWorld.getWorldData().c(), 3, false, false, minecraftWorld.getDimensionKey());
-        return minecraftWorld.a(ItemWorldMap.a(newId)).mapView;
+        int newId = MapItem.createNewSavedData(minecraftWorld, minecraftWorld.getLevelData().a(), minecraftWorld.getLevelData().c(), 3, false, false, minecraftWorld.dimension());
+        return minecraftWorld.a(MapItem.a(newId)).mapView;
     }
 
     @Override
@@ -1449,17 +1428,17 @@ public final class CraftServer implements Server {
         BlockPos structurePosition = new BlockPos(structureLocation.getBlockX(), structureLocation.getBlockY(), structureLocation.getBlockZ());
 
         // Create map with trackPlayer = true, unlimitedTracking = true
-        net.minecraft.world.item.ItemStack stack = ItemWorldMap.createFilledMapView(worldServer, structurePosition.getX(), structurePosition.getZ(), MapView.Scale.NORMAL.getValue(), true, true);
-        ItemWorldMap.applySepiaFilter(worldServer, stack);
+        net.minecraft.world.item.ItemStack stack = MapItem.create(worldServer, structurePosition.getX(), structurePosition.getZ(), MapView.Scale.NORMAL.getValue(), true, true);
+        MapItem.lockMap(worldServer, stack);
         // "+" map ID taken from EntityVillager
-        ItemWorldMap.getSavedMap(stack, worldServer).decorateMap(stack, structurePosition, "+", MapIcon.Type.a(structureType.getMapIcon().getValue()));
+        MapItem.getSavedData(stack, worldServer).addTargetDecoration(stack, structurePosition, "+", MapDecoration.Type.byIcon(structureType.getMapIcon().getValue()));
 
         return CraftItemStack.asBukkitCopy(stack);
     }
 
     @Override
     public void shutdown() {
-        console.safeShutdown(false);
+        console.halt(false);
     }
 
     @Override
@@ -1496,7 +1475,7 @@ public final class CraftServer implements Server {
         OfflinePlayer result = getPlayerExact(name);
         if (result == null) {
             // This is potentially blocking :(
-            GameProfile profile = console.getUserCache().getProfile(name);
+            GameProfile profile = console.getProfileCache().get(name);
             if (profile == null) {
                 // Make an OfflinePlayer using an offline mode UUID since the name has no profile
                 result = getOfflinePlayer(new GameProfile(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name));
@@ -1538,7 +1517,7 @@ public final class CraftServer implements Server {
     @Override
     @SuppressWarnings("unchecked")
     public Set<String> getIPBans() {
-        return new HashSet<String>(Arrays.asList(playerList.getIPBans().getEntries()));
+        return new HashSet<String>(Arrays.asList(playerList.getIpBans().getUserList()));
     }
 
     @Override
@@ -1559,8 +1538,8 @@ public final class CraftServer implements Server {
     public Set<OfflinePlayer> getBannedPlayers() {
         Set<OfflinePlayer> result = new HashSet<OfflinePlayer>();
 
-        for (JsonListEntry entry : playerList.getProfileBans().getValues()) {
-            result.add(getOfflinePlayer((GameProfile) entry.getKey()));
+        for (StoredUserEntry entry : playerList.getBans().getEntries()) {
+            result.add(getOfflinePlayer((GameProfile) entry.getUser()));
         }
 
         return result;
@@ -1572,35 +1551,35 @@ public final class CraftServer implements Server {
 
         switch (type) {
         case IP:
-            return new CraftIpBanList(playerList.getIPBans());
+            return new CraftIpBanList(playerList.getIpBans());
         case NAME:
         default:
-            return new CraftProfileBanList(playerList.getProfileBans());
+            return new CraftProfileBanList(playerList.getBans());
         }
     }
 
     @Override
     public void setWhitelist(boolean value) {
-        playerList.setHasWhitelist(value);
-        console.setHasWhitelist(value);
+        playerList.setUsingWhiteList(value);
+        console.storeUsingWhiteList(value);
     }
 
     @Override
     public boolean isWhitelistEnforced() {
-        return console.aN();
+        return console.isEnforceWhitelist();
     }
 
     @Override
     public void setWhitelistEnforced(boolean value) {
-        console.h(value);
+        console.setEnforceWhitelist(value);
     }
 
     @Override
     public Set<OfflinePlayer> getWhitelistedPlayers() {
         Set<OfflinePlayer> result = new LinkedHashSet<OfflinePlayer>();
 
-        for (JsonListEntry entry : playerList.getWhitelist().getValues()) {
-            result.add(getOfflinePlayer((GameProfile) entry.getKey()));
+        for (StoredUserEntry entry : playerList.getWhiteList().getEntries()) {
+            result.add(getOfflinePlayer((GameProfile) entry.getUser()));
         }
 
         return result;
@@ -1610,8 +1589,8 @@ public final class CraftServer implements Server {
     public Set<OfflinePlayer> getOperators() {
         Set<OfflinePlayer> result = new HashSet<OfflinePlayer>();
 
-        for (JsonListEntry entry : playerList.getOPs().getValues()) {
-            result.add(getOfflinePlayer((GameProfile) entry.getKey()));
+        for (StoredUserEntry entry : playerList.getOps().getEntries()) {
+            result.add(getOfflinePlayer((GameProfile) entry.getUser()));
         }
 
         return result;
@@ -1619,12 +1598,12 @@ public final class CraftServer implements Server {
 
     @Override
     public void reloadWhitelist() {
-        playerList.reloadWhitelist();
+        playerList.reloadWhiteList();
     }
 
     @Override
     public GameMode getDefaultGameMode() {
-        return GameMode.getByValue(console.getServerLevel(net.minecraft.world.level.World.OVERWORLD).serverLevelData.getGameType().getId());
+        return GameMode.getByValue(console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getServerWorldInfo().getGameType().getId());
     }
 
     @Override
@@ -1632,7 +1611,7 @@ public final class CraftServer implements Server {
         Validate.notNull(mode, "Mode cannot be null");
 
         for (World world : getWorlds()) {
-            ((CraftWorld) world).getHandle().serverLevelData.setGameType(EnumGamemode.getById(mode.getValue()));
+            ((CraftWorld) world).getHandle().getServerWorldInfo().setGameType(GameType.byId(mode.getValue()));
         }
     }
 
@@ -1655,13 +1634,13 @@ public final class CraftServer implements Server {
 
     @Override
     public File getWorldContainer() {
-        return this.getServer().storageSource.a(net.minecraft.world.level.World.OVERWORLD).getParentFile();
+        return this.getServer().storageSource.getDimensionPath(net.minecraft.world.level.Level.OVERWORLD).getParentFile();
     }
 
     @Override
     public OfflinePlayer[] getOfflinePlayers() {
-        WorldNBTStorage storage = console.playerDataStorage;
-        String[] files = storage.getPlayerDir().list(new DatFileFilter());
+        PlayerDataStorage storage = console.playerDataStorage;
+        String[] files = storage.getPlayerDataFolder().list(new DatFileFilter());
         Set<OfflinePlayer> players = new HashSet<OfflinePlayer>();
 
         for (String file : files) {
@@ -1767,7 +1746,7 @@ public final class CraftServer implements Server {
 
     @Override
     public boolean isPrimaryThread() {
-        return Thread.currentThread().equals(console.serverThread) || console.hasStopped(); // All bets are off if we have shut down (e.g. due to watchdog)
+        return Thread.currentThread().equals(console.serverThread)/* || console.hasStopped()*/; // All bets are off if we have shut down (e.g. due to watchdog)
     }
 
     @Override
@@ -1897,12 +1876,12 @@ public final class CraftServer implements Server {
 
     @Override
     public void setIdleTimeout(int threshold) {
-        console.setIdleTimeout(threshold);
+        console.setPlayerIdleTimeout(threshold);
     }
 
     @Override
     public int getIdleTimeout() {
-        return console.getIdleTimeout();
+        return console.getPlayerIdleTimeout();
     }
 
     @Override
@@ -1920,7 +1899,7 @@ public final class CraftServer implements Server {
     public KeyedBossBar createBossBar(NamespacedKey key, String title, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
         Preconditions.checkArgument(key != null, "key");
 
-        CustomBossEvent bossBattleCustom = getServer().getBossBattleCustomData().register(CraftNamespacedKey.toMinecraft(key), CraftChatMessage.fromString(title, true)[0]);
+        CustomBossEvent bossBattleCustom = getServer().getCustomBossEvents().create(CraftNamespacedKey.toMinecraft(key), CraftChatMessage.fromString(title, true)[0]);
         CraftKeyedBossbar craftKeyedBossbar = new CraftKeyedBossbar(bossBattleCustom);
         craftKeyedBossbar.setColor(barColor);
         craftKeyedBossbar.setStyle(barStyle);
@@ -1933,7 +1912,7 @@ public final class CraftServer implements Server {
 
     @Override
     public Iterator<KeyedBossBar> getBossBars() {
-        return Iterators.unmodifiableIterator(Iterators.transform(getServer().getBossBattleCustomData().getBattles().iterator(), new Function<CustomBossEvent, org.bukkit.boss.KeyedBossBar>() {
+        return Iterators.unmodifiableIterator(Iterators.transform(getServer().getCustomBossEvents().getEvents().iterator(), new Function<CustomBossEvent, org.bukkit.boss.KeyedBossBar>() {
             @Override
             public org.bukkit.boss.KeyedBossBar apply(CustomBossEvent bossBattleCustom) {
                 return bossBattleCustom.getBukkitEntity();
@@ -1944,7 +1923,7 @@ public final class CraftServer implements Server {
     @Override
     public KeyedBossBar getBossBar(NamespacedKey key) {
         Preconditions.checkArgument(key != null, "key");
-        net.minecraft.server.bossevents.CustomBossEvent bossBattleCustom = getServer().getBossBattleCustomData().a(CraftNamespacedKey.toMinecraft(key));
+        net.minecraft.server.bossevents.CustomBossEvent bossBattleCustom = getServer().getCustomBossEvents().get(CraftNamespacedKey.toMinecraft(key));
 
         return (bossBattleCustom == null) ? null : bossBattleCustom.getBukkitEntity();
     }
@@ -1952,8 +1931,8 @@ public final class CraftServer implements Server {
     @Override
     public boolean removeBossBar(NamespacedKey key) {
         Preconditions.checkArgument(key != null, "key");
-        net.minecraft.server.bossevents.CustomBossEventData bossBattleCustomData = getServer().getBossBattleCustomData();
-        net.minecraft.server.bossevents.CustomBossEvent bossBattleCustom = bossBattleCustomData.a(CraftNamespacedKey.toMinecraft(key));
+        net.minecraft.server.bossevents.CustomBossEvents bossBattleCustomData = getServer().getCustomBossEvents();
+        net.minecraft.server.bossevents.CustomBossEvent bossBattleCustom = bossBattleCustomData.get(CraftNamespacedKey.toMinecraft(key));
 
         if (bossBattleCustom != null) {
             bossBattleCustomData.remove(bossBattleCustom);
@@ -1967,7 +1946,7 @@ public final class CraftServer implements Server {
     public Entity getEntity(UUID uuid) {
         Validate.notNull(uuid, "UUID cannot be null");
 
-        for (ServerLevel world : getServer().getWorlds()) {
+        for (ServerLevel world : getServer().getAllLevels()) {
             net.minecraft.world.entity.Entity entity = world.getEntity(uuid);
             if (entity != null) {
                 return entity.getBukkitEntity();
@@ -1981,13 +1960,13 @@ public final class CraftServer implements Server {
     public org.bukkit.advancement.Advancement getAdvancement(NamespacedKey key) {
         Preconditions.checkArgument(key != null, "key");
 
-        Advancement advancement = console.getAdvancementData().a(CraftNamespacedKey.toMinecraft(key));
+        Advancement advancement = console.getAdvancements().getAdvancement(CraftNamespacedKey.toMinecraft(key));
         return (advancement == null) ? null : advancement.bukkit;
     }
 
     @Override
     public Iterator<org.bukkit.advancement.Advancement> advancementIterator() {
-        return Iterators.unmodifiableIterator(Iterators.transform(console.getAdvancementData().getAdvancements().iterator(), new Function<Advancement, org.bukkit.advancement.Advancement>() {
+        return Iterators.unmodifiableIterator(Iterators.transform(console.getAdvancements().getAllAdvancements().iterator(), new Function<Advancement, org.bukkit.advancement.Advancement>() {
             @Override
             public org.bukkit.advancement.Advancement apply(Advancement advancement) {
                 return advancement.bukkit;
@@ -2036,15 +2015,15 @@ public final class CraftServer implements Server {
             case org.bukkit.Tag.REGISTRY_BLOCKS:
                 Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Block namespace must have material type");
 
-                return (org.bukkit.Tag<T>) new CraftBlockTag(TagsBlock.a(), key);
+                return (org.bukkit.Tag<T>) new CraftBlockTag(BlockTags.getAllTags(), key);
             case org.bukkit.Tag.REGISTRY_ITEMS:
                 Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Item namespace must have material type");
 
-                return (org.bukkit.Tag<T>) new CraftItemTag(TagsItem.a(), key);
+                return (org.bukkit.Tag<T>) new CraftItemTag(ItemTags.getAllTags(), key);
             case org.bukkit.Tag.REGISTRY_FLUIDS:
                 Preconditions.checkArgument(clazz == org.bukkit.Fluid.class, "Fluid namespace must have fluid type");
 
-                return (org.bukkit.Tag<T>) new CraftFluidTag(TagsFluid.a(), key);
+                return (org.bukkit.Tag<T>) new CraftFluidTag(FluidTags.getAllTags(), key);
             default:
                 throw new IllegalArgumentException();
         }
@@ -2057,18 +2036,18 @@ public final class CraftServer implements Server {
             case org.bukkit.Tag.REGISTRY_BLOCKS:
                 Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Block namespace must have material type");
 
-                Tags<Block> blockTags = TagsBlock.a();
-                return blockTags.a().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftBlockTag(blockTags, key)).collect(ImmutableList.toImmutableList());
+                TagCollection<Block> blockTags = BlockTags.getAllTags();
+                return blockTags.getAllTags().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftBlockTag(blockTags, key)).collect(ImmutableList.toImmutableList());
             case org.bukkit.Tag.REGISTRY_ITEMS:
                 Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Item namespace must have material type");
 
-                Tags<Item> itemTags = TagsItem.a();
-                return itemTags.a().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftItemTag(itemTags, key)).collect(ImmutableList.toImmutableList());
+                TagCollection<Item> itemTags = ItemTags.getAllTags();
+                return itemTags.getAllTags().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftItemTag(itemTags, key)).collect(ImmutableList.toImmutableList());
             case org.bukkit.Tag.REGISTRY_FLUIDS:
                 Preconditions.checkArgument(clazz == org.bukkit.Material.class, "Fluid namespace must have fluid type");
 
-                Tags<net.minecraft.world.level.material.Fluid> fluidTags = TagsFluid.a();
-                return fluidTags.a().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftFluidTag(fluidTags, key)).collect(ImmutableList.toImmutableList());
+                TagCollection<net.minecraft.world.level.material.Fluid> fluidTags = FluidTags.getAllTags();
+                return fluidTags.getAllTags().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftFluidTag(fluidTags, key)).collect(ImmutableList.toImmutableList());
             default:
                 throw new IllegalArgumentException();
         }
@@ -2078,8 +2057,8 @@ public final class CraftServer implements Server {
     public LootTable getLootTable(NamespacedKey key) {
         Validate.notNull(key, "NamespacedKey cannot be null");
 
-        LootTableRegistry registry = getServer().getLootTableRegistry();
-        return new CraftLootTable(key, registry.getLootTable(CraftNamespacedKey.toMinecraft(key)));
+        net.minecraft.world.level.storage.loot.LootTables registry = getServer().getLootTables();
+        return new CraftLootTable(key, registry.get(CraftNamespacedKey.toMinecraft(key)));
     }
 
     @Override
@@ -2087,12 +2066,12 @@ public final class CraftServer implements Server {
         Preconditions.checkArgument(selector != null, "Selector cannot be null");
         Preconditions.checkArgument(sender != null, "Sender cannot be null");
 
-        ArgumentEntity arg = ArgumentEntity.multipleEntities();
+        EntityArgument arg = EntityArgument.entities();
         List<? extends net.minecraft.world.entity.Entity> nms;
 
         try {
             StringReader reader = new StringReader(selector);
-            nms = arg.parse(reader, true).getEntities(VanillaCommandWrapper.getListener(sender));
+            nms = arg.parse(reader, true).findEntities(VanillaCommandWrapper.getListener(sender));
             Preconditions.checkArgument(!reader.canRead(), "Spurious trailing data in selector: " + selector);
         } catch (CommandSyntaxException ex) {
             throw new IllegalArgumentException("Could not parse selector: " + selector, ex);

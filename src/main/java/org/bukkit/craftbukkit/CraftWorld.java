@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.io.File;
 import java.io.IOException;
@@ -24,69 +23,22 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.worldgen.BiomeDecoratorGroups;
-import net.minecraft.network.protocol.game.PacketPlayOutCustomSoundEffect;
-import net.minecraft.network.protocol.game.PacketPlayOutUpdateTime;
-import net.minecraft.network.protocol.game.PacketPlayOutWorldEvent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ChunkMapDistance;
-import net.minecraft.server.level.PlayerChunk;
 import net.minecraft.server.level.Ticket;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundCategory;
-import net.minecraft.util.ArraySetSorted;
 import net.minecraft.util.Unit;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.EntityLightning;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EnumMobSpawn;
-import net.minecraft.world.entity.GroupDataEntity;
-import net.minecraft.world.entity.decoration.EntityArmorStand;
-import net.minecraft.world.entity.decoration.net.minecraft.world.entity.decoration.HangingEntity;
-import net.minecraft.world.entity.decoration.EntityItemFrame;
-import net.minecraft.world.entity.decoration.net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
-import net.minecraft.world.entity.decoration.EntityPainting;
-import net.minecraft.world.entity.item.EntityFallingBlock;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.item.net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.monster.EntityZombie;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.EntityArrow;
-import net.minecraft.world.entity.projectile.net.minecraft.world.entity.projectile.ThrownEgg;
-import net.minecraft.world.entity.projectile.EntityEnderSignal;
-import net.minecraft.world.entity.projectile.net.minecraft.world.entity.projectile.EvokerFangs;
-import net.minecraft.world.entity.projectile.EntityFireball;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import net.minecraft.world.entity.projectile.ThrownPotion;
-import net.minecraft.world.entity.projectile.net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.entity.projectile.EntityTippedArrow;
-import net.minecraft.world.entity.raid.PersistentRaid;
-import net.minecraft.world.entity.vehicle.EntityBoat;
-import net.minecraft.world.entity.vehicle.EntityMinecartChest;
 import net.minecraft.world.entity.vehicle.MinecartCommandBlock;
-import net.minecraft.world.entity.vehicle.EntityMinecartFurnace;
-import net.minecraft.world.entity.vehicle.EntityMinecartHopper;
-import net.minecraft.world.entity.vehicle.EntityMinecartMobSpawner;
-import net.minecraft.world.entity.vehicle.EntityMinecartRideable;
-import net.minecraft.world.entity.vehicle.EntityMinecartTNT;
-import net.minecraft.world.level.ChunkCoordIntPair;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.RayTrace;
-import net.minecraft.world.level.biome.net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.ChorusFlowerBlock;
-import net.minecraft.world.level.block.BlockDiodeAbstract;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ProtoChunkExtension;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.StructureGenerator;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -2357,7 +2309,7 @@ public class CraftWorld implements World {
     }
 
     @Override
-    public DragonBattle getEndDragonFight() {
-        return (getHandle().getDragonBattle() == null) ? null : new CraftDragonBattle(getHandle().getDragonBattle());
+    public DragonBattle getEnderDragonBattle() {
+        return (getHandle().dragonFight() == null) ? null : new CraftDragonBattle(getHandle().dragonFight());
     }
 }
