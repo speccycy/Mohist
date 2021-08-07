@@ -9,7 +9,7 @@ public final class CraftFenceGate extends org.bukkit.craftbukkit.block.data.Craf
         super();
     }
 
-    public CraftFenceGate(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftFenceGate(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftFenceGate extends org.bukkit.craftbukkit.block.data.Craf
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockFenceGate.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockFenceGate.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

@@ -57,7 +57,7 @@ import net.minecraft.core.IRegistry;
 import net.minecraft.core.RegistryMaterials;
 import net.minecraft.nbt.DynamicOpsNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.RegistryReadOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -77,7 +77,7 @@ import net.minecraft.tags.Tags;
 import net.minecraft.tags.TagsBlock;
 import net.minecraft.tags.TagsFluid;
 import net.minecraft.tags.TagsItem;
-import net.minecraft.util.datafix.DataConverterRegistry;
+import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.village.VillageSiege;
@@ -1016,7 +1016,7 @@ public final class CraftServer implements Server {
         worlddata.a(console.getServerModName(), console.getModded().isPresent());
 
         if (console.options.has("forceUpgrade")) {
-            net.minecraft.server.Main.convertWorld(worldSession, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> {
+            net.minecraft.server.Main.convertWorld(worldSession, DataFixesManager.a(), console.options.has("eraseCache"), () -> {
                 return true;
             }, worlddata.getGeneratorSettings().d().d().stream().map((entry) -> {
                 return ResourceKey.a(IRegistry.DIMENSION_TYPE_REGISTRY, ((ResourceKey) entry.getKey()).a());
@@ -1045,7 +1045,7 @@ public final class CraftServer implements Server {
         } else if (name.equals(levelName + "_the_end")) {
             worldKey = net.minecraft.world.level.World.END;
         } else {
-            worldKey = ResourceKey.a(IRegistry.DIMENSION_REGISTRY, new MinecraftKey(name.toLowerCase(java.util.Locale.ENGLISH)));
+            worldKey = ResourceKey.a(IRegistry.DIMENSION_REGISTRY, new ResourceLocation(name.toLowerCase(java.util.Locale.ENGLISH)));
         }
 
         WorldServer internal = (WorldServer) new WorldServer(console, console.executor, worldSession, worlddata, worldKey, dimensionmanager, getServer().progressListenerFactory.create(11),
@@ -1316,8 +1316,8 @@ public final class CraftServer implements Server {
     public boolean removeRecipe(NamespacedKey recipeKey) {
         Preconditions.checkArgument(recipeKey != null, "recipeKey == null");
 
-        MinecraftKey mcKey = CraftNamespacedKey.toMinecraft(recipeKey);
-        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipes : getServer().getCraftingManager().recipes.values()) {
+        ResourceLocation mcKey = CraftNamespacedKey.toMinecraft(recipeKey);
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, IRecipe<?>> recipes : getServer().getCraftingManager().recipes.values()) {
             if (recipes.remove(mcKey) != null) {
                 return true;
             }
@@ -2041,7 +2041,7 @@ public final class CraftServer implements Server {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Keyed> org.bukkit.Tag<T> getTag(String registry, NamespacedKey tag, Class<T> clazz) {
-        MinecraftKey key = CraftNamespacedKey.toMinecraft(tag);
+        ResourceLocation key = CraftNamespacedKey.toMinecraft(tag);
 
         switch (registry) {
             case org.bukkit.Tag.REGISTRY_BLOCKS:

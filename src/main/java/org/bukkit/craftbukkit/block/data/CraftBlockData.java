@@ -15,10 +15,10 @@ import net.minecraft.core.IRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.INamable;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.IBlockData;
-import net.minecraft.world.level.block.state.IBlockDataHolder;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockStateHolder;
 import net.minecraft.world.level.block.state.properties.BlockStateBoolean;
-import net.minecraft.world.level.block.state.properties.BlockStateEnum;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.world.level.block.state.properties.BlockStateInteger;
 import net.minecraft.world.level.block.state.properties.IBlockState;
 import org.bukkit.Material;
@@ -52,19 +52,19 @@ public class CraftBlockData implements BlockData {
     }
 
     /**
-     * Get a given BlockStateEnum's value as its Bukkit counterpart.
+     * Get a given EnumProperty's value as its Bukkit counterpart.
      *
      * @param nms the NMS state to convert
      * @param bukkit the Bukkit class
      * @param <B> the type
      * @return the matching Bukkit type
      */
-    protected <B extends Enum<B>> B get(BlockStateEnum<?> nms, Class<B> bukkit) {
+    protected <B extends Enum<B>> B get(EnumProperty<?> nms, Class<B> bukkit) {
         return toBukkit(state.get(nms), bukkit);
     }
 
     /**
-     * Convert all values from the given BlockStateEnum to their appropriate
+     * Convert all values from the given EnumProperty to their appropriate
      * Bukkit counterpart.
      *
      * @param nms the NMS state to get values from
@@ -73,7 +73,7 @@ public class CraftBlockData implements BlockData {
      * @return an immutable Set of values in their appropriate Bukkit type
      */
     @SuppressWarnings("unchecked")
-    protected <B extends Enum<B>> Set<B> getValues(BlockStateEnum<?> nms, Class<B> bukkit) {
+    protected <B extends Enum<B>> Set<B> getValues(EnumProperty<?> nms, Class<B> bukkit) {
         ImmutableSet.Builder<B> values = ImmutableSet.builder();
 
         for (Enum<?> e : nms.getValues()) {
@@ -84,14 +84,14 @@ public class CraftBlockData implements BlockData {
     }
 
     /**
-     * Set a given {@link BlockStateEnum} with the matching enum from Bukkit.
+     * Set a given {@link EnumProperty} with the matching enum from Bukkit.
      *
-     * @param nms the NMS BlockStateEnum to set
+     * @param nms the NMS EnumProperty to set
      * @param bukkit the matching Bukkit Enum
      * @param <B> the Bukkit type
      * @param <N> the NMS type
      */
-    protected <B extends Enum<B>, N extends Enum<N> & INamable> void set(BlockStateEnum<N> nms, Enum<B> bukkit) {
+    protected <B extends Enum<B>, N extends Enum<N> & INamable> void set(EnumProperty<N> nms, Enum<B> bukkit) {
         this.parsedStates = null;
         this.state = this.state.set(nms, toNMS(bukkit, nms.getType()));
     }
@@ -140,7 +140,7 @@ public class CraftBlockData implements BlockData {
     private static final Map<Class<? extends Enum<?>>, Enum<?>[]> ENUM_VALUES = new HashMap<>();
 
     /**
-     * Convert an NMS Enum (usually a BlockStateEnum) to its appropriate Bukkit
+     * Convert an NMS Enum (usually a EnumProperty) to its appropriate Bukkit
      * enum from the given class.
      *
      * @throws IllegalStateException if the Enum could not be converted
@@ -262,7 +262,7 @@ public class CraftBlockData implements BlockData {
         throw new AssertionError("Template Method");
     }
 
-    protected static BlockStateEnum<?> getEnum(String name) {
+    protected static EnumProperty<?> getEnum(String name) {
         throw new AssertionError("Template Method");
     }
 
@@ -278,8 +278,8 @@ public class CraftBlockData implements BlockData {
         return (BlockStateBoolean) getState(block, name, optional);
     }
 
-    protected static BlockStateEnum<?> getEnum(Class<? extends Block> block, String name) {
-        return (BlockStateEnum<?>) getState(block, name, false);
+    protected static EnumProperty<?> getEnum(Class<? extends Block> block, String name) {
+        return (EnumProperty<?>) getState(block, name, false);
     }
 
     protected static BlockStateInteger getInteger(Class<? extends Block> block, String name) {

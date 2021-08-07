@@ -9,7 +9,7 @@ public final class CraftMinecartDetector extends org.bukkit.craftbukkit.block.da
         super();
     }
 
-    public CraftMinecartDetector(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftMinecartDetector(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftMinecartDetector extends org.bukkit.craftbukkit.block.da
 
     // org.bukkit.craftbukkit.block.data.CraftRail
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SHAPE = getEnum(net.minecraft.world.level.block.BlockMinecartDetector.class, "shape");
+    private static final net.minecraft.state.EnumProperty<?> SHAPE = getEnum(net.minecraft.world.level.block.BlockMinecartDetector.class, "shape");
 
     @Override
     public org.bukkit.block.data.Rail.Shape getShape() {

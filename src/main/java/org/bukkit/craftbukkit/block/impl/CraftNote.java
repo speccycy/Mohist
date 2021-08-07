@@ -9,13 +9,13 @@ public final class CraftNote extends org.bukkit.craftbukkit.block.data.CraftBloc
         super();
     }
 
-    public CraftNote(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftNote(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftNoteBlock
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> INSTRUMENT = getEnum(net.minecraft.world.level.block.BlockNote.class, "instrument");
+    private static final net.minecraft.state.EnumProperty<?> INSTRUMENT = getEnum(net.minecraft.world.level.block.BlockNote.class, "instrument");
     private static final net.minecraft.world.level.block.state.properties.BlockStateInteger NOTE = getInteger(net.minecraft.world.level.block.BlockNote.class, "note");
 
     @Override

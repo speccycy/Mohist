@@ -9,7 +9,7 @@ public final class CraftCampfire extends org.bukkit.craftbukkit.block.data.Craft
         super();
     }
 
-    public CraftCampfire(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftCampfire(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftCampfire extends org.bukkit.craftbukkit.block.data.Craft
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockCampfire.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockCampfire.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

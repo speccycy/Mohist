@@ -9,7 +9,7 @@ public final class CraftPoweredRail extends org.bukkit.craftbukkit.block.data.Cr
         super();
     }
 
-    public CraftPoweredRail(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftPoweredRail(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftPoweredRail extends org.bukkit.craftbukkit.block.data.Cr
 
     // org.bukkit.craftbukkit.block.data.CraftRail
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SHAPE = getEnum(net.minecraft.world.level.block.BlockPoweredRail.class, "shape");
+    private static final net.minecraft.state.EnumProperty<?> SHAPE = getEnum(net.minecraft.world.level.block.BlockPoweredRail.class, "shape");
 
     @Override
     public org.bukkit.block.data.Rail.Shape getShape() {

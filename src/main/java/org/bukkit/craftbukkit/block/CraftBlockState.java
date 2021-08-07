@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.world.level.GeneratorAccess;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.block.BlockState;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;

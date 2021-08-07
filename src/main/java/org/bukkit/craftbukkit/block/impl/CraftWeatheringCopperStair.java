@@ -9,13 +9,13 @@ public final class CraftWeatheringCopperStair extends org.bukkit.craftbukkit.blo
         super();
     }
 
-    public CraftWeatheringCopperStair(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftWeatheringCopperStair(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftStairs
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> SHAPE = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "shape");
+    private static final net.minecraft.state.EnumProperty<?> SHAPE = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "shape");
 
     @Override
     public org.bukkit.block.data.type.Stairs.Shape getShape() {
@@ -29,7 +29,7 @@ public final class CraftWeatheringCopperStair extends org.bukkit.craftbukkit.blo
 
     // org.bukkit.craftbukkit.block.data.CraftBisected
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> HALF = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "half");
+    private static final net.minecraft.state.EnumProperty<?> HALF = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "half");
 
     @Override
     public org.bukkit.block.data.Bisected.Half getHalf() {
@@ -43,7 +43,7 @@ public final class CraftWeatheringCopperStair extends org.bukkit.craftbukkit.blo
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

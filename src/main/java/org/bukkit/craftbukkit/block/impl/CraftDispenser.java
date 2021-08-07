@@ -9,7 +9,7 @@ public final class CraftDispenser extends org.bukkit.craftbukkit.block.data.Craf
         super();
     }
 
-    public CraftDispenser(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftDispenser(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftDispenser extends org.bukkit.craftbukkit.block.data.Craf
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockDispenser.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockDispenser.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

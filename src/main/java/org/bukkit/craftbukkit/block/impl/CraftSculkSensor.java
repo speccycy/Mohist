@@ -9,13 +9,13 @@ public final class CraftSculkSensor extends org.bukkit.craftbukkit.block.data.Cr
         super();
     }
 
-    public CraftSculkSensor(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftSculkSensor(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftSculkSensor
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> PHASE = getEnum(net.minecraft.world.level.block.SculkSensorBlock.class, "sculk_sensor_phase");
+    private static final net.minecraft.state.EnumProperty<?> PHASE = getEnum(net.minecraft.world.level.block.SculkSensorBlock.class, "sculk_sensor_phase");
 
     @Override
     public org.bukkit.block.data.type.SculkSensor.Phase getPhase() {

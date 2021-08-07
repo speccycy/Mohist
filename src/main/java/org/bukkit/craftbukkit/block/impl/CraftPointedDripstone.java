@@ -9,14 +9,14 @@ public final class CraftPointedDripstone extends org.bukkit.craftbukkit.block.da
         super();
     }
 
-    public CraftPointedDripstone(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftPointedDripstone(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftPointedDripstone
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> VERTICAL_DIRECTION = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "vertical_direction");
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> THICKNESS = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "thickness");
+    private static final net.minecraft.state.EnumProperty<?> VERTICAL_DIRECTION = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "vertical_direction");
+    private static final net.minecraft.state.EnumProperty<?> THICKNESS = getEnum(net.minecraft.world.level.block.PointedDripstoneBlock.class, "thickness");
 
     @Override
     public org.bukkit.block.BlockFace getVerticalDirection() {

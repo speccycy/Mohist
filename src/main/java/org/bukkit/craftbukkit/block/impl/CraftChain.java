@@ -9,13 +9,13 @@ public final class CraftChain extends org.bukkit.craftbukkit.block.data.CraftBlo
         super();
     }
 
-    public CraftChain(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftChain(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftOrientable
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> AXIS = getEnum(net.minecraft.world.level.block.BlockChain.class, "axis");
+    private static final net.minecraft.state.EnumProperty<?> AXIS = getEnum(net.minecraft.world.level.block.BlockChain.class, "axis");
 
     @Override
     public org.bukkit.Axis getAxis() {

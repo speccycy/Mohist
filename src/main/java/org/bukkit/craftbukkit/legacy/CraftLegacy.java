@@ -13,19 +13,19 @@ import net.minecraft.core.IRegistry;
 import net.minecraft.nbt.DynamicOpsNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.DispenserRegistry;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.datafix.DataConverterRegistry;
+import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.fixes.DataConverterFlattenData;
 import net.minecraft.util.datafix.fixes.DataConverterMaterialId;
-import net.minecraft.util.datafix.fixes.DataConverterTypes;
+import net.minecraft.util.datafix.fixes.TypeReferences;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockStateList;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.block.BlockState;
 import net.minecraft.world.level.block.state.properties.IBlockState;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
@@ -326,14 +326,14 @@ public final class CraftLegacy {
                 for (byte data = 0; data < 16; data++) {
                     MaterialData matData = new MaterialData(material, data);
                     Dynamic blockTag = DataConverterFlattenData.b(material.getId() << 4 | data);
-                    blockTag = DataConverterRegistry.a().update(DataConverterTypes.BLOCK_STATE, blockTag, 100, CraftMagicNumbers.INSTANCE.getDataVersion());
+                    blockTag = DataFixesManager.a().update(TypeReferences.BLOCK_STATE, blockTag, 100, CraftMagicNumbers.INSTANCE.getDataVersion());
                     // TODO: better skull conversion, chests
                     if (blockTag.get("Name").asString("").contains("%%FILTER_ME%%")) {
                         continue;
                     }
 
                     String name = blockTag.get("Name").asString("");
-                    Block block = IRegistry.BLOCK.get(new MinecraftKey(name));
+                    Block block = IRegistry.BLOCK.get(new ResourceLocation(name));
                     if (block == null) {
                         continue;
                     }
@@ -402,7 +402,7 @@ public final class CraftLegacy {
                 stack.setInt("id", material.getId());
                 stack.setShort("Damage", data);
 
-                Dynamic<NBTBase> converted = DataConverterRegistry.a().update(DataConverterTypes.ITEM_STACK, new Dynamic<NBTBase>(DynamicOpsNBT.INSTANCE, stack), -1, CraftMagicNumbers.INSTANCE.getDataVersion());
+                Dynamic<NBTBase> converted = DataFixesManager.a().update(TypeReferences.ITEM_STACK, new Dynamic<NBTBase>(DynamicOpsNBT.INSTANCE, stack), -1, CraftMagicNumbers.INSTANCE.getDataVersion());
 
                 String newId = converted.get("id").asString("");
                 // Recover spawn eggs with invalid data
@@ -411,7 +411,7 @@ public final class CraftLegacy {
                 }
 
                 // Preconditions.checkState(newId.contains("minecraft:"), "Unknown new material for " + matData);
-                Item newMaterial = IRegistry.ITEM.get(new MinecraftKey(newId));
+                Item newMaterial = IRegistry.ITEM.get(new ResourceLocation(newId));
 
                 if (newMaterial == Items.AIR) {
                     continue;

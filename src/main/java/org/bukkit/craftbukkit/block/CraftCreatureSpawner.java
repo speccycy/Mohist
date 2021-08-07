@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.block.entity.TileEntityMobSpawner;
 import org.bukkit.Material;
@@ -22,7 +22,7 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
 
     @Override
     public EntityType getSpawnedType() {
-        MinecraftKey key = this.getSnapshot().getSpawner().getMobName(null, BlockPosition.ZERO);
+        ResourceLocation key = this.getSnapshot().getSpawner().getMobName(null, BlockPosition.ZERO);
         return (key == null) ? EntityType.PIG : EntityType.fromName(key.getKey());
     }
 

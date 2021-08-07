@@ -8,7 +8,7 @@ import java.util.Optional;
 import net.minecraft.nbt.DynamicOpsNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.WorldServer;
@@ -32,7 +32,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
     static final ItemMetaKey LODESTONE_POS_Z = new ItemMetaKey("LodestonePosZ");
     static final ItemMetaKey LODESTONE_TRACKED = new ItemMetaKey("LodestoneTracked");
 
-    private NBTTagString lodestoneWorld;
+    private StringNBT lodestoneWorld;
     private int lodestoneX;
     private int lodestoneY;
     private int lodestoneZ;
@@ -54,7 +54,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
     CraftMetaCompass(NBTTagCompound tag) {
         super(tag);
         if (tag.hasKey(LODESTONE_DIMENSION.NBT) && tag.hasKey(LODESTONE_POS.NBT)) {
-            lodestoneWorld = (NBTTagString) tag.get(LODESTONE_DIMENSION.NBT);
+            lodestoneWorld = (StringNBT) tag.get(LODESTONE_DIMENSION.NBT);
             NBTTagCompound pos = tag.getCompound(LODESTONE_POS.NBT);
             lodestoneX = pos.getInt("X");
             lodestoneY = pos.getInt("Y");
@@ -69,7 +69,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
         super(map);
         String lodestoneWorldString = SerializableMeta.getString(map, LODESTONE_POS_WORLD.BUKKIT, true);
         if (lodestoneWorldString != null) {
-            lodestoneWorld = NBTTagString.a(lodestoneWorldString);
+            lodestoneWorld = StringNBT.a(lodestoneWorldString);
             lodestoneX = (Integer) map.get(LODESTONE_POS_X.BUKKIT);
             lodestoneY = (Integer) map.get(LODESTONE_POS_Y.BUKKIT);
             lodestoneZ = (Integer) map.get(LODESTONE_POS_Z.BUKKIT);
@@ -145,7 +145,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
         } else {
             ResourceKey<net.minecraft.world.level.World> key = ((CraftWorld) lodestone.getWorld()).getHandle().getDimensionKey();
             DataResult<NBTBase> dataresult = net.minecraft.world.level.World.RESOURCE_KEY_CODEC.encodeStart(DynamicOpsNBT.INSTANCE, key);
-            this.lodestoneWorld = (NBTTagString) dataresult.get().orThrow();
+            this.lodestoneWorld = (StringNBT) dataresult.get().orThrow();
             this.lodestoneX = lodestone.getBlockX();
             this.lodestoneY = lodestone.getBlockY();
             this.lodestoneZ = lodestone.getBlockZ();

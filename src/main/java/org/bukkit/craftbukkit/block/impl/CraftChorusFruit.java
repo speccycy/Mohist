@@ -9,7 +9,7 @@ public final class CraftChorusFruit extends org.bukkit.craftbukkit.block.data.Cr
         super();
     }
 
-    public CraftChorusFruit(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftChorusFruit(net.minecraft.block.BlockState state) {
         super(state);
     }
 

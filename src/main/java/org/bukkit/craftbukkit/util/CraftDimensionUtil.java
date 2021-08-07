@@ -1,24 +1,24 @@
 package org.bukkit.craftbukkit.util;
 
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.dimension.DimensionManager;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 
 public class CraftDimensionUtil {
 
     private CraftDimensionUtil() {
     }
 
-    public static ResourceKey<World> getMainDimensionKey(World world) {
-        ResourceKey<DimensionManager> typeKey = world.getTypeKey();
-        if (typeKey == DimensionManager.OVERWORLD_LOCATION) {
+    public static RegistryKey<World> getMainDimensionKey(World world) {
+        RegistryKey<DimensionType> typeKey = world.getTypeKey();
+        if (typeKey == DimensionType.OVERWORLD_LOCATION) {
             return World.OVERWORLD;
-        } else if (typeKey == DimensionManager.NETHER_LOCATION) {
+        } else if (typeKey == DimensionType.NETHER_LOCATION) {
             return World.NETHER;
-        } else if (typeKey == DimensionManager.END_LOCATION) {
+        } else if (typeKey == DimensionType.END_LOCATION) {
             return World.END;
         }
 
-        return world.getDimensionKey();
+        return world.dimension();
     }
 }

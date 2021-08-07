@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.core.IRegistry;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.monster.EntityZombieVillager;
 import org.apache.commons.lang.Validate;
@@ -45,7 +45,7 @@ public class CraftVillagerZombie extends CraftZombie implements ZombieVillager {
     @Override
     public void setVillagerProfession(Villager.Profession profession) {
         Validate.notNull(profession);
-        getHandle().setVillagerData(getHandle().getVillagerData().withProfession(IRegistry.VILLAGER_PROFESSION.get(new MinecraftKey(profession.name().toLowerCase(Locale.ROOT)))));
+        getHandle().setVillagerData(getHandle().getVillagerData().withProfession(IRegistry.VILLAGER_PROFESSION.get(new ResourceLocation(profession.name().toLowerCase(Locale.ROOT)))));
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.core.IRegistry;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.ServerStatisticManager;
 import net.minecraft.stats.StatisticList;
 import net.minecraft.world.entity.EntityTypes;
@@ -28,8 +28,8 @@ public enum CraftStatistic {
     LEAVE_GAME(StatisticList.LEAVE_GAME),
     JUMP(StatisticList.JUMP),
     DROP_COUNT(StatisticList.DROP),
-    DROP(new MinecraftKey("dropped")),
-    PICKUP(new MinecraftKey("picked_up")),
+    DROP(new ResourceLocation("dropped")),
+    PICKUP(new ResourceLocation("picked_up")),
     PLAY_ONE_MINUTE(StatisticList.PLAY_TIME),
     TOTAL_WORLD_TIME(StatisticList.TOTAL_WORLD_TIME),
     WALK_ONE_CM(StatisticList.WALK_ONE_CM),
@@ -46,12 +46,12 @@ public enum CraftStatistic {
     SPRINT_ONE_CM(StatisticList.SPRINT_ONE_CM),
     CROUCH_ONE_CM(StatisticList.CROUCH_ONE_CM),
     AVIATE_ONE_CM(StatisticList.AVIATE_ONE_CM),
-    MINE_BLOCK(new MinecraftKey("mined")),
-    USE_ITEM(new MinecraftKey("used")),
-    BREAK_ITEM(new MinecraftKey("broken")),
-    CRAFT_ITEM(new MinecraftKey("crafted")),
-    KILL_ENTITY(new MinecraftKey("killed")),
-    ENTITY_KILLED_BY(new MinecraftKey("killed_by")),
+    MINE_BLOCK(new ResourceLocation("mined")),
+    USE_ITEM(new ResourceLocation("used")),
+    BREAK_ITEM(new ResourceLocation("broken")),
+    CRAFT_ITEM(new ResourceLocation("crafted")),
+    KILL_ENTITY(new ResourceLocation("killed")),
+    ENTITY_KILLED_BY(new ResourceLocation("killed_by")),
     TIME_SINCE_DEATH(StatisticList.TIME_SINCE_DEATH),
     TALKED_TO_VILLAGER(StatisticList.TALKED_TO_VILLAGER),
     TRADED_WITH_VILLAGER(StatisticList.TRADED_WITH_VILLAGER),
@@ -101,12 +101,12 @@ public enum CraftStatistic {
     TARGET_HIT(StatisticList.TARGET_HIT),
     INTERACT_WITH_SMITHING_TABLE(StatisticList.INTERACT_WITH_SMITHING_TABLE),
     STRIDER_ONE_CM(StatisticList.STRIDER_ONE_CM);
-    private final MinecraftKey minecraftKey;
+    private final ResourceLocation minecraftKey;
     private final org.bukkit.Statistic bukkit;
-    private static final BiMap<MinecraftKey, org.bukkit.Statistic> statistics;
+    private static final BiMap<ResourceLocation, org.bukkit.Statistic> statistics;
 
     static {
-        ImmutableBiMap.Builder<MinecraftKey, org.bukkit.Statistic> statisticBuilder = ImmutableBiMap.builder();
+        ImmutableBiMap.Builder<ResourceLocation, org.bukkit.Statistic> statisticBuilder = ImmutableBiMap.builder();
         for (CraftStatistic statistic : CraftStatistic.values()) {
             statisticBuilder.put(statistic.minecraftKey, statistic.bukkit);
         }
@@ -114,7 +114,7 @@ public enum CraftStatistic {
         statistics = statisticBuilder.build();
     }
 
-    private CraftStatistic(MinecraftKey minecraftKey) {
+    private CraftStatistic(ResourceLocation minecraftKey) {
         this.minecraftKey = minecraftKey;
 
         this.bukkit = org.bukkit.Statistic.valueOf(this.name());
@@ -123,10 +123,10 @@ public enum CraftStatistic {
 
     public static org.bukkit.Statistic getBukkitStatistic(net.minecraft.stats.Statistic<?> statistic) {
         IRegistry statRegistry = statistic.getWrapper().getRegistry();
-        MinecraftKey nmsKey = IRegistry.STAT_TYPE.getKey(statistic.getWrapper());
+        ResourceLocation nmsKey = IRegistry.STAT_TYPE.getKey(statistic.getWrapper());
 
         if (statRegistry == IRegistry.CUSTOM_STAT) {
-            nmsKey = (MinecraftKey) statistic.b();
+            nmsKey = (ResourceLocation) statistic.b();
         }
 
         return statistics.get(nmsKey);
@@ -135,7 +135,7 @@ public enum CraftStatistic {
     public static net.minecraft.stats.Statistic getNMSStatistic(org.bukkit.Statistic bukkit) {
         Preconditions.checkArgument(bukkit.getType() == Statistic.Type.UNTYPED, "This method only accepts untyped statistics");
 
-        net.minecraft.stats.Statistic<MinecraftKey> nms = StatisticList.CUSTOM.b(statistics.inverse().get(bukkit));
+        net.minecraft.stats.Statistic<ResourceLocation> nms = StatisticList.CUSTOM.b(statistics.inverse().get(bukkit));
         Preconditions.checkArgument(nms != null, "NMS Statistic %s does not exist", bukkit);
 
         return nms;
@@ -169,7 +169,7 @@ public enum CraftStatistic {
 
     public static net.minecraft.stats.Statistic getEntityStatistic(org.bukkit.Statistic stat, EntityType entity) {
         if (entity.getName() != null) {
-            EntityTypes<?> nmsEntity = IRegistry.ENTITY_TYPE.get(new MinecraftKey(entity.getName()));
+            EntityTypes<?> nmsEntity = IRegistry.ENTITY_TYPE.get(new ResourceLocation(entity.getName()));
 
             if (stat == org.bukkit.Statistic.KILL_ENTITY) {
                 return net.minecraft.stats.StatisticList.ENTITY_KILLED.b(nmsEntity);
@@ -182,7 +182,7 @@ public enum CraftStatistic {
     }
 
     public static EntityType getEntityTypeFromStatistic(net.minecraft.stats.Statistic<EntityTypes<?>> statistic) {
-        MinecraftKey name = EntityTypes.getName(statistic.b());
+        ResourceLocation name = EntityTypes.getName(statistic.b());
         return EntityType.fromName(name.getKey());
     }
 

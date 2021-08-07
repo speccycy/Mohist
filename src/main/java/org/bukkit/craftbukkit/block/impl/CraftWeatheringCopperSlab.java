@@ -9,13 +9,13 @@ public final class CraftWeatheringCopperSlab extends org.bukkit.craftbukkit.bloc
         super();
     }
 
-    public CraftWeatheringCopperSlab(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftWeatheringCopperSlab(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftSlab
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> TYPE = getEnum(net.minecraft.world.level.block.WeatheringCopperSlabBlock.class, "type");
+    private static final net.minecraft.state.EnumProperty<?> TYPE = getEnum(net.minecraft.world.level.block.WeatheringCopperSlabBlock.class, "type");
 
     @Override
     public org.bukkit.block.data.type.Slab.Type getType() {

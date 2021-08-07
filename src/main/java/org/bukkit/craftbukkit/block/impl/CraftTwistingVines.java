@@ -9,7 +9,7 @@ public final class CraftTwistingVines extends org.bukkit.craftbukkit.block.data.
         super();
     }
 
-    public CraftTwistingVines(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftTwistingVines(net.minecraft.block.BlockState state) {
         super(state);
     }
 

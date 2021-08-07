@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.core.IRegistry;
 import net.minecraft.world.level.biome.BiomeBase;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.block.BlockState;
 import net.minecraft.world.level.chunk.BiomeStorage;
 import net.minecraft.world.level.chunk.DataPaletteBlock;
 import net.minecraft.world.level.levelgen.HeightMap;

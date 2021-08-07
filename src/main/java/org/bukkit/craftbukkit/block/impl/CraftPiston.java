@@ -9,7 +9,7 @@ public final class CraftPiston extends org.bukkit.craftbukkit.block.data.CraftBl
         super();
     }
 
-    public CraftPiston(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftPiston(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftPiston extends org.bukkit.craftbukkit.block.data.CraftBl
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.piston.BlockPiston.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.piston.BlockPiston.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

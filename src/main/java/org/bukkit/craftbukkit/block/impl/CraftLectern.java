@@ -9,7 +9,7 @@ public final class CraftLectern extends org.bukkit.craftbukkit.block.data.CraftB
         super();
     }
 
-    public CraftLectern(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftLectern(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -24,7 +24,7 @@ public final class CraftLectern extends org.bukkit.craftbukkit.block.data.CraftB
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockLectern.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockLectern.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

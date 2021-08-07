@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.TileEntityLootable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ public abstract class CraftLootable<T extends TileEntityLootable> extends CraftC
         super.applyTo(lootable);
 
         if (this.getSnapshot().lootTable == null) {
-            lootable.setLootTable((MinecraftKey) null, 0L);
+            lootable.setLootTable((ResourceLocation) null, 0L);
         }
     }
 
@@ -35,7 +35,7 @@ public abstract class CraftLootable<T extends TileEntityLootable> extends CraftC
             return null;
         }
 
-        MinecraftKey key = getSnapshot().lootTable;
+        ResourceLocation key = getSnapshot().lootTable;
         return Bukkit.getLootTable(CraftNamespacedKey.fromMinecraft(key));
     }
 
@@ -55,7 +55,7 @@ public abstract class CraftLootable<T extends TileEntityLootable> extends CraftC
     }
 
     private void setLootTable(LootTable table, long seed) {
-        MinecraftKey key = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
+        ResourceLocation key = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
         getSnapshot().setLootTable(key, seed);
     }
 }

@@ -9,13 +9,13 @@ public final class CraftLightningRod extends org.bukkit.craftbukkit.block.data.C
         super();
     }
 
-    public CraftLightningRod(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftLightningRod(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.LightningRodBlock.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.LightningRodBlock.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

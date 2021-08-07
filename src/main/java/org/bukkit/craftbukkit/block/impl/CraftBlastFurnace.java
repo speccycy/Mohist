@@ -9,13 +9,13 @@ public final class CraftBlastFurnace extends org.bukkit.craftbukkit.block.data.C
         super();
     }
 
-    public CraftBlastFurnace(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftBlastFurnace(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockBlastFurnace.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockBlastFurnace.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

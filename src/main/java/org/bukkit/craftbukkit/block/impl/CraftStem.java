@@ -9,7 +9,7 @@ public final class CraftStem extends org.bukkit.craftbukkit.block.data.CraftBloc
         super();
     }
 
-    public CraftStem(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftStem(net.minecraft.block.BlockState state) {
         super(state);
     }
 

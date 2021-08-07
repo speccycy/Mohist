@@ -9,7 +9,7 @@ public final class CraftCommand extends org.bukkit.craftbukkit.block.data.CraftB
         super();
     }
 
-    public CraftCommand(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftCommand(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftCommand extends org.bukkit.craftbukkit.block.data.CraftB
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockCommand.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockCommand.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

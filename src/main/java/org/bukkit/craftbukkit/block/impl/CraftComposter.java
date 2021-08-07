@@ -9,7 +9,7 @@ public final class CraftComposter extends org.bukkit.craftbukkit.block.data.Craf
         super();
     }
 
-    public CraftComposter(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftComposter(net.minecraft.block.BlockState state) {
         super(state);
     }
 

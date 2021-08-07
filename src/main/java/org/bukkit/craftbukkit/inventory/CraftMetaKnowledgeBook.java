@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.StringNBT;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -67,7 +67,7 @@ public class CraftMetaKnowledgeBook extends CraftMetaItem implements KnowledgeBo
         if (hasRecipes()) {
             NBTTagList list = new NBTTagList();
             for (NamespacedKey recipe : this.recipes) {
-                list.add(NBTTagString.a(recipe.toString()));
+                list.add(StringNBT.a(recipe.toString()));
             }
             itemData.set(BOOK_RECIPES.NBT, list);
         }

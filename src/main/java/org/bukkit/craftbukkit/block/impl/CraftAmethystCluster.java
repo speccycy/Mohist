@@ -9,13 +9,13 @@ public final class CraftAmethystCluster extends org.bukkit.craftbukkit.block.dat
         super();
     }
 
-    public CraftAmethystCluster(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftAmethystCluster(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.AmethystClusterBlock.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.AmethystClusterBlock.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.util;
 
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.DamageSource;
 
 // Util class to create custom DamageSources.
 public final class CraftDamageSource extends DamageSource {
@@ -8,8 +8,8 @@ public final class CraftDamageSource extends DamageSource {
         CraftDamageSource newSource = new CraftDamageSource(original.msgId);
 
         // Check ignoresArmor
-        if (original.ignoresArmor()) {
-            newSource.setIgnoreArmor();
+        if (original.isBypassArmor()) {
+            newSource.bypassArmor();
         }
 
         // Check magic

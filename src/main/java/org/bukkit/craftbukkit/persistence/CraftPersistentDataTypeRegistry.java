@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.StringNBT;
 import org.bukkit.persistence.PersistentDataContainer;
 
 /**
@@ -136,7 +136,7 @@ public final class CraftPersistentDataTypeRegistry {
             String
          */
         if (Objects.equals(String.class, type)) {
-            return createAdapter(String.class, NBTTagString.class, NBTTagString::a, NBTTagString::asString);
+            return createAdapter(String.class, StringNBT.class, StringNBT::a, StringNBT::asString);
         }
 
         /*

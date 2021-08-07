@@ -92,12 +92,12 @@ public class DummyGeneratorAccess implements IWorld {
     }
 
     @Override
-    public WorldServer getMinecraftWorld() {
+    public ServerWorld getMinecraftWorld() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public IRegistryCustom t() {
+    public DynamicRegistries registryAccess() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

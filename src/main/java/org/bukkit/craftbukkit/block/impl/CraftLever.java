@@ -9,13 +9,13 @@ public final class CraftLever extends org.bukkit.craftbukkit.block.data.CraftBlo
         super();
     }
 
-    public CraftLever(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftLever(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftSwitch
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACE = getEnum(net.minecraft.world.level.block.BlockLever.class, "face");
+    private static final net.minecraft.state.EnumProperty<?> FACE = getEnum(net.minecraft.world.level.block.BlockLever.class, "face");
 
     @Override
     public org.bukkit.block.data.type.Switch.Face getFace() {
@@ -29,7 +29,7 @@ public final class CraftLever extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockLever.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockLever.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {
@@ -48,7 +48,7 @@ public final class CraftLever extends org.bukkit.craftbukkit.block.data.CraftBlo
 
     // org.bukkit.craftbukkit.block.data.CraftFaceAttachable
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> ATTACH_FACE = getEnum(net.minecraft.world.level.block.BlockLever.class, "face");
+    private static final net.minecraft.state.EnumProperty<?> ATTACH_FACE = getEnum(net.minecraft.world.level.block.BlockLever.class, "face");
 
     @Override
     public org.bukkit.block.data.FaceAttachable.AttachedFace getAttachedFace() {

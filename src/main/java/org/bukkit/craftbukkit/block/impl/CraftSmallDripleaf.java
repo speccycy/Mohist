@@ -9,13 +9,13 @@ public final class CraftSmallDripleaf extends org.bukkit.craftbukkit.block.data.
         super();
     }
 
-    public CraftSmallDripleaf(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftSmallDripleaf(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftBisected
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> HALF = getEnum(net.minecraft.world.level.block.SmallDripleafBlock.class, "half");
+    private static final net.minecraft.state.EnumProperty<?> HALF = getEnum(net.minecraft.world.level.block.SmallDripleafBlock.class, "half");
 
     @Override
     public org.bukkit.block.data.Bisected.Half getHalf() {
@@ -29,7 +29,7 @@ public final class CraftSmallDripleaf extends org.bukkit.craftbukkit.block.data.
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.SmallDripleafBlock.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.SmallDripleafBlock.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

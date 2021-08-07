@@ -9,13 +9,13 @@ public final class CraftBamboo extends org.bukkit.craftbukkit.block.data.CraftBl
         super();
     }
 
-    public CraftBamboo(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftBamboo(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.type.CraftBamboo
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> LEAVES = getEnum(net.minecraft.world.level.block.BlockBamboo.class, "leaves");
+    private static final net.minecraft.state.EnumProperty<?> LEAVES = getEnum(net.minecraft.world.level.block.BlockBamboo.class, "leaves");
 
     @Override
     public org.bukkit.block.data.type.Bamboo.Leaves getLeaves() {

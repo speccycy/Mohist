@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.network.chat.IChatBaseComponent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -170,7 +170,7 @@ public class CraftMetaBook extends CraftMetaItem implements BookMeta {
         if (pages != null) {
             NBTTagList list = new NBTTagList();
             for (String page : pages) {
-                list.add(NBTTagString.a(page));
+                list.add(StringNBT.a(page));
             }
             itemData.set(BOOK_PAGES.NBT, list);
         }

@@ -2,10 +2,9 @@ package org.bukkit.craftbukkit.generator;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.IBlockData;
-import net.minecraft.world.level.chunk.ChunkSection;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.ChunkSection;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
@@ -21,8 +20,8 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
     private final int minHeight;
     private final int maxHeight;
     private final ChunkSection[] sections;
-    private Set<BlockPosition> tiles;
-    private final Set<BlockPosition> lights = new HashSet<>();
+    private Set<BlockPos> tiles;
+    private final Set<BlockPos> lights = new HashSet<>();
 
     public CraftChunkData(World world) {
         this(world.getMinHeight(), world.getMaxHeight());

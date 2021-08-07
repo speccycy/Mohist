@@ -9,7 +9,7 @@ public final class CraftEnderPortalFrame extends org.bukkit.craftbukkit.block.da
         super();
     }
 
-    public CraftEnderPortalFrame(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftEnderPortalFrame(net.minecraft.block.BlockState state) {
         super(state);
     }
 
@@ -29,7 +29,7 @@ public final class CraftEnderPortalFrame extends org.bukkit.craftbukkit.block.da
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockEnderPortalFrame.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockEnderPortalFrame.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

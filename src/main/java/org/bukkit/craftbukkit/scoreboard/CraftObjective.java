@@ -1,7 +1,7 @@
 package org.bukkit.craftbukkit.scoreboard;
 
-import net.minecraft.world.scores.Scoreboard;
-import net.minecraft.world.scores.ScoreboardObjective;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -11,16 +11,16 @@ import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
 
 final class CraftObjective extends CraftScoreboardComponent implements Objective {
-    private final ScoreboardObjective objective;
+    private final ScoreObjective objective;
     private final CraftCriteria criteria;
 
-    CraftObjective(CraftScoreboard scoreboard, ScoreboardObjective objective) {
+    CraftObjective(CraftScoreboard scoreboard, ScoreObjective objective) {
         super(scoreboard);
         this.objective = objective;
         this.criteria = CraftCriteria.getFromNMS(objective);
     }
 
-    ScoreboardObjective getHandle() {
+    ScoreObjective getHandle() {
         return objective;
     }
 
@@ -65,16 +65,16 @@ final class CraftObjective extends CraftScoreboardComponent implements Objective
     public void setDisplaySlot(DisplaySlot slot) throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
         Scoreboard board = scoreboard.board;
-        ScoreboardObjective objective = this.objective;
+        ScoreObjective objective = this.objective;
 
         for (int i = 0; i < CraftScoreboardTranslations.MAX_DISPLAY_SLOT; i++) {
-            if (board.getObjectiveForSlot(i) == objective) {
-                board.setDisplaySlot(i, null);
+            if (board.getDisplayObjective(i) == objective) {
+                board.setDisplayObjective(i, null);
             }
         }
         if (slot != null) {
             int slotNumber = CraftScoreboardTranslations.fromBukkitSlot(slot);
-            board.setDisplaySlot(slotNumber, getHandle());
+            board.setDisplayObjective(slotNumber, getHandle());
         }
     }
 
@@ -82,10 +82,10 @@ final class CraftObjective extends CraftScoreboardComponent implements Objective
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
         Scoreboard board = scoreboard.board;
-        ScoreboardObjective objective = this.objective;
+        ScoreObjective objective = this.objective;
 
         for (int i = 0; i < CraftScoreboardTranslations.MAX_DISPLAY_SLOT; i++) {
-            if (board.getObjectiveForSlot(i) == objective) {
+            if (board.getDisplayObjective(i) == objective) {
                 return CraftScoreboardTranslations.toBukkitSlot(i);
             }
         }
@@ -128,7 +128,7 @@ final class CraftObjective extends CraftScoreboardComponent implements Objective
     public void unregister() throws IllegalStateException {
         CraftScoreboard scoreboard = checkState();
 
-        scoreboard.board.unregisterObjective(objective);
+        scoreboard.board.removeObjective(objective);
     }
 
     @Override

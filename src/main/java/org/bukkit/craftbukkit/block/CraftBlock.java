@@ -21,7 +21,7 @@ import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.BlockRedstoneWire;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.block.BlockState;
 import net.minecraft.world.phys.AxisAlignedBB;
 import net.minecraft.world.phys.MovingObjectPosition;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
@@ -73,7 +73,7 @@ public class CraftBlock implements Block {
         return new CraftBlock(world, position);
     }
 
-    public net.minecraft.world.level.block.state.IBlockData getNMS() {
+    public net.minecraft.block.BlockState getNMS() {
         return world.getType(position);
     }
 
@@ -620,7 +620,7 @@ public class CraftBlock implements Block {
     @Override
     public boolean breakNaturally(ItemStack item) {
         // Order matters here, need to drop before setting to air so skulls can get their data
-        net.minecraft.world.level.block.state.IBlockData iblockdata = this.getNMS();
+        net.minecraft.block.BlockState iblockdata = this.getNMS();
         net.minecraft.world.level.block.Block block = iblockdata.getBlock();
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
         boolean result = false;

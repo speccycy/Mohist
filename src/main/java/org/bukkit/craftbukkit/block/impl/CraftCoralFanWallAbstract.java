@@ -9,13 +9,13 @@ public final class CraftCoralFanWallAbstract extends org.bukkit.craftbukkit.bloc
         super();
     }
 
-    public CraftCoralFanWallAbstract(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftCoralFanWallAbstract(net.minecraft.block.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftDirectional
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateEnum<?> FACING = getEnum(net.minecraft.world.level.block.BlockCoralFanWallAbstract.class, "facing");
+    private static final net.minecraft.state.EnumProperty<?> FACING = getEnum(net.minecraft.world.level.block.BlockCoralFanWallAbstract.class, "facing");
 
     @Override
     public org.bukkit.block.BlockFace getFacing() {

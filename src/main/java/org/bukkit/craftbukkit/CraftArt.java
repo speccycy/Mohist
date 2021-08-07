@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.core.IRegistry;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.Paintings;
 import org.bukkit.Art;
 
@@ -13,7 +13,7 @@ public class CraftArt {
 
     static {
         ImmutableBiMap.Builder<Paintings, Art> artworkBuilder = ImmutableBiMap.builder();
-        for (MinecraftKey key : IRegistry.MOTIVE.keySet()) {
+        for (ResourceLocation key : IRegistry.MOTIVE.keySet()) {
             artworkBuilder.put(IRegistry.MOTIVE.get(key), Art.getByName(key.getKey()));
         }
 
