@@ -11,7 +11,7 @@
 [![](https://img.shields.io/github/license/MohistMC/Mohist?)](https://github.com/MohistMC/Mohist/blob/1.17.x/LICENSE)
 [![](https://img.shields.io/badge/Forge-1.17.1--37.0.1-brightgreen.svg?colorB=26303d&logo=Conda-Forge)](http://files.minecraftforge.net/net/minecraftforge/forge/index_1.17.1.html)
 [![](https://img.shields.io/badge/jdk-16.0.1.9-brightgreen.svg?colorB=469C00&logo=java)](https://adoptopenjdk.net/?variant=openjdk16&jvmVariant=hotspot)
-[![](https://img.shields.io/badge/Gradle-7.1.1-brightgreen.svg?colorB=469C00&logo=gradle)](https://docs.gradle.org/7.1.1/release-notes.html)
+[![](https://img.shields.io/badge/Gradle-7.2-brightgreen.svg?colorB=469C00&logo=gradle)](https://docs.gradle.org/7.2/release-notes.html)
 [![](https://img.shields.io/bstats/servers/6762?label=bStats)](https://bstats.org/plugin/server-implementation/Mohist/6762)
 [![](https://badges.crowdin.net/mohist/localized.svg)](https://crowdin.com/project/mohist)
 [![](https://img.shields.io/discord/311256119005937665.svg?color=%237289da&label=Discord&logo=discord&logoColor=%237289da)](https://discord.gg/ZgXjHGd)
