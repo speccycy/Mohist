@@ -29,7 +29,7 @@ import net.minecraft.network.PacketListener;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fmllegacy.LogicalSidedProvider;

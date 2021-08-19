@@ -22,7 +22,7 @@ package net.minecraftforge.common;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -60,7 +60,7 @@ public class ForgeInternalHandler
                 Entity newEntity = item.createEntity(event.getWorld(), entity, stack);
                 if (newEntity != null)
                 {
-                    entity.remove(false);
+                    entity.discard();
                     event.setCanceled(true);
                     BlockableEventLoop<Runnable> executor = LogicalSidedProvider.WORKQUEUE.get(event.getWorld().isClientSide ? LogicalSide.CLIENT : LogicalSide.SERVER);
                     executor.tell(new TickTask(0, () -> event.getWorld().addFreshEntity(newEntity)));
@@ -124,7 +124,7 @@ public class ForgeInternalHandler
         new ForgeCommand(event.getDispatcher());
         ConfigCommand.register(event.getDispatcher());
     }
-    
+
     private static LootModifierManager INSTANCE;
 
     @SubscribeEvent
@@ -139,6 +139,12 @@ public class ForgeInternalHandler
         if(INSTANCE == null)
             throw new IllegalStateException("Can not retrieve LootModifierManager until resources have loaded once.");
         return INSTANCE;
+    }
+
+    @SubscribeEvent
+    public void resourceReloadListeners(AddReloadListenerEvent event)
+    {
+        event.addListener(TierSortingRegistry.getReloadListener());
     }
 }
 

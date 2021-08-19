@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.DefaultedRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

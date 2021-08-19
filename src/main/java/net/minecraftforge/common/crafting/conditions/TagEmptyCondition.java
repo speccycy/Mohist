@@ -26,7 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.SerializationTags;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class TagEmptyCondition implements ICondition
 {

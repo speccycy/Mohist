@@ -41,7 +41,7 @@ import net.minecraft.tags.TagContainer;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.StaticTagHelper;
 import net.minecraft.tags.StaticTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags.IOptionalNamedTag;
 import net.minecraftforge.common.extensions.IForgeTagContainer;
 import net.minecraftforge.fmllegacy.network.FMLPlayMessages.SyncCustomTagTypes;

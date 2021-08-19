@@ -21,7 +21,7 @@ package net.minecraftforge.common.extensions;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;

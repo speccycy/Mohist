@@ -21,7 +21,7 @@ package net.minecraftforge.fmllegacy.network;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.BiConsumer;

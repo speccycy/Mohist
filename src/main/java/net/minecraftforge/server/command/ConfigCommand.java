@@ -19,7 +19,7 @@
 
 package net.minecraftforge.server.command;
 
-import com.mojang.brigadier.Commands;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -34,7 +34,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import java.io.File;
 
 public class ConfigCommand {
-    public static void register(Commands<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("config").
                         then(ShowFile.register())

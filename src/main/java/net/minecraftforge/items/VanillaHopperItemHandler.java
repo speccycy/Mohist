@@ -19,7 +19,7 @@
 
 package net.minecraftforge.items;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraftforge.items.wrapper.InvWrapper;
 

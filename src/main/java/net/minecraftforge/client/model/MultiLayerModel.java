@@ -34,11 +34,11 @@ import net.minecraft.client.renderer.RenderType;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.core.Direction;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import net.minecraftforge.client.model.data.IDynamicBakedModel;

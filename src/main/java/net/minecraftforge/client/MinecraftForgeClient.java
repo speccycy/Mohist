@@ -44,7 +44,7 @@ import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.textures.ITextureAtlasSpriteLoader;

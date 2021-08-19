@@ -19,7 +19,7 @@
 
 package net.minecraftforge.common.world;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringUtil;
 import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;

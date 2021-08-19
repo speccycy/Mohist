@@ -31,7 +31,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.core.Direction;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Transformation;
 import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.model.geometry.IModelGeometry;

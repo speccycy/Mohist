@@ -31,7 +31,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import com.mojang.math.Transformation;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;

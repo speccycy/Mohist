@@ -41,13 +41,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringUtil;
 import net.minecraft.Util;
 import net.minecraft.util.Mth;
@@ -644,14 +644,14 @@ public class ForgeIngameGui extends Gui
     public void renderJumpMeter(PoseStack mStack, int x)
     {
         bind(GUI_ICONS_LOCATION);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
 
         super.renderJumpMeter(mStack, x);
 
         RenderSystem.enableBlend();
         minecraft.getProfiler().pop();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     protected void renderHUDText(int width, int height, PoseStack mStack)

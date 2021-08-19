@@ -19,7 +19,7 @@
 
 package net.minecraftforge.event;
 
-import com.mojang.brigadier.Commands;
+import com.mojang.brigadier.CommandDispatcher;
 import net.minecraftforge.eventbus.api.Event;
 
 
@@ -34,16 +34,16 @@ import net.minecraft.commands.Commands;
  */
 public class RegisterCommandsEvent extends Event
 {
-    private final Commands<CommandSourceStack> dispatcher;
+    private final CommandDispatcher<CommandSourceStack> dispatcher;
     private final Commands.CommandSelection environment;
     
-    public RegisterCommandsEvent(Commands<CommandSourceStack> dispatcher, Commands.CommandSelection environment)
+    public RegisterCommandsEvent(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection environment)
     {
         this.dispatcher = dispatcher;
         this.environment = environment;
     }
     
-    public Commands<CommandSourceStack> getDispatcher()
+    public CommandDispatcher<CommandSourceStack> getDispatcher()
     {
         return dispatcher;
     }

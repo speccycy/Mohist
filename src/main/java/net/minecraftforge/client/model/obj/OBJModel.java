@@ -27,7 +27,7 @@ import joptsimple.internal.Strings;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.core.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import com.mojang.math.Transformation;
 import net.minecraft.world.phys.Vec2;

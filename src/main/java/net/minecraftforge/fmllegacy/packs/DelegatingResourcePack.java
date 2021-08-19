@@ -34,7 +34,7 @@ import net.minecraft.server.packs.ResourcePackFileNotFoundException;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class DelegatingResourcePack extends AbstractPackResources
 {

@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IForgeTextureAtlasSprite
 {

@@ -51,10 +51,10 @@ ext {
     COREMODS_VERSION = '5.0.1'
     EVENTBUS_VERSION = '5.0.3'
     MODLAUNCHER_VERSION = '9.0.7'
-    SECUREJARHANDLER_VERSION = '0.9.45'
-    BOOTSTRAPLAUNCHER_VERSION = '0.1.15'
+    SECUREJARHANDLER_VERSION = '0.9.46'
+    BOOTSTRAPLAUNCHER_VERSION = '0.1.17'
     ASM_VERSION = '9.1'
-    INSTALLER_VERSION = '2.1.4'
+    INSTALLER_VERSION = '2.1.5'
 
     GIT_INFO = gradleutils.gitInfo
     VERSION = gradleutils.getFilteredMCTagOffsetBranchVersion(true, '[0-9]', MC_VERSION)
@@ -415,12 +415,13 @@ def sharedFmlonlyForge = { Project prj ->
         }
 
         // SecureJarHandler bootstrap values.
-        run.property 'legacyClassPath', '{runtime_classpath}'
-        run.property 'ignoreList', prj.configurations.moduleonly.files.collect {it.name}.join(',') + ",client-extra,fmlcore,javafmllanguage,mclanguage,${prj.name}-${prj.version},${prj.rootProject.ext.MC_VERSION}-${prj.name}${prj.version.substring(prj.rootProject.ext.MC_VERSION.length())}"
+        run.property 'ignoreList', prj.configurations.moduleonly.files.collect {it.name.replaceAll(/([-_]([.\d]*\d+)|\.jar$)/, '') }.join(',') + ",client-extra,fmlcore,javafmllanguage,mclanguage,${prj.name}-"
         run.property 'mergeModules', 'jna-5.8.0.jar,jna-platform-58.0.jar,java-objc-bridge-1.0.0.jar'
         if (userdevRuns.contains(run)) {
+            run.property 'legacyClassPath.file', '{minecraft_classpath_file}'
             run.jvmArgs '-p', '{modules}'
         } else {
+            run.property 'legacyClassPath.file', '{runtime_classpath_file}'
             run.jvmArgs '-p', prj.configurations.moduleonly.files.collect { it.path }.join(File.pathSeparator)
         }
         run.jvmArgs '--add-modules', 'ALL-MODULE-PATH'
@@ -594,8 +595,7 @@ project(':fmlonly') {
                            '--fml.mcVersion', MC_VERSION,
                            '--fml.forgeGroup', project.group,
                            '--fml.mcpVersion', MCP_VERSION],
-                    jvm: ['-DlegacyClassPath=${classpath}',
-                          "-DignoreList=${fmlonly_client.properties.ignoreList}",
+                    jvm: ["-DignoreList=${fmlonly_client.properties.ignoreList},\${version_name}.jar",
                           "-DmergeModules=${fmlonly_client.properties.mergeModules}",
                           '-DlibraryDirectory=${library_directory}',
                           '-p', Util.getArtifacts(project, configurations.moduleonly, false).values().collect{"\${library_directory}/${it.downloads.artifact.path}"}.join('${classpath_separator}'),
@@ -862,12 +862,38 @@ project(':forge') {
                 }
             }
 
+            forge_test_client {
+                parent runs.forge_client
+                taskName 'forge_test_client'
+
+                environment 'MOD_CLASSES', 'dummy' // Needed to work around FG limitation, FG will replace this!
+
+                ideaModule "${rootProject.name}.${project.name}.test"
+
+                mods {
+                    tests { sources sourceSets.test }
+                }
+            }
+
             forge_server {
                 args '--launchTarget', 'forgeserverdev'
                 ideaModule "${rootProject.name}.${project.name}.main"
 
                 mods {
                     minecraft { source sourceSets.main }
+                }
+            }
+
+            forge_test_server {
+                parent runs.forge_server
+                taskName 'forge_test_server'
+
+                environment 'MOD_CLASSES', 'dummy' // Needed to work around FG limitation, FG will replace this!
+
+                ideaModule "${rootProject.name}.${project.name}.test"
+
+                mods {
+                    tests { sources sourceSets.test }
                 }
             }
 
@@ -888,6 +914,38 @@ project(':forge') {
                 }
 
                 args forgeDataArgs
+            }
+
+            forge_test_data {
+                parent runs.forge_data
+                taskName 'forge_test_data'
+
+                environment 'MOD_CLASSES', 'dummy' // Needed to work around FG limitation, FG will replace this!
+
+                ideaModule "${rootProject.name}.${project.name}.test"
+
+                mods {
+                    tests { sources sourceSets.test }
+                }
+
+                afterEvaluate {
+                    // Clear forge's main datagen args
+                    args.removeAll {
+                        forgeDataArgs.contains(it instanceof File ? (it as File).absolutePath : it.toString())
+                    }
+
+                    args '--flat', '--all', '--validate',
+                            '--mod', 'data_gen_test',
+                            '--mod', 'piston_event_test',
+                            '--mod', 'global_loot_test',
+                            '--mod', 'scaffolding_test',
+                            '--mod', 'custom_tag_types_test',
+                            '--mod', 'new_model_loader_test',
+                            '--mod', 'remove_tag_datagen_test',
+                            '--output', rootProject.file('src/generated_test/resources/'),
+                            '--existing', sourceSets.main.resources.srcDirs[0],
+                            '--existing', sourceSets.test.resources.srcDirs[0]
+                }
             }
         }
     }
@@ -1032,8 +1090,7 @@ project(':forge') {
                            '--fml.mcVersion', MC_VERSION,
                            '--fml.forgeGroup', project.group,
                            '--fml.mcpVersion', MCP_VERSION],
-                    jvm: ['-DlegacyClassPath=${classpath}',
-                          "-DignoreList=${forge_client.properties.ignoreList}",
+                    jvm: ["-DignoreList=${forge_client.properties.ignoreList},\${version_name}.jar",
                           "-DmergeModules=${forge_client.properties.mergeModules}",
                           '-DlibraryDirectory=${library_directory}',
                           '-p', Util.getArtifacts(project, configurations.moduleonly, false).values().collect{'${library_directory}/' + it.downloads.artifact.path}.join('${classpath_separator}'),

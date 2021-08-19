@@ -26,7 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag.Named;
 
 public class Tags
@@ -128,6 +128,10 @@ public class Tags
         public static final IOptionalNamedTag<Block> STORAGE_BLOCKS_NETHERITE = tag("storage_blocks/netherite");
         public static final IOptionalNamedTag<Block> STORAGE_BLOCKS_QUARTZ = tag("storage_blocks/quartz");
         public static final IOptionalNamedTag<Block> STORAGE_BLOCKS_REDSTONE = tag("storage_blocks/redstone");
+
+        public static final IOptionalNamedTag<Block> NEEDS_WOOD_TOOL = tag("needs_wood_tool");
+        public static final IOptionalNamedTag<Block> NEEDS_GOLD_TOOL = tag("needs_gold_tool");
+        public static final IOptionalNamedTag<Block> NEEDS_NETHERITE_TOOL = tag("needs_netherite_tool");
 
         private static IOptionalNamedTag<Block> tag(String name)
         {

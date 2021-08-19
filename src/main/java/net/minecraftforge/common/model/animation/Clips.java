@@ -27,7 +27,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Mth;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.animation.Event;

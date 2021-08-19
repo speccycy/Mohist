@@ -23,7 +23,7 @@ import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.ResourcePackFileNotFoundException;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.File;
 import java.io.IOException;

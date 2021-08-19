@@ -25,7 +25,7 @@ import java.util.Collections;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient.Value;
 
 public class StackList implements Value

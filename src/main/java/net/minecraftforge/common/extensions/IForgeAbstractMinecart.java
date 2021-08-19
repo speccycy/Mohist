@@ -21,7 +21,7 @@ package net.minecraftforge.common.extensions;
 
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

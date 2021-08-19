@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ReverseTagWrapper<T>
 {

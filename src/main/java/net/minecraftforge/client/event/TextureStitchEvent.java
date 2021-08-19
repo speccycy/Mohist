@@ -19,7 +19,7 @@
 
 package net.minecraftforge.client.event;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraftforge.fml.event.IModBusEvent;

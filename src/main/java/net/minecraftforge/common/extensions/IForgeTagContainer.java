@@ -21,7 +21,7 @@ package net.minecraftforge.common.extensions;
 
 import java.util.Map;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;

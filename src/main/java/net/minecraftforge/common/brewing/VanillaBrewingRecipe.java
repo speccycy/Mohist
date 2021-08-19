@@ -21,7 +21,7 @@ package net.minecraftforge.common.brewing;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 
 /**

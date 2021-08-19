@@ -43,7 +43,7 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import net.minecraft.server.packs.VanillaPackResources;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;

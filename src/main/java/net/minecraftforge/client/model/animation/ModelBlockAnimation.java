@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.animation.ModelBlockAnimation.Parameter.Interpolation;
 import net.minecraftforge.client.model.animation.ModelBlockAnimation.Parameter.Type;

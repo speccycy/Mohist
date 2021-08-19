@@ -48,7 +48,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class LootModifierManager extends SimpleJsonResourceReloadListener {

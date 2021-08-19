@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import com.mojang.brigadier.Commands;
+import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
@@ -53,7 +53,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Player.BedSleepingProblem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -67,7 +67,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
@@ -91,7 +91,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent.OverlayType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -361,9 +361,9 @@ public class ForgeEventFactory
     }
 
     @Nullable
-    public static BlockState onToolUse(BlockState originalState, Level world, BlockPos pos, Player player, ItemStack stack, ToolType toolType)
+    public static BlockState onToolUse(BlockState originalState, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction toolAction)
     {
-        BlockToolInteractEvent event = new BlockToolInteractEvent(world, pos, originalState, player, stack, toolType);
+        BlockToolInteractEvent event = new BlockToolInteractEvent(world, pos, originalState, player, stack, toolAction);
         return MinecraftForge.EVENT_BUS.post(event) ? null : event.getFinalState();
     }
 
@@ -624,9 +624,9 @@ public class ForgeEventFactory
         return event.getCharge();
     }
 
-    public static <T extends Projectile> boolean onProjectileImpact(T projectile, HitResult ray)
+    public static boolean onProjectileImpact(Projectile projectile, HitResult ray)
     {
-        return MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent<>(projectile, ray));
+        return MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(projectile, ray));
     }
 
     public static LootTable loadLootTable(ResourceLocation name, LootTable table, LootTables lootTableManager)
@@ -718,7 +718,7 @@ public class ForgeEventFactory
         return event.getListeners();
     }
 
-    public static void onCommandRegister(Commands<CommandSourceStack> dispatcher, Commands.CommandSelection environment)
+    public static void onCommandRegister(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection environment)
     {
         RegisterCommandsEvent event = new RegisterCommandsEvent(dispatcher, environment);
         MinecraftForge.EVENT_BUS.post(event);
