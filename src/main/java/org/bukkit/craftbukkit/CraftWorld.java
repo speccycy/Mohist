@@ -29,7 +29,7 @@ import net.minecraft.data.worldgen.BiomeDecoratorGroups;
 import net.minecraft.network.protocol.game.PacketPlayOutCustomSoundEffect;
 import net.minecraft.network.protocol.game.PacketPlayOutUpdateTime;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.server.level.ChunkMapDistance;
 import net.minecraft.server.level.PlayerChunk;
 import net.minecraft.server.level.Ticket;
@@ -1522,7 +1522,7 @@ public class CraftWorld implements World {
                 entity = EntityTypes.LLAMA_SPIT.a(world);
                 entity.setPositionRotation(x, y, z, yaw, pitch);
             } else if (Firework.class.isAssignableFrom(clazz)) {
-                entity = new EntityFireworks(world, x, y, z, net.minecraft.world.item.ItemStack.EMPTY);
+                entity = new EntityFireworks(world, x, y, z, net.minecraft.item.ItemStack.EMPTY);
             }
         } else if (Minecart.class.isAssignableFrom(clazz)) {
             if (PoweredMinecart.class.isAssignableFrom(clazz)) {

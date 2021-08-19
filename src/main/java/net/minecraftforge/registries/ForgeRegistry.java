@@ -53,7 +53,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraftforge.common.util.TablePrinter;
 import net.minecraftforge.event.RegistryEvent;

@@ -70,7 +70,7 @@ function initializeCoreMod() {
         'itemstack': {
             'target': {
                 'type': 'CLASS',
-                'name': 'net.minecraft.world.item.ItemStack'
+                'name': 'net.minecraft.item.ItemStack'
             },
             'transformer': function(classNode) {
                 ASMAPI.redirectFieldToMethod(classNode, ASMAPI.mapField('f_41589_'), ASMAPI.mapMethod('m_41720_')) // item

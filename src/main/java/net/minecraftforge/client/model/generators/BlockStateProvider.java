@@ -70,7 +70,7 @@ import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Data provider for blockstate files. Extends {@link BlockModelProvider} so that

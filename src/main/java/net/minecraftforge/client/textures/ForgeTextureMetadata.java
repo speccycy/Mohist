@@ -22,7 +22,7 @@ package net.minecraftforge.client.textures;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;

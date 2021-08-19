@@ -22,7 +22,7 @@ package net.minecraftforge.fluids.capability.wrappers;
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.core.BlockPos;

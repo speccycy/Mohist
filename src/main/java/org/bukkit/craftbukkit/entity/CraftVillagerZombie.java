@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.core.IRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.monster.EntityZombieVillager;
 import org.apache.commons.lang.Validate;

@@ -20,7 +20,7 @@
 package net.minecraftforge.fmllegacy.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fmllegacy.network.event.EventNetworkChannel;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.commons.lang3.tuple.Pair;

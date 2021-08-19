@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 

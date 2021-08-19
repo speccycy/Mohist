@@ -13,7 +13,7 @@ import net.minecraft.core.IRegistry;
 import net.minecraft.nbt.DynamicOpsNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.server.DispenserRegistry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixesManager;

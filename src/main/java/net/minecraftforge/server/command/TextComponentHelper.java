@@ -19,7 +19,7 @@
 
 package net.minecraftforge.server.command;
 
-import net.minecraft.commands.CommandSource;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.locale.Language;

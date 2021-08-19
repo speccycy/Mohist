@@ -23,7 +23,7 @@ import java.io.File;
 
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;

@@ -42,10 +42,10 @@ public class CraftLootTable implements org.bukkit.loot.LootTable {
     @Override
     public Collection<ItemStack> populateLoot(Random random, LootContext context) {
         LootTableInfo nmsContext = convertContext(context);
-        List<net.minecraft.world.item.ItemStack> nmsItems = handle.populateLoot(nmsContext);
+        List<net.minecraft.item.ItemStack> nmsItems = handle.populateLoot(nmsContext);
         Collection<ItemStack> bukkit = new ArrayList<>(nmsItems.size());
 
-        for (net.minecraft.world.item.ItemStack item : nmsItems) {
+        for (net.minecraft.item.ItemStack item : nmsItems) {
             if (item.isEmpty()) {
                 continue;
             }

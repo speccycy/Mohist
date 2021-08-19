@@ -19,7 +19,7 @@
 
 package net.minecraftforge.items;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 

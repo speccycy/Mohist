@@ -100,7 +100,7 @@ import static net.minecraftforge.registries.ForgeRegistries.Keys.*;
 
 import net.minecraft.core.IdMapper;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 /**

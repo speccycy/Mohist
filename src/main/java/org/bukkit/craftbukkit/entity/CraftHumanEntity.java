@@ -114,7 +114,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void setItemOnCursor(ItemStack item) {
-        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
+        net.minecraft.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
         getHandle().containerMenu.setCarried(stack);
         if (this instanceof CraftPlayer) {
             getHandle().containerMenu.broadcastCarriedItem(); // Send set slot for cursor
@@ -452,7 +452,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public ItemStack getItemInUse() {
-        net.minecraft.world.item.ItemStack item = getHandle().getActiveItem();
+        net.minecraft.item.ItemStack item = getHandle().getActiveItem();
         return item.isEmpty() ? null : CraftItemStack.asCraftMirror(item);
     }
 

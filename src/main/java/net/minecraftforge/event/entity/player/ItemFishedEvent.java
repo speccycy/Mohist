@@ -21,7 +21,7 @@ package net.minecraftforge.event.entity.player;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.core.NonNullList;
 import net.minecraftforge.eventbus.api.Cancelable;
 

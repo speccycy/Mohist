@@ -5,30 +5,9 @@ import com.mojang.serialization.Codec;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.IRegistry;
-import net.minecraft.core.IRegistryCustom;
-import net.minecraft.server.level.RegionLimitedWorldAccess;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.level.BlockColumn;
-import net.minecraft.world.level.GeneratorAccess;
-import net.minecraft.world.level.GeneratorAccessSeed;
-import net.minecraft.world.level.IBlockAccess;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.BiomeBase;
-import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.WorldChunkManager;
-import net.minecraft.world.level.block.ITileEntity;
-import net.minecraft.world.level.block.entity.TileEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.world.level.chunk.BiomeStorage;
-import net.minecraft.world.level.chunk.ChunkSection;
-import net.minecraft.world.level.chunk.IChunkAccess;
-import net.minecraft.world.level.chunk.ProtoChunk;
-import net.minecraft.world.level.levelgen.HeightMap;
-import net.minecraft.world.level.levelgen.WorldGenStage;
-import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructureManager;
+import net.minecraft.world.biome.BiomeContainer;
+import net.minecraft.world.server.ServerWorld;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.generator.ChunkGenerator;
@@ -37,16 +16,16 @@ import org.bukkit.generator.ChunkGenerator.ChunkData;
 
 public class CustomChunkGenerator extends InternalChunkGenerator {
 
-    private final net.minecraft.world.level.chunk.ChunkGenerator delegate;
+    private final net.minecraft.world.gen.ChunkGenerator delegate;
     private final ChunkGenerator generator;
-    private final WorldServer world;
+    private final ServerWorld world;
     private final Random random = new Random();
 
     private class CustomBiomeGrid implements BiomeGrid {
 
-        private final BiomeStorage biome; // SPIGOT-5529: stored in 4x4 grid
+        private final BiomeContainer biome; // SPIGOT-5529: stored in 4x4 grid
 
-        public CustomBiomeGrid(BiomeStorage biome) {
+        public CustomBiomeGrid(BiomeContainer biome) {
             this.biome = biome;
         }
 

@@ -3,23 +3,12 @@ package org.bukkit.craftbukkit;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.math.Vector3fa;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.IRegistry;
-import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.minecraft.core.particles.ParticleParam;
-import net.minecraft.core.particles.ParticleParamBlock;
-import net.minecraft.core.particles.ParticleParamItem;
-import net.minecraft.core.particles.ParticleParamRedstone;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.VibrationParticleOption;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.gameevent.BlockPositionSource;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
-import net.minecraft.world.level.gameevent.PositionSource;
-import net.minecraft.world.level.gameevent.vibrations.VibrationPath;
+import net.minecraft.particles.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.registry.Registry;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -154,39 +143,39 @@ public enum CraftParticle {
         Preconditions.checkState(bukkit != null, "Bukkit particle %s does not exist", this.name());
     }
 
-    public static ParticleParam toNMS(Particle bukkit) {
+    public static IParticleData toNMS(Particle bukkit) {
         return toNMS(bukkit, null);
     }
 
-    public static <T> ParticleParam toNMS(Particle particle, T obj) {
+    public static <T> IParticleData toNMS(Particle particle, T obj) {
         Particle canonical = particle;
         if (aliases.containsKey(particle)) {
             canonical = aliases.get(particle);
         }
 
-        net.minecraft.core.particles.Particle nms = IRegistry.PARTICLE_TYPE.get(particles.get(canonical));
+        net.minecraft.particles.ParticleType nms = Registry.PARTICLE_TYPE.get(particles.get(canonical));
         Preconditions.checkArgument(nms != null, "No NMS particle %s", particle);
 
         if (particle.getDataType().equals(Void.class)) {
-            return (ParticleType) nms;
+            return (BasicParticleType) nms;
         }
         Preconditions.checkArgument(obj != null, "Particle %s requires data, null provided", particle);
         if (particle.getDataType().equals(ItemStack.class)) {
             ItemStack itemStack = (ItemStack) obj;
-            return new ParticleParamItem((net.minecraft.core.particles.Particle<ParticleParamItem>) nms, CraftItemStack.asNMSCopy(itemStack));
+            return new ItemParticleData((net.minecraft.particles.ParticleType<ItemParticleData>) nms, CraftItemStack.asNMSCopy(itemStack));
         }
         if (particle.getDataType() == MaterialData.class) {
             MaterialData data = (MaterialData) obj;
-            return new ParticleParamBlock((net.minecraft.core.particles.Particle<ParticleParamBlock>) nms, CraftMagicNumbers.getBlock(data));
+            return new BlockParticleData((net.minecraft.particles.ParticleType<BlockParticleData>) nms, CraftMagicNumbers.getBlock(data));
         }
         if (particle.getDataType() == BlockData.class) {
             BlockData data = (BlockData) obj;
-            return new ParticleParamBlock((net.minecraft.core.particles.Particle<ParticleParamBlock>) nms, ((CraftBlockData) data).getState());
+            return new BlockParticleData((net.minecraft.particles.ParticleType<BlockParticleData>) nms, ((CraftBlockData) data).getState());
         }
         if (particle.getDataType() == Particle.DustOptions.class) {
             Particle.DustOptions data = (Particle.DustOptions) obj;
             Color color = data.getColor();
-            return new ParticleParamRedstone(new Vector3fa(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f), data.getSize());
+            return new RedstoneParticleData(new Vector3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f), data.getSize());
         }
         if (particle.getDataType() == Particle.DustTransition.class) {
             Particle.DustTransition data = (Particle.DustTransition) obj;
@@ -214,7 +203,7 @@ public enum CraftParticle {
         throw new IllegalArgumentException(particle.getDataType().toString());
     }
 
-    public static Particle toBukkit(net.minecraft.core.particles.ParticleParam nms) {
+    public static Particle toBukkit(net.minecraft.core.particles.IParticleData nms) {
         return toBukkit(nms.getParticle());
     }
 

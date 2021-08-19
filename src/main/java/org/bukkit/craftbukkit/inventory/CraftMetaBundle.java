@@ -49,7 +49,7 @@ public class CraftMetaBundle extends CraftMetaItem implements BundleMeta {
                 for (int i = 0; i < list.size(); i++) {
                     NBTTagCompound nbttagcompound1 = list.getCompound(i);
 
-                    addItem(CraftItemStack.asCraftMirror(net.minecraft.world.item.ItemStack.a(nbttagcompound1)));
+                    addItem(CraftItemStack.asCraftMirror(net.minecraft.item.ItemStack.a(nbttagcompound1)));
                 }
             }
         }

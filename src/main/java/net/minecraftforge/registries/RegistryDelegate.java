@@ -21,7 +21,7 @@ package net.minecraftforge.registries;
 
 import com.google.common.base.Objects;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 
 /*
  * This is the internal implementation class of the delegate.

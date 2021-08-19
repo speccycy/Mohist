@@ -19,7 +19,7 @@
 
 package net.minecraftforge.common.crafting.conditions;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 
 public interface ICondition
 {

@@ -19,13 +19,13 @@
 
 package net.minecraftforge.server.command;
 
-import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.Commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 
 public class ForgeCommand
 {
-    public ForgeCommand(CommandDispatcher<CommandSourceStack> dispatcher)
+    public ForgeCommand(Commands<CommandSourceStack> dispatcher)
     {
         dispatcher.register(
             LiteralArgumentBuilder.<CommandSourceStack>literal("forge")

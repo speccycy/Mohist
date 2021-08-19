@@ -622,7 +622,7 @@ public class CraftBlock implements Block {
         // Order matters here, need to drop before setting to air so skulls can get their data
         net.minecraft.block.BlockState iblockdata = this.getNMS();
         net.minecraft.world.level.block.Block block = iblockdata.getBlock();
-        net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+        net.minecraft.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
         boolean result = false;
 
         // Modelled off PlayerEntity#hasBlock
@@ -655,7 +655,7 @@ public class CraftBlock implements Block {
     @Override
     public Collection<ItemStack> getDrops(ItemStack item, Entity entity) {
         IBlockData iblockdata = getNMS();
-        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
+        net.minecraft.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
 
         // Modelled off PlayerEntity#hasBlock
         if (item == null || isPreferredTool(iblockdata, nms)) {
@@ -669,7 +669,7 @@ public class CraftBlock implements Block {
     @Override
     public boolean isPreferredTool(ItemStack item) {
         IBlockData iblockdata = getNMS();
-        net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
+        net.minecraft.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
         return isPreferredTool(iblockdata, nms);
     }
 
@@ -679,7 +679,7 @@ public class CraftBlock implements Block {
         return getNMS().getDamage(((CraftPlayer) player).getHandle(), world, position);
     }
 
-    private boolean isPreferredTool(IBlockData iblockdata, net.minecraft.world.item.ItemStack nmsItem) {
+    private boolean isPreferredTool(IBlockData iblockdata, net.minecraft.item.ItemStack nmsItem) {
         return !iblockdata.isRequiresSpecialTool() || nmsItem.canDestroySpecialBlock(iblockdata);
     }
 

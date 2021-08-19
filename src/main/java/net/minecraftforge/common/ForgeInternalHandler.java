@@ -22,7 +22,7 @@ package net.minecraftforge.common;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;

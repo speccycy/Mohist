@@ -40,7 +40,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.effect.MobEffect;
 
 @SuppressWarnings("deprecation")

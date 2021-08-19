@@ -21,7 +21,7 @@ package net.minecraftforge.fmllegacy.network;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.util.LogMessageAdapter;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;

@@ -19,7 +19,7 @@
 
 package net.minecraftforge.event.world;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;

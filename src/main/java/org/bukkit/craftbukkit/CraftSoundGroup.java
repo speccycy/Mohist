@@ -1,24 +1,24 @@
 package org.bukkit.craftbukkit;
 
 import java.util.HashMap;
-import net.minecraft.world.level.block.SoundEffectType;
+import net.minecraft.block.SoundType;
 import org.bukkit.Sound;
 import org.bukkit.SoundGroup;
 
 public class CraftSoundGroup implements SoundGroup {
 
-    private final net.minecraft.world.level.block.SoundEffectType handle;
-    private static final HashMap<SoundEffectType, CraftSoundGroup> SOUND_GROUPS = new HashMap<>();
+    private final net.minecraft.block.SoundType handle;
+    private static final HashMap<SoundType, CraftSoundGroup> SOUND_GROUPS = new HashMap<>();
 
-    public static SoundGroup getSoundGroup(SoundEffectType soundEffectType) {
+    public static SoundGroup getSoundGroup(SoundType soundEffectType) {
         return SOUND_GROUPS.computeIfAbsent(soundEffectType, CraftSoundGroup::new);
     }
 
-    private CraftSoundGroup(net.minecraft.world.level.block.SoundEffectType soundEffectType) {
+    private CraftSoundGroup(net.minecraft.block.SoundType soundEffectType) {
         this.handle = soundEffectType;
     }
 
-    public net.minecraft.world.level.block.SoundEffectType getHandle() {
+    public net.minecraft.block.SoundType getHandle() {
         return handle;
     }
 
@@ -34,7 +34,7 @@ public class CraftSoundGroup implements SoundGroup {
 
     @Override
     public Sound getBreakSound() {
-        return CraftSound.getBukkit(getHandle().breakSound);
+        return CraftSound.getBukkit(getHandle().getBreakSound());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CraftSoundGroup implements SoundGroup {
 
     @Override
     public Sound getHitSound() {
-        return CraftSound.getBukkit(getHandle().hitSound);
+        return CraftSound.getBukkit(getHandle().getHitSound());
     }
 
     @Override

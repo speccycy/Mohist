@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.IInventory;
 import net.minecraft.world.entity.player.PlayerEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;

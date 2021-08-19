@@ -4,19 +4,21 @@ import com.mojang.authlib.GameProfile;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
+import net.minecraft.server.management.BanList;
+import net.minecraft.server.management.ProfileBanEntry;
 import net.minecraft.server.players.GameProfileBanEntry;
-import net.minecraft.server.players.GameProfileBanList;
+import net.minecraft.server.players.BanList;
 import org.bukkit.Bukkit;
 
 public final class CraftProfileBanEntry implements org.bukkit.BanEntry {
-    private final GameProfileBanList list;
+    private final BanList list;
     private final GameProfile profile;
     private Date created;
     private String source;
     private Date expiration;
     private String reason;
 
-    public CraftProfileBanEntry(GameProfile profile, GameProfileBanEntry entry, GameProfileBanList list) {
+    public CraftProfileBanEntry(GameProfile profile, ProfileBanEntry entry, BanList list) {
         this.list = list;
         this.profile = profile;
         this.created = entry.getCreated() != null ? new Date(entry.getCreated().getTime()) : null;
@@ -76,7 +78,7 @@ public final class CraftProfileBanEntry implements org.bukkit.BanEntry {
 
     @Override
     public void save() {
-        GameProfileBanEntry entry = new GameProfileBanEntry(profile, this.created, this.source, this.expiration, this.reason);
+        ProfileBanEntry entry = new ProfileBanEntry(profile, this.created, this.source, this.expiration, this.reason);
         this.list.add(entry);
         try {
             this.list.save();

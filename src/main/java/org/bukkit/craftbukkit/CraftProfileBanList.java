@@ -8,17 +8,20 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.BanList;
+import net.minecraft.server.management.ProfileBanEntry;
+import net.minecraft.server.management.UserListEntry;
 import net.minecraft.server.players.GameProfileBanEntry;
-import net.minecraft.server.players.GameProfileBanList;
+import net.minecraft.server.players.BanList;
 import net.minecraft.server.players.JsonListEntry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 
 public class CraftProfileBanList implements org.bukkit.BanList {
-    private final GameProfileBanList list;
+    private final BanList list;
 
-    public CraftProfileBanList(GameProfileBanList list) {
+    public CraftProfileBanList(BanList list) {
         this.list = list;
     }
 
@@ -31,7 +34,7 @@ public class CraftProfileBanList implements org.bukkit.BanList {
             return null;
         }
 
-        GameProfileBanEntry entry = (GameProfileBanEntry) list.get(profile);
+        ProfileBanEntry entry = (ProfileBanEntry) list.get(profile);
         if (entry == null) {
             return null;
         }
@@ -48,7 +51,7 @@ public class CraftProfileBanList implements org.bukkit.BanList {
             return null;
         }
 
-        GameProfileBanEntry entry = new GameProfileBanEntry(profile, new Date(),
+        ProfileBanEntry entry = new ProfileBanEntry(profile, new Date(),
                 StringUtils.isBlank(source) ? null : source, expires,
                 StringUtils.isBlank(reason) ? null : reason);
 
@@ -67,9 +70,9 @@ public class CraftProfileBanList implements org.bukkit.BanList {
     public Set<org.bukkit.BanEntry> getBanEntries() {
         ImmutableSet.Builder<org.bukkit.BanEntry> builder = ImmutableSet.builder();
 
-        for (JsonListEntry entry : list.getValues()) {
-            GameProfile profile = (GameProfile) entry.getKey();
-            builder.add(new CraftProfileBanEntry(profile, (GameProfileBanEntry) entry, list));
+        for (UserListEntry entry : list.getEntries()) {
+            GameProfile profile = (GameProfile) entry.getUser();
+            builder.add(new CraftProfileBanEntry(profile, (ProfileBanEntry) entry, list));
         }
 
         return builder.build();

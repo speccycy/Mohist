@@ -1,6 +1,9 @@
 package org.bukkit.craftbukkit.enchantments;
 
 import net.minecraft.core.IRegistry;
+import net.minecraft.enchantment.BindingCurseEnchantment;
+import net.minecraft.enchantment.VanishingCurseEnchantment;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.item.enchantment.EnchantmentBinding;
 import net.minecraft.world.item.enchantment.EnchantmentVanishing;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -11,10 +14,10 @@ import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftEnchantment extends Enchantment {
-    private final net.minecraft.world.item.enchantment.Enchantment target;
+    private final net.minecraft.enchantment.Enchantment target;
 
-    public CraftEnchantment(net.minecraft.world.item.enchantment.Enchantment target) {
-        super(CraftNamespacedKey.fromMinecraft(IRegistry.ENCHANTMENT.getKey(target)));
+    public CraftEnchantment(net.minecraft.enchantment.Enchantment target) {
+        super(CraftNamespacedKey.fromMinecraft(Registry.ENCHANTMENT.getKey(target)));
         this.target = target;
     }
 
@@ -25,7 +28,7 @@ public class CraftEnchantment extends Enchantment {
 
     @Override
     public int getStartLevel() {
-        return target.getStartLevel();
+        return target.getMinLevel();
     }
 
     @Override
@@ -66,12 +69,12 @@ public class CraftEnchantment extends Enchantment {
 
     @Override
     public boolean isTreasure() {
-        return target.isTreasure();
+        return target.isTreasureOnly();
     }
 
     @Override
     public boolean isCursed() {
-        return target instanceof EnchantmentBinding || target instanceof EnchantmentVanishing;
+        return target instanceof BindingCurseEnchantment || target instanceof VanishingCurseEnchantment;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class CraftEnchantment extends Enchantment {
     @Override
     public String getName() {
         // PAIL: migration paths
-        switch (IRegistry.ENCHANTMENT.getId(target)) {
+        switch (Registry.ENCHANTMENT.getId(target)) {
         case 0:
             return "PROTECTION_ENVIRONMENTAL";
         case 1:
@@ -160,11 +163,11 @@ public class CraftEnchantment extends Enchantment {
         case 37:
             return "VANISHING_CURSE";
         default:
-            return "UNKNOWN_ENCHANT_" + IRegistry.ENCHANTMENT.getId(target);
+            return "UNKNOWN_ENCHANT_" + Registry.ENCHANTMENT.getId(target);
         }
     }
 
-    public static net.minecraft.world.item.enchantment.Enchantment getRaw(Enchantment enchantment) {
+    public static net.minecraft.enchantment.Enchantment getRaw(Enchantment enchantment) {
         if (enchantment instanceof EnchantmentWrapper) {
             enchantment = ((EnchantmentWrapper) enchantment).getEnchantment();
         }
@@ -185,10 +188,10 @@ public class CraftEnchantment extends Enchantment {
             return false;
         }
         CraftEnchantment ench = (CraftEnchantment) other;
-        return !target.isCompatible(ench.target);
+        return !target.isCompatibleWith(ench.target);
     }
 
-    public net.minecraft.world.item.enchantment.Enchantment getHandle() {
+    public net.minecraft.enchantment.Enchantment getHandle() {
         return target;
     }
 }

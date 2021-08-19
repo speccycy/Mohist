@@ -64,7 +64,7 @@ import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.resources.FallbackResourceManager;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.fmllegacy.packs.ModFileResourcePack;

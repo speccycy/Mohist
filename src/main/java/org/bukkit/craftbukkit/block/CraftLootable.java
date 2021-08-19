@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.level.block.entity.TileEntityLootable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
