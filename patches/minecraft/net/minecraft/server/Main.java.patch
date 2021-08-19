@@ -64,6 +64,15 @@
              worlddata = new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable());
           }
  
+@@ -173,7 +_,7 @@
+             dedicatedserver1.m_129948_(optionset.valueOf(optionspec12));
+             boolean flag1 = !optionset.has(optionspec) && !optionset.valuesOf(optionspec13).contains("nogui");
+             if (flag1 && !GraphicsEnvironment.isHeadless()) {
+-               dedicatedserver1.m_139667_();
++               // dedicatedserver1.showGui(); // Mohist
+             }
+ 
+             return dedicatedserver1;
 @@ -181,6 +_,7 @@
           Thread thread = new Thread("Server Shutdown Thread") {
              public void run() {
