@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import jline.console.ConsoleReader;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.ConsoleInput;
 import net.minecraft.server.players.StoredUserEntry;
@@ -414,7 +415,7 @@ public final class CraftServer implements Server {
     }
 
     private void setVanillaCommands() {
-        CommandDispatcher dispatcher = console.vanillaCommandDispatcher;
+        Commands dispatcher = console.vanillaCommandDispatcher;
 
         // Build a list of all Vanilla commands and create wrappers
         for (CommandNode<BinomialDistributionGenerator> cmd : dispatcher.a().getRoot().getChildren()) {
@@ -424,7 +425,7 @@ public final class CraftServer implements Server {
 
     public void syncCommands() {
         // Clear existing commands
-        CommandDispatcher dispatcher = console.resources.commands = new CommandDispatcher();
+        Commands dispatcher = console.resources.commands = new Commands();
 
         // Register all commands, vanilla ones will be using the old dispatcher references
         for (Map.Entry<String, Command> entry : commandMap.getKnownCommands().entrySet()) {

@@ -201,11 +201,6 @@ public class DummyGeneratorAccess implements WorldGenLevel {
     }
 
     @Override
-    public HitResult rayTraceBlock(ClipContext clipContext, BlockPos position) {
-        return null;
-    }
-
-    @Override
     public boolean isStateAtPosition(BlockPos p_46938_, Predicate<BlockState> p_46939_) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

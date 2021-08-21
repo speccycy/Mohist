@@ -258,9 +258,9 @@ public final class CraftMagicNumbers implements UnsafeValues {
 
         JsonElement jsonelement = ServerAdvancementManager.GSON.fromJson(advancement, JsonElement.class);
         JsonObject jsonobject = GsonHelper.convertToJsonObject(jsonelement, "advancement");
-        net.minecraft.advancements.Advancement.Builder nms = net.minecraft.advancements.Advancement.Builder.fromJson(jsonobject, new DeserializationContext(minecraftkey, MinecraftServer.getServer().getLootPredicateManager()));
+        net.minecraft.advancements.Advancement.Builder nms = net.minecraft.advancements.Advancement.Builder.fromJson(jsonobject, new DeserializationContext(minecraftkey, MinecraftServer.getServer().getPredicateManager()));
         if (nms != null) {
-            MinecraftServer.getServer().getAdvancementData().advancements.a(Maps.newHashMap(Collections.singletonMap(minecraftkey, nms)));
+            MinecraftServer.getServer().getAdvancements().advancements.add(Maps.newHashMap(Collections.singletonMap(minecraftkey, nms)));
             Advancement bukkit = Bukkit.getAdvancement(key);
 
             if (bukkit != null) {
@@ -273,7 +273,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
                     Bukkit.getLogger().log(Level.SEVERE, "Error saving advancement " + key, ex);
                 }
 
-                MinecraftServer.getServer().getPlayerList().reload();
+                MinecraftServer.getServer().getPlayerList().reloadResources();
 
                 return bukkit;
             }

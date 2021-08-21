@@ -67,7 +67,7 @@ public class CraftChunk implements Chunk {
         net.minecraft.world.level.chunk.LevelChunk c = weakChunk.get();
 
         if (c == null) {
-            c = worldServer.getChunkAt(x, z);
+            c = worldServer.getChunk(x, z);
 
             weakChunk = new WeakReference<net.minecraft.world.level.chunk.LevelChunk>(c);
         }
