@@ -70,7 +70,7 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
             return false;
         }
 
-        GameProfile profile = MinecraftServer.getServer().getProfileCache().get(name);
+        GameProfile profile = MinecraftServer.getServer().getProfileCache().get(name).get(); // Mohist
         if (profile == null) {
             return false;
         }

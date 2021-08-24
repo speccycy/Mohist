@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.FluidState;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -78,12 +79,12 @@ public class BlockStateListPopulator extends DummyGeneratorAccess {
     }
 
     @Override
-    public boolean a(BlockPos blockposition, Predicate<IBlockData> predicate) {
-        return predicate.test(getType(blockposition));
+    public boolean isStateAtPosition(BlockPos blockposition, Predicate<net.minecraft.world.level.block.state.BlockState> predicate) {
+        return predicate.test(getBlockState(blockposition));
     }
 
     @Override
-    public DimensionManager getDimensionManager() {
-        return world.getDimensionManager();
+    public DimensionType dimensionType() {
+        return world.dimensionType();
     }
 }

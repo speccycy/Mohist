@@ -104,6 +104,11 @@ public class DummyGeneratorAccess implements WorldGenLevel {
     }
 
     @Override
+    public ServerLevel getMinecraftWorld() {
+        return null;
+    }
+
+    @Override
     public ServerLevel getLevel() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

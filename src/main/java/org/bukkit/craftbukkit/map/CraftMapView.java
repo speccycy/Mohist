@@ -33,7 +33,7 @@ public final class CraftMapView implements MapView {
 
     @Override
     public int getId() {
-        String text = worldMap.getId(); //TODO
+        String text = worldMap.id;
         if (text.startsWith("map_")) {
             try {
                 return Integer.parseInt(text.substring("map_".length()));
