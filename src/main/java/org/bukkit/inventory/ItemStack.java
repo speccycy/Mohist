@@ -64,7 +64,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable {
      * @param type item material
      * @param amount stack size
      * @param damage durability / damage
-     * @deprecated see {@link #setDurability(short)}
+     * see {@link #setDurability(short)}
      */
     public ItemStack(@NotNull final Material type, final int amount, final short damage) {
         this(type, amount, damage, null);

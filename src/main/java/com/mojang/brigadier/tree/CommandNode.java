@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator; // CraftBukkit
 
 public abstract class CommandNode<S> implements Comparable<CommandNode<S>> {
@@ -73,12 +75,12 @@ public abstract class CommandNode<S> implements Comparable<CommandNode<S>> {
 
     // CraftBukkit start
     public synchronized boolean canUse(final S source) {
-        if (source instanceof BinomialDistributionGenerator) {
+        if (source instanceof CommandSourceStack) {
             try {
-                ((BinomialDistributionGenerator) source).currentCommand = this;
+                ((CommandSourceStack) source).currentCommand = this;
                 return requirement.test(source);
             } finally {
-                ((BinomialDistributionGenerator) source).currentCommand = null;
+                ((CommandSourceStack) source).currentCommand = null;
             }
         }
         // CraftBukkit end
