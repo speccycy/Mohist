@@ -46,6 +46,7 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.entity.raid.Raid;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -566,8 +567,8 @@ public class CraftEventFactory {
             boolean isNpc = entity instanceof Npc;
 
             if (spawnReason != SpawnReason.CUSTOM) {
-                if (isAnimal && !world.getWorld().getAllowAnimals() || isMonster && !world.getWorld().getAllowMonsters() || isNpc && !world.getCraftServer().getServer().getSpawnNPCs()) {
-                    entity.die();
+                if (isAnimal && !world.getWorld().getAllowAnimals() || isMonster && !world.getWorld().getAllowMonsters() || isNpc && !world.getCraftServer().getServer().areNpcsEnabled()) {
+                    entity.discard();
                     return false;
                 }
             }
@@ -605,12 +606,12 @@ public class CraftEventFactory {
         if (event != null && (event.isCancelled() || entity.isRemoved())) {
             Entity vehicle = entity.getVehicle();
             if (vehicle != null) {
-                vehicle.die();
+                vehicle.discard();
             }
             for (Entity passenger : entity.getIndirectPassengers()) {
-                passenger.die();
+                passenger.discard();
             }
-            entity.die();
+            entity.discard();
             return false;
         }
 
@@ -1143,11 +1144,11 @@ public class CraftEventFactory {
         return event;
     }
 
-    public static Container callInventoryOpenEvent(ServerPlayer player, Container container) {
+    public static AbstractContainerMenu callInventoryOpenEvent(ServerPlayer player, AbstractContainerMenu container) {
         return callInventoryOpenEvent(player, container, false);
     }
 
-    public static Container callInventoryOpenEvent(ServerPlayer player, Container container, boolean cancelled) {
+    public static AbstractContainerMenu callInventoryOpenEvent(ServerPlayer player, AbstractContainerMenu container, boolean cancelled) {
         if (player.containerMenu != player.inventoryMenu) { // fire INVENTORY_CLOSE if one already open
             player.connection.handleContainerClose(new ServerboundContainerClosePacket(player.containerMenu.containerId));
         }

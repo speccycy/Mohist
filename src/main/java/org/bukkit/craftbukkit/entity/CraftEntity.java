@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -400,7 +401,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         }
 
         // entity.setLocation() throws no event, and so cannot be cancelled
-        entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        entity.absMoveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         // SPIGOT-619: Force sync head rotation also
         entity.setYHeadRot(location.getYaw());
 
@@ -483,7 +484,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public void remove() {
-        entity.remove();
+        entity.discard();
     }
 
     @Override
@@ -935,7 +936,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         }
 
         ServerLevel world = ((CraftWorld) getWorld()).getHandle();
-        net.minecraft.server.level.ChunkMap.TrackedEntity entityTracker = world.getChunkSource().chunkMap.entityMap.get(getEntityId());
+        ChunkMap.TrackedEntity entityTracker = world.getChunkSource().chunkMap.entityMap.get(getEntityId());
 
         if (entityTracker == null) {
             return;
