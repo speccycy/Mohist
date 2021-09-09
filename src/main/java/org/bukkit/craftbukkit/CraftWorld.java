@@ -24,10 +24,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.*;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.SortedArraySet;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Mob;
@@ -321,7 +323,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean isChunkLoaded(int x, int z) {
-        return world.getChunkSource().isChunkLoaded(x, z);
+        return world.getChunkSource().hasChunk(x, z);
     }
 
     @Override
@@ -420,9 +422,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         // This flags 65 blocks distributed across all the sections of the chunk, so that everything is sent, including biomes
         int height = getMaxHeight() / 16;
         for (int idx = 0; idx < 64; idx++) {
-            world.notify(new BlockPos(px + (idx / height), ((idx % height) * 16), pz), Blocks.AIR.defaultBlockState(), Blocks.STONE.getBlockData(), 3);
+            world.sendBlockUpdated(new BlockPos(px + (idx / height), ((idx % height) * 16), pz), Blocks.AIR.defaultBlockState(), Blocks.STONE.defaultBlockState(), 3);
         }
-        world.notify(new BlockPos(px + 15, (height * 16) - 1, pz + 15), Blocks.AIR.defaultBlockState(), Blocks.STONE.getBlockData(), 3);
+        world.sendBlockUpdated(new BlockPos(px + 15, (height * 16) - 1, pz + 15), Blocks.AIR.defaultBlockState(), Blocks.STONE.defaultBlockState(), 3);
 
         return true;
     }
@@ -613,14 +615,14 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
         net.minecraft.world.entity.projectile.AbstractArrow arrow;
         if (TippedArrow.class.isAssignableFrom(clazz)) {
-            arrow = net.minecraft.world.entity.EntityType.ARROW.a(world);
+            arrow = net.minecraft.world.entity.EntityType.ARROW.create(world);
             ((net.minecraft.world.entity.projectile.Arrow) arrow).setType(CraftPotionUtil.fromBukkit(new PotionData(PotionType.WATER, false, false)));
         } else if (SpectralArrow.class.isAssignableFrom(clazz)) {
-            arrow = net.minecraft.world.entity.EntityType.SPECTRAL_ARROW.a(world);
+            arrow = net.minecraft.world.entity.EntityType.SPECTRAL_ARROW.create(world);
         } else if (Trident.class.isAssignableFrom(clazz)) {
-            arrow = net.minecraft.world.entity.EntityType.TRIDENT.a(world);
+            arrow = net.minecraft.world.entity.EntityType.TRIDENT.create(world);
         } else {
-            arrow = net.minecraft.world.entity.EntityType.ARROW.a(world);
+            arrow = net.minecraft.world.entity.EntityType.ARROW.create(world);
         }
 
         arrow.moveTo(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
@@ -631,7 +633,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public LightningStrike strikeLightning(Location loc) {
-        net.minecraft.world.entity.LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.a(world);
+        net.minecraft.world.entity.LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(world);
         lightning.teleportToWithTicket(loc.getX(), loc.getY(), loc.getZ());
         world.strikeLightning(lightning, LightningStrikeEvent.Cause.CUSTOM);
         return (LightningStrike) lightning.getBukkitEntity();
@@ -639,8 +641,8 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public LightningStrike strikeLightningEffect(Location loc) {
-        net.minecraft.world.entity.LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.a(world);
-        lightning.teleportAndSync(loc.getX(), loc.getY(), loc.getZ());
+        net.minecraft.world.entity.LightningBolt lightning = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(world);
+        lightning.moveTo(loc.getX(), loc.getY(), loc.getZ());
         lightning.setVisualOnly(true);
         world.strikeLightning(lightning, LightningStrikeEvent.Cause.CUSTOM);
         return (LightningStrike) lightning.getBukkitEntity();
@@ -744,7 +746,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks, Entity source) {
-        return !world.explode(source == null ? null : ((CraftEntity) source).getHandle(), x, y, z, power, setFire, breakBlocks ? Explosion.Effect.BREAK : Explosion.Effect.NONE).wasCanceled;
+        return !world.explode(source == null ? null : ((CraftEntity) source).getHandle(), x, y, z, power, setFire, breakBlocks ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE).wasCanceled;
     }
 
     @Override
@@ -1060,9 +1062,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public List<Player> getPlayers() {
-        List<Player> list = new ArrayList<Player>(world.getPlayers().size());
+        List<Player> list = new ArrayList<Player>(world.players().size());
 
-        for (net.minecraft.world.entity.player.Player human : world.getPlayers()) {
+        for (net.minecraft.world.entity.player.Player human : world.players()) {
             HumanEntity bukkitEntity = human.getBukkitEntity();
 
             if ((bukkitEntity != null) && (bukkitEntity instanceof Player)) {
@@ -1241,7 +1243,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         Validate.notNull(material, "Material cannot be null");
         Validate.isTrue(material.isBlock(), "Material must be a block");
 
-        FallingBlockEntity entity = new FallingBlockEntity(world, location.getX(), location.getY(), location.getZ(), CraftMagicNumbers.getBlock(material).getBlockData());
+        FallingBlockEntity entity = new FallingBlockEntity(world, location.getX(), location.getY(), location.getZ(), CraftMagicNumbers.getBlock(material).defaultBlockState());
         entity.time = 1;
 
         world.addEntity(entity, SpawnReason.CUSTOM);
@@ -1319,47 +1321,47 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public int getLogicalHeight() {
-        return world.dimension().getLogicalHeight();
+        return world.dimensionType().logicalHeight();
     }
 
     @Override
     public boolean isNatural() {
-        return world.dimension().isNatural();
+        return world.dimensionType().natural();
     }
 
     @Override
     public boolean isBedWorks() {
-        return world.dimension().isBedWorks();
+        return world.dimensionType().bedWorks();
     }
 
     @Override
     public boolean hasSkyLight() {
-        return world.dimension().hasSkyLight();
+        return world.dimensionType().hasSkyLight();
     }
 
     @Override
     public boolean hasCeiling() {
-        return world.dimension().hasCeiling();
+        return world.dimensionType().hasCeiling();
     }
 
     @Override
     public boolean isPiglinSafe() {
-        return world.dimension().isPiglinSafe();
+        return world.dimensionType().piglinSafe();
     }
 
     @Override
     public boolean isRespawnAnchorWorks() {
-        return world.dimension().isRespawnAnchorWorks();
+        return world.dimensionType().respawnAnchorWorks();
     }
 
     @Override
     public boolean hasRaids() {
-        return world.dimension().hasRaids();
+        return world.dimensionType().hasRaids();
     }
 
     @Override
     public boolean isUltraWarm() {
-        return world.dimension().isNether();
+        return world.dimensionType().ultraWarm();
     }
 
     @Override
@@ -1607,7 +1609,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         double y = loc.getY();
         double z = loc.getZ();
 
-        getHandle().playSound(null, x, y, z, CraftSound.getSoundEffect(sound), SoundCategory.valueOf(category.name()), volume, pitch);
+        getHandle().playSound(null, x, y, z, CraftSound.getSoundEffect(sound), SoundSource.valueOf(category.name()), volume, pitch);
     }
 
     @Override
@@ -1618,8 +1620,8 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         double y = loc.getY();
         double z = loc.getZ();
 
-        PacketPlayOutCustomSoundEffect packet = new PacketPlayOutCustomSoundEffect(new ResourceLocation(sound), SoundCategory.valueOf(category.name()), new Vec3(x, y, z), volume, pitch);
-        world.getMinecraftServer().getPlayerList().sendPacketNearby(null, x, y, z, volume > 1.0F ? 16.0F * volume : 16.0D, this.world.getDimensionKey(), packet);
+        ClientboundCustomSoundPacket packet = new ClientboundCustomSoundPacket(new ResourceLocation(sound), SoundSource.valueOf(category.name()), new Vec3(x, y, z), volume, pitch);
+        world.getServer().getPlayerList().broadcast(null, x, y, z, volume > 1.0F ? 16.0F * volume : 16.0D, this.world.dimension(), packet);
     }
 
     private static Map<String, GameRules.Key<?>> gamerules;
@@ -1694,13 +1696,13 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public <T> T getGameRuleValue(GameRule<T> rule) {
         Validate.notNull(rule, "GameRule cannot be null");
-        return convert(rule, getHandle().getGameRules().get(getGameRulesNMS().get(rule.getName())));
+        return convert(rule, getHandle().getGameRules().getRule(getGameRulesNMS().get(rule.getName())));
     }
 
     @Override
     public <T> T getGameRuleDefault(GameRule<T> rule) {
         Validate.notNull(rule, "GameRule cannot be null");
-        return convert(rule, getGameRuleDefinitions().get(rule.getName()).getValue());
+        return convert(rule, getGameRuleDefinitions().get(rule.getName()).createRule());
     }
 
     @Override
@@ -1809,14 +1811,13 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         if (data != null && !particle.getDataType().isInstance(data)) {
             throw new IllegalArgumentException("data should be " + particle.getDataType() + " got " + data.getClass());
         }
+        // Mohist  TODO
         getHandle().sendParticles(
-                null, // Sender
                 CraftParticle.toNMS(particle, data), // Particle
                 x, y, z, // Position
                 count,  // Count
                 offsetX, offsetY, offsetZ, // Random offset
-                extra, // Speed?
-                force
+                extra
         );
 
     }

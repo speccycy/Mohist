@@ -926,6 +926,7 @@ public final class CraftServer implements Server {
 
     @Override
     public World createWorld(WorldCreator creator) {
+        /*
         Preconditions.checkState(!console.levels.isEmpty(), "Cannot create additional worlds on STARTUP");
         Validate.notNull(creator, "Creator may not be null");
 
@@ -1056,7 +1057,8 @@ public final class CraftServer implements Server {
         internal.entityManager.a(); // SPIGOT-6526: Load pending entities so they are available to the API
 
         pluginManager.callEvent(new WorldLoadEvent(internal.getWorld()));
-        return internal.getWorld();
+        return internal.getWorld(); */
+        return null;
     }
 
     @Override
@@ -1231,7 +1233,7 @@ public final class CraftServer implements Server {
             }
 
             @Override
-            public boolean canUse(net.minecraft.world.entity.player.Player entityhuman) {
+            public boolean stillValid(net.minecraft.world.entity.player.Player p_38874_) {
                 return false;
             }
         };
@@ -1261,7 +1263,7 @@ public final class CraftServer implements Server {
         if (recipe.isPresent()) {
             CraftingRecipe recipeCrafting = recipe.get();
             if (craftResult.setRecipeUsed(craftWorld.getHandle(), craftPlayer.getHandle(), recipeCrafting)) {
-                itemstack = recipeCrafting.a(inventoryCrafting);
+                itemstack = recipeCrafting.assemble(inventoryCrafting);
             }
         }
 

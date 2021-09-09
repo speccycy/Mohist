@@ -189,9 +189,9 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     }
 
     @Override
-    public void createStructures(long seed, BiomeManager biomemanager, ChunkAccess ichunkaccess, GenerationStep.Carving worldgenstage_features) {
+    public void applyCarvers(long seed, BiomeManager biomemanager, ChunkAccess ichunkaccess, GenerationStep.Carving worldgenstage_features) {
         if (generator.shouldGenerateCaves()) {
-            super.doCarving(seed, biomemanager, ichunkaccess, worldgenstage_features);
+            super.applyCarvers(seed, biomemanager, ichunkaccess, worldgenstage_features);
         }
 
         if (worldgenstage_features == GenerationStep.Carving.LIQUID) { // stage check ensures that the method is only called once
@@ -199,7 +199,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
             WorldgenRandom random = new WorldgenRandom();
             int x = ichunkaccess.getPos().x;
             int z = ichunkaccess.getPos().z;
-            random.setBaseChunkSeed(seed, 0, 0); // PAIL rename carvingSeeded
+            random.setDecorationSeed(seed, 0, 0); // PAIL rename carvingSeeded
 
             generator.generateCaves(this.world.getWorld(), random, x, z, chunkData);
             chunkData.breakLink();
@@ -207,10 +207,10 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> createStructures(Executor executor, StructureFeatureManager structuremanager, ChunkAccess ichunkaccess) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, StructureFeatureManager structuremanager, ChunkAccess ichunkaccess) {
         CompletableFuture<ChunkAccess> future = null;
         if (generator.shouldGenerateNoise()) {
-            future = delegate.createStructures(executor, structuremanager, ichunkaccess);
+            future = delegate.fillFromNoise(executor, structuremanager, ichunkaccess);
         }
 
         java.util.function.Function<ChunkAccess, ChunkAccess> function = (ichunkaccess1) -> {
@@ -225,7 +225,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
             return ichunkaccess1;
         };
 
-        return future == null ? CompletableFuture.supplyAsync(() -> function.apply(ichunkaccess), net.minecraft.Util.f()) : future.thenApply(function);
+        return future == null ? CompletableFuture.supplyAsync(() -> function.apply(ichunkaccess), net.minecraft.Util.backgroundExecutor()) : future.thenApply(function);
     }
 
     @Override
@@ -253,7 +253,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
 
     @Override
     public void applyBiomeDecoration(WorldGenRegion regionlimitedworldaccess, StructureFeatureManager structuremanager) {
-        super.addDecorations(regionlimitedworldaccess, structuremanager, generator.shouldGenerateDecorations());
+        super.applyBiomeDecoration(regionlimitedworldaccess, structuremanager, generator.shouldGenerateDecorations());
     }
 
     @Override
