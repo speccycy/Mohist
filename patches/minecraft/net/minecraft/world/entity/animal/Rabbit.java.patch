@@ -1,5 +1,14 @@
 --- a/net/minecraft/world/entity/animal/Rabbit.java
 +++ b/net/minecraft/world/entity/animal/Rabbit.java
+@@ -88,7 +_,7 @@
+       this.m_29725_(0.0D);
+    }
+ 
+-   protected void m_8099_() {
++   public void m_8099_() {
+       this.f_21345_.m_25352_(1, new FloatGoal(this));
+       this.f_21345_.m_25352_(1, new Rabbit.RabbitPanicGoal(this, 2.2D));
+       this.f_21345_.m_25352_(2, new BreedGoal(this, 0.8D));
 @@ -507,7 +_,7 @@
  
        public boolean m_8036_() {

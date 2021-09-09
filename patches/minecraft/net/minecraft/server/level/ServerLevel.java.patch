@@ -1,13 +1,50 @@
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -173,6 +_,7 @@
+@@ -134,6 +_,7 @@
+ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+ import net.minecraft.world.level.storage.DimensionDataStorage;
+ import net.minecraft.world.level.storage.LevelStorageSource;
++import net.minecraft.world.level.storage.PrimaryLevelData;
+ import net.minecraft.world.level.storage.ServerLevelData;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.Vec3;
+@@ -142,6 +_,10 @@
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.craftbukkit.event.CraftEventFactory;
++import org.bukkit.craftbukkit.util.WorldUUID;
++import org.bukkit.event.entity.CreatureSpawnEvent;
++import org.bukkit.event.weather.LightningStrikeEvent;
+ 
+ public class ServerLevel extends Level implements WorldGenLevel {
+    public static final BlockPos f_8562_ = new BlockPos(100, 50, 0);
+@@ -150,7 +_,7 @@
+    final List<ServerPlayer> f_8546_ = Lists.newArrayList();
+    private final ServerChunkCache f_8547_;
+    private final MinecraftServer f_8548_;
+-   private final ServerLevelData f_8549_;
++   public final ServerLevelData f_8549_;
+    final EntityTickList f_143243_ = new EntityTickList();
+    private final PersistentEntitySectionManager<Entity> f_143244_;
+    public boolean f_8564_;
+@@ -173,9 +_,16 @@
     final Int2ObjectMap<EnderDragonPart> f_143247_ = new Int2ObjectOpenHashMap<>();
     private final StructureFeatureManager f_8560_;
     private final boolean f_8561_;
 +   private net.minecraftforge.common.util.WorldCapabilityData capabilityData;
++
++   public final UUID uuid;
++   public PrimaryLevelData worldDataServer;
++   public final LevelStorageSource.LevelStorageAccess convertable;
  
     public ServerLevel(MinecraftServer p_8571_, Executor p_8572_, LevelStorageSource.LevelStorageAccess p_8573_, ServerLevelData p_8574_, ResourceKey<Level> p_8575_, DimensionType p_8576_, ChunkProgressListener p_8577_, ChunkGenerator p_8578_, boolean p_8579_, long p_8580_, List<CustomSpawner> p_8581_, boolean p_8582_) {
        super(p_8574_, p_8575_, p_8576_, p_8571_::m_129905_, false, p_8579_, p_8580_);
++      convertable = p_8573_;
++      uuid = WorldUUID.getUUID(p_8571_.f_129744_.m_78299_(p_8575_));
+       this.f_8561_ = p_8582_;
+       this.f_8548_ = p_8571_;
+       this.f_8558_ = p_8581_;
 @@ -208,6 +_,7 @@
        }
  
@@ -97,6 +134,22 @@
        }
     }
  
+@@ -711,7 +_,14 @@
+    }
+ 
+    public boolean m_7967_(Entity p_8837_) {
+-      return this.m_8872_(p_8837_);
++      // CraftBukkit start
++      return this.addEntity(p_8837_, CreatureSpawnEvent.SpawnReason.DEFAULT);
++   }
++
++   //@Override
++   public boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason reason) {
++      return this.addEntity(entity, reason);
++      // CraftBukkit end
+    }
+ 
+    public boolean m_8847_(Entity p_8848_) {
 @@ -738,7 +_,48 @@
        this.m_8853_(p_8846_);
     }
@@ -199,16 +252,39 @@
        explosion.m_46061_();
        explosion.m_46075_(false);
        if (p_8661_ == Explosion.BlockInteraction.NONE) {
-@@ -1355,6 +_,12 @@
-       BlockPos.m_121976_(i - 2, j, k - 2, i + 2, j, k + 2).forEach((p_143260_) -> {
-          p_8618_.m_46597_(p_143260_, Blocks.f_50080_.m_49966_());
+@@ -1357,6 +_,12 @@
        });
-+   }
-+
+    }
+ 
 +   protected void initCapabilities() {
 +      this.gatherCapabilities();
 +      capabilityData = this.m_8895_().m_164861_(e -> net.minecraftforge.common.util.WorldCapabilityData.load(e, getCapabilities()), () -> new net.minecraftforge.common.util.WorldCapabilityData(getCapabilities()), net.minecraftforge.common.util.WorldCapabilityData.ID);
 +      capabilityData.setCapabilities(getCapabilities());
-    }
- 
++   }
++
     public LevelEntityGetter<Entity> m_142646_() {
+       return this.f_143244_.m_157567_();
+    }
+@@ -1394,6 +_,22 @@
+    public boolean m_143275_(ChunkPos p_143276_) {
+       return this.f_143244_.m_157522_(p_143276_);
+    }
++
++   // CraftBukkit start
++   public boolean strikeLightning(Entity entitylightning) {
++      return this.strikeLightning(entitylightning, LightningStrikeEvent.Cause.UNKNOWN);
++   }
++
++   public boolean strikeLightning(Entity entitylightning, LightningStrikeEvent.Cause cause) {
++      LightningStrikeEvent lightning = CraftEventFactory.callLightningStrikeEvent((org.bukkit.entity.LightningStrike) entitylightning.getBukkitEntity(), cause);
++
++      if (lightning.isCancelled()) {
++         return false;
++      }
++
++      return this.m_8872_(entitylightning);
++   }
++   // CraftBukkit end
+ 
+    final class EntityCallbacks implements LevelCallback<Entity> {
+       public void m_141989_(Entity p_143355_) {

@@ -1,5 +1,24 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -150,6 +_,7 @@
+ import org.apache.commons.lang3.StringUtils;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.Location;
+ 
+ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, ServerGamePacketListener {
+    static final Logger f_9744_ = LogManager.getLogger();
+@@ -286,6 +_,10 @@
+       return this.f_9745_.m_7779_(this.f_9743_.m_36316_());
+    }
+ 
++   public void disconnect(String s) {
++
++   }
++
+    public void m_9942_(Component p_9943_) {
+       this.f_9742_.m_129514_(new ClientboundDisconnectPacket(p_9943_), (p_9828_) -> {
+          this.f_9742_.m_129507_(p_9943_);
 @@ -379,9 +_,11 @@
              }
  
@@ -21,6 +40,17 @@
     }
  
     public void m_7376_(ServerboundAcceptTeleportationPacket p_9835_) {
+@@ -879,6 +_,10 @@
+       this.m_143617_(p_143612_, p_143613_, p_143614_, p_143615_, p_143616_, Collections.emptySet(), true);
+    }
+ 
++   public void teleport(Location dest) {
++      m_9780_(dest.getX(), dest.getY(), dest.getZ(), dest.getYaw(), dest.getPitch(), Collections.emptySet());
++   }
++
+    public void m_9774_(double p_9775_, double p_9776_, double p_9777_, float p_9778_, float p_9779_) {
+       this.m_143617_(p_9775_, p_9776_, p_9777_, p_9778_, p_9779_, Collections.emptySet(), false);
+    }
 @@ -963,7 +_,9 @@
        this.f_9743_.m_9243_();
        int i = this.f_9743_.f_19853_.m_151558_();
@@ -70,3 +100,17 @@
     }
  
     public void m_7477_(ServerboundChangeDifficultyPacket p_9839_) {
+@@ -1419,6 +_,13 @@
+ 
+    public ServerPlayer m_142253_() {
+       return this.f_9743_;
++   }
++
++   public void chat(String msg, boolean b) {
++   }
++
++   public final boolean isDisconnected() {
++      return !this.f_9743_.joining && !this.f_9742_.m_129536_();
+    }
+ 
+    @FunctionalInterface

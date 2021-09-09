@@ -1,0 +1,34 @@
+--- a/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java
+@@ -40,7 +_,8 @@
+    public static final int f_155128_ = 600;
+    private final List<BeehiveBlockEntity.BeeData> f_58732_ = Lists.newArrayList();
+    @Nullable
+-   private BlockPos f_58733_;
++   public BlockPos f_58733_;
++   public int maxBees = 3; // CraftBukkit - allow setting max amount of bees a hive can hold
+ 
+    public BeehiveBlockEntity(BlockPos p_155134_, BlockState p_155135_) {
+       super(BlockEntityType.f_58912_, p_155134_, p_155135_);
+@@ -73,7 +_,7 @@
+    }
+ 
+    public boolean m_58775_() {
+-      return this.f_58732_.size() == 3;
++      return this.f_58732_.size() == this.maxBees; // CraftBukkit
+    }
+ 
+    public void m_58748_(@Nullable Player p_58749_, BlockState p_58750_, BeehiveBlockEntity.BeeReleaseStatus p_58751_) {
+@@ -100,6 +_,12 @@
+       this.f_58732_.removeIf((p_58766_) -> {
+          return m_155136_(this.f_58857_, this.f_58858_, p_58760_, p_58766_, list, p_58761_, this.f_58733_);
+       });
++      return list;
++   }
++
++   // Mohist TODO
++   public List<Entity> releaseBees(BlockState p_226965_1_, BeehiveBlockEntity.BeeReleaseStatus p_226965_2_, boolean force) {
++      List<Entity> list = Lists.newArrayList();
+       return list;
+    }
+ 

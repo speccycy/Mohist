@@ -1,5 +1,14 @@
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
+@@ -40,7 +_,7 @@
+       this.f_40563_ = p_40565_;
+    }
+ 
+-   public InteractionResult m_6225_(UseOnContext p_40581_) {
++    public InteractionResult m_6225_(UseOnContext p_40581_) {
+       InteractionResult interactionresult = this.m_40576_(new BlockPlaceContext(p_40581_));
+       if (!interactionresult.m_19077_() && this.m_41472_()) {
+          InteractionResult interactionresult1 = this.m_7203_(p_40581_.m_43725_(), p_40581_.m_43723_(), p_40581_.m_43724_()).m_19089_();
 @@ -78,9 +_,9 @@
                    }
                 }
@@ -29,6 +38,29 @@
     @Nullable
     public BlockPlaceContext m_7732_(BlockPlaceContext p_40609_) {
        return p_40609_;
+@@ -110,6 +_,22 @@
+       return blockstate != null && this.m_40610_(p_40613_, blockstate) ? blockstate : null;
+    }
+ 
++   public static BlockState getBlockState(BlockState p_40606_, CompoundTag compoundtag1) {
++      BlockState blockstate = p_40606_;
++      {
++         StateDefinition<Block, BlockState> statedefinition = p_40606_.m_60734_().m_49965_();
++
++         for(String s : compoundtag1.m_128431_()) {
++            Property<?> property = statedefinition.m_61081_(s);
++            if (property != null) {
++               String s1 = compoundtag1.m_128423_(s).m_7916_();
++               blockstate = m_40593_(blockstate, property, s1);
++            }
++         }
++      }
++      return blockstate;
++   }
++
+    private BlockState m_40602_(BlockPos p_40603_, Level p_40604_, ItemStack p_40605_, BlockState p_40606_) {
+       BlockState blockstate = p_40606_;
+       CompoundTag compoundtag = p_40605_.m_41783_();
 @@ -201,11 +_,19 @@
     }
  

@@ -1,5 +1,31 @@
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
+@@ -84,21 +_,21 @@
+    public static final int f_150203_ = 12544;
+    private final Map<Integer, Raider> f_37670_ = Maps.newHashMap();
+    private final Map<Integer, Set<Raider>> f_37671_ = Maps.newHashMap();
+-   private final Set<UUID> f_37672_ = Sets.newHashSet();
+-   private long f_37673_;
++   public final Set<UUID> f_37672_ = Sets.newHashSet();
++   public long f_37673_;
+    private BlockPos f_37674_;
+    private final ServerLevel f_37675_;
+    private boolean f_37676_;
+    private final int f_37677_;
+    private float f_37678_;
+-   private int f_37679_;
++   public int f_37679_;
+    private boolean f_37680_;
+    private int f_37681_;
+    private final ServerBossEvent f_37682_ = new ServerBossEvent(f_37665_, BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
+    private int f_37683_;
+    private int f_37684_;
+    private final Random f_37685_ = new Random();
+-   private final int f_37686_;
++   public final int f_37686_;
+    private Raid.RaidStatus f_37687_;
+    private int f_37688_;
+    private Optional<BlockPos> f_37689_ = Optional.empty();
 @@ -809,7 +_,7 @@
        }
     }
@@ -9,11 +35,11 @@
        VINDICATOR(EntityType.f_20493_, new int[]{0, 0, 2, 0, 1, 4, 2, 5}),
        EVOKER(EntityType.f_20568_, new int[]{0, 0, 0, 0, 0, 1, 1, 2}),
        PILLAGER(EntityType.f_20513_, new int[]{0, 4, 3, 3, 4, 4, 4, 2}),
-@@ -823,6 +_,20 @@
-       private RaiderType(EntityType<? extends Raider> p_37821_, int[] p_37822_) {
+@@ -824,5 +_,25 @@
           this.f_37814_ = p_37821_;
           this.f_37815_ = p_37822_;
-+      }
+       }
+-   }
 +      
 +      /**
 +       * The waveCountsIn integer decides how many entities of the EntityType defined in typeIn will spawn in each wave.
@@ -27,6 +53,12 @@
 +      @Deprecated
 +      public void init() {
 +         f_37813_ = values();
-       }
-    }
++      }
++   }
++
++   // CraftBukkit start - a method to get all raiders
++   public java.util.Collection<Raider> getRaiders() {
++      return this.f_37671_.values().stream().flatMap(Set::stream).collect(java.util.stream.Collectors.toSet());
++   }
++   // CraftBukkit end
  }

@@ -1,5 +1,16 @@
 --- a/net/minecraft/server/level/ServerChunkCache.java
 +++ b/net/minecraft/server/level/ServerChunkCache.java
+@@ -55,8 +_,8 @@
+    public final ChunkMap f_8325_;
+    private final DimensionDataStorage f_8333_;
+    private long f_8334_;
+-   private boolean f_8335_ = true;
+-   private boolean f_8336_ = true;
++   public boolean f_8335_ = true;
++   public boolean f_8336_ = true;
+    private static final int f_143226_ = 4;
+    private final long[] f_8337_ = new long[4];
+    private final ChunkStatus[] f_8338_ = new ChunkStatus[4];
 @@ -161,6 +_,7 @@
           if (chunkholder == null) {
              return null;
@@ -8,6 +19,22 @@
              Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure> either = chunkholder.m_140080_(ChunkStatus.f_62326_).getNow((Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>)null);
              if (either == null) {
                 return null;
+@@ -297,7 +_,15 @@
+    }
+ 
+    public void close() throws IOException {
++      // CraftBukkit start
+       this.m_8419_(true);
++   }
++
++   public void close(boolean save) throws IOException {
++      if (save) {
++         this.m_8419_(true);
++      }
++      // CraftBukkit end
+       this.f_8331_.close();
+       this.f_8325_.close();
+    }
 @@ -337,7 +_,7 @@
              if (optional.isPresent()) {
                 LevelChunk levelchunk = optional.get();
@@ -17,18 +44,39 @@
                    levelchunk.m_6141_(levelchunk.m_6319_() + j);
                    if (flag1 && (this.f_8335_ || this.f_8336_) && this.f_8329_.m_6857_().m_61927_(chunkpos)) {
                       NaturalSpawner.m_47029_(this.f_8329_, levelchunk, naturalspawner$spawnstate, this.f_8336_, this.f_8335_, flag2);
-@@ -414,6 +_,14 @@
- 
-    public <T> void m_8438_(TicketType<T> p_8439_, ChunkPos p_8440_, int p_8441_, T p_8442_) {
+@@ -416,6 +_,14 @@
        this.f_8327_.m_140849_(p_8439_, p_8440_, p_8441_, p_8442_);
-+   }
-+
+    }
+ 
 +   public <T> void registerTickingTicket(TicketType<T> type, ChunkPos pos, int distance, T value) {
 +      this.f_8327_.registerTicking(type, pos, distance, value);
 +   }
 +
 +   public <T> void releaseTickingTicket(TicketType<T> type, ChunkPos pos, int distance, T value) {
 +      this.f_8327_.releaseTicking(type, pos, distance, value);
++   }
++
+    public void m_6692_(ChunkPos p_8400_, boolean p_8401_) {
+       this.f_8327_.m_140799_(p_8400_, p_8401_);
+    }
+@@ -467,7 +_,19 @@
+       return this.f_8340_;
     }
  
-    public void m_6692_(ChunkPos p_8400_, boolean p_8401_) {
+-   final class MainThreadExecutor extends BlockableEventLoop<Runnable> {
++   // CraftBukkit start - modelled on below
++   public void purgeUnload() {
++      this.f_8329_.m_46473_().m_6180_("purge");
++      this.f_8327_.m_140776_();
++      this.m_8489_();
++      this.f_8329_.m_46473_().m_6182_("unload");
++      this.f_8325_.m_140280_(() -> true);
++      this.f_8329_.m_46473_().m_7238_();
++      this.m_8488_();
++   }
++   // CraftBukkit end
++
++    final class MainThreadExecutor extends BlockableEventLoop<Runnable> {
+       MainThreadExecutor(Level p_8494_) {
+          super("Chunk source main thread executor for " + p_8494_.m_46472_().m_135782_());
+       }

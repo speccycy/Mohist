@@ -9,7 +9,38 @@
     static final Logger f_62771_ = LogManager.getLogger();
     private static final TickingBlockEntity f_156361_ = new TickingBlockEntity() {
        public void m_142224_() {
-@@ -106,6 +_,7 @@
+@@ -82,10 +_,10 @@
+    private final Map<BlockPos, CompoundTag> f_62774_ = Maps.newHashMap();
+    private final Map<BlockPos, LevelChunk.RebindableTickingBlockEntityWrapper> f_156362_ = Maps.newHashMap();
+    private boolean f_62775_;
+-   final Level f_62776_;
+-   private final Map<Heightmap.Types, Heightmap> f_62777_ = Maps.newEnumMap(Heightmap.Types.class);
++   public final Level f_62776_;
++   public final Map<Heightmap.Types, Heightmap> f_62777_ = Maps.newEnumMap(Heightmap.Types.class);
+    private final UpgradeData f_62778_;
+-   private final Map<BlockPos, BlockEntity> f_62779_ = Maps.newHashMap();
++   public final Map<BlockPos, BlockEntity> f_62779_ = Maps.newHashMap();
+    private final Map<StructureFeature<?>, StructureStart<?>> f_62781_ = Maps.newHashMap();
+    private final Map<StructureFeature<?>, LongSet> f_62782_ = Maps.newHashMap();
+    private final ShortList[] f_62783_;
+@@ -101,11 +_,24 @@
+    private volatile boolean f_62793_;
+    private final Int2ObjectMap<GameEventDispatcher> f_156363_;
+ 
++   public org.bukkit.Chunk bukkitChunk;
++   public org.bukkit.Chunk getBukkitChunk() {
++      return bukkitChunk;
++   }
++
++   public boolean mustNotSave;
++   public boolean needsDecoration;
++
++   private static final org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry();
++   public final org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer persistentDataContainer = new org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
++   // CraftBukkit end
++
+    public LevelChunk(Level p_62796_, ChunkPos p_62797_, ChunkBiomeContainer p_62798_) {
+       this(p_62796_, p_62797_, p_62798_, UpgradeData.f_63320_, EmptyTickList.m_45888_(), EmptyTickList.m_45888_(), 0L, (LevelChunkSection[])null, (Consumer<LevelChunk>)null);
     }
  
     public LevelChunk(Level p_62800_, ChunkPos p_62801_, ChunkBiomeContainer p_62802_, UpgradeData p_62803_, TickList<Block> p_62804_, TickList<Fluid> p_62805_, long p_62806_, @Nullable LevelChunkSection[] p_62807_, @Nullable Consumer<LevelChunk> p_62808_) {

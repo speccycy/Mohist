@@ -1,0 +1,34 @@
+--- a/net/minecraft/world/level/chunk/ChunkGenerator.java
++++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
+@@ -195,6 +_,14 @@
+    }
+ 
+    public void m_7399_(WorldGenRegion p_62168_, StructureFeatureManager p_62169_) {
++      // CraftBukkit start
++      applyBiomeDecoration(p_62168_, p_62169_, true);
++   }
++
++   public void applyBiomeDecoration(WorldGenRegion p_62168_, StructureFeatureManager p_62169_, boolean vanilla) {
++      if (vanilla) {
++         m_7399_(p_62168_, p_62169_);
++      }
+       ChunkPos chunkpos = p_62168_.m_143488_();
+       int i = chunkpos.m_45604_();
+       int j = chunkpos.m_45605_();
+@@ -213,6 +_,16 @@
+    }
+ 
+    public abstract void m_7338_(WorldGenRegion p_62170_, ChunkAccess p_62171_);
++
++   // CraftBukkit start - spilt surface and bedrock generation code
++   public WorldgenRandom buildSurface(WorldGenRegion regionlimitedworldaccess, ChunkAccess iChunkAccess) {
++      throw new UnsupportedOperationException("Methode not overridden");
++   }
++
++   public void buildBedrock(ChunkAccess iChunkAccess, Random random) {
++      throw new UnsupportedOperationException("Methode not overridden");
++   }
++   // CraftBukkit end
+ 
+    public void m_6929_(WorldGenRegion p_62167_) {
+    }

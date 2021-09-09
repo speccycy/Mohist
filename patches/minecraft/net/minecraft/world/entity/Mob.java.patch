@@ -1,13 +1,111 @@
 --- a/net/minecraft/world/entity/Mob.java
 +++ b/net/minecraft/world/entity/Mob.java
-@@ -202,6 +_,7 @@
+@@ -67,6 +_,9 @@
+ import net.minecraft.world.level.material.Fluid;
+ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ import net.minecraft.world.level.storage.loot.LootContext;
++import org.bukkit.craftbukkit.entity.CraftLivingEntity;
++import org.bukkit.event.entity.EntityTargetEvent;
++import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+ 
+ public abstract class Mob extends LivingEntity {
+    private static final EntityDataAccessor<Byte> f_21340_ = SynchedEntityData.m_135353_(Mob.class, EntityDataSerializers.f_135027_);
+@@ -87,19 +_,19 @@
+    protected JumpControl f_21343_;
+    private final BodyRotationControl f_21361_;
+    protected PathNavigation f_21344_;
+-   public final GoalSelector f_21345_;
+-   public final GoalSelector f_21346_;
++   public GoalSelector f_21345_;
++   public GoalSelector f_21346_;
+    private LivingEntity f_21362_;
+    private final Sensing f_21349_;
+    private final NonNullList<ItemStack> f_21350_ = NonNullList.m_122780_(2, ItemStack.f_41583_);
+-   protected final float[] f_21347_ = new float[2];
++   public final float[] f_21347_ = new float[2];
+    private final NonNullList<ItemStack> f_21351_ = NonNullList.m_122780_(4, ItemStack.f_41583_);
+-   protected final float[] f_21348_ = new float[4];
++   public final float[] f_21348_ = new float[4];
+    private boolean f_21352_;
+-   private boolean f_21353_;
++   public boolean f_21353_;
+    private final Map<BlockPathTypes, Float> f_21354_ = Maps.newEnumMap(BlockPathTypes.class);
+-   private ResourceLocation f_21355_;
+-   private long f_21356_;
++   public ResourceLocation f_21355_;
++   public long f_21356_;
+    @Nullable
+    private Entity f_21357_;
+    private int f_21358_;
+@@ -108,6 +_,8 @@
+    private BlockPos f_21360_ = BlockPos.f_121853_;
+    private float f_21341_ = -1.0F;
+ 
++   public boolean aware = true; // CraftBukkit
++
+    protected Mob(EntityType<? extends Mob> p_21368_, Level p_21369_) {
+       super(p_21368_, p_21369_);
+       this.f_21345_ = new GoalSelector(p_21369_.m_46658_());
+@@ -124,6 +_,12 @@
+          this.m_8099_();
+       }
+ 
++      // CraftBukkit start - default persistance to type's persistance value
++      this.f_21353_ = !m_6785_(0);
++   }
++
++   public void setPersistenceRequired(boolean persistenceRequired) {
++      this.f_21353_ = persistenceRequired;
+    }
+ 
+    protected void m_8099_() {
+@@ -202,6 +_,37 @@
  
     public void m_6710_(@Nullable LivingEntity p_21544_) {
        this.f_21362_ = p_21544_;
 +      net.minecraftforge.common.ForgeHooks.onLivingSetAttackTarget(this, p_21544_);
++   }
++
++   public boolean setGoalTarget(LivingEntity entityliving, EntityTargetEvent.TargetReason reason, boolean fireEvent) {
++      if (m_5448_() == entityliving) return false;
++      if (fireEvent) {
++         if (reason == EntityTargetEvent.TargetReason.UNKNOWN && m_5448_() != null && entityliving == null) {
++            reason = m_5448_().m_6084_() ? EntityTargetEvent.TargetReason.FORGOT_TARGET : EntityTargetEvent.TargetReason.TARGET_DIED;
++         }
++         if (reason == EntityTargetEvent.TargetReason.UNKNOWN) {
++            f_19853_.getCraftServer().getLogger().log(java.util.logging.Level.WARNING, "Unknown target reason, please report on the issue tracker", new Exception());
++         }
++         CraftLivingEntity ctarget = null;
++         if (entityliving != null) {
++            ctarget = (CraftLivingEntity) entityliving.getBukkitEntity();
++         }
++         EntityTargetLivingEntityEvent event = new EntityTargetLivingEntityEvent(this.getBukkitEntity(), ctarget, reason);
++         f_19853_.getCraftServer().getPluginManager().callEvent(event);
++         if (event.isCancelled()) {
++            return false;
++         }
++
++         if (event.getTarget() != null) {
++            entityliving = ((CraftLivingEntity) event.getTarget()).getHandle();
++         } else {
++            entityliving = null;
++         }
++      }
++      this.f_21362_ = entityliving;
++      return true;
++      // CraftBukkit end
     }
  
     public boolean m_6549_(EntityType<?> p_21399_) {
+@@ -465,7 +_,7 @@
+       return this.f_21355_ == null ? this.m_7582_() : this.f_21355_;
+    }
+ 
+-   protected ResourceLocation m_7582_() {
++   public ResourceLocation m_7582_() {
+       return super.m_5743_();
+    }
+ 
 @@ -489,7 +_,7 @@
     public void m_8107_() {
        super.m_8107_();

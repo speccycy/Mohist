@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/entity/ai/attributes/AttributeInstance.java
++++ b/net/minecraft/world/entity/ai/attributes/AttributeInstance.java
+@@ -66,7 +_,7 @@
+       return this.f_22090_.get(p_22110_.m_22209_()) != null;
+    }
+ 
+-   private void m_22133_(AttributeModifier p_22134_) {
++   public void m_22133_(AttributeModifier p_22134_) {
+       AttributeModifier attributemodifier = this.f_22090_.putIfAbsent(p_22134_.m_22209_(), p_22134_);
+       if (attributemodifier != null) {
+          throw new IllegalArgumentException("Modifier is already applied on this attribute!");

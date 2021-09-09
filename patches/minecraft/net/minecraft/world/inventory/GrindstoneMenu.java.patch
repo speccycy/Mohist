@@ -1,5 +1,32 @@
 --- a/net/minecraft/world/inventory/GrindstoneMenu.java
 +++ b/net/minecraft/world/inventory/GrindstoneMenu.java
+@@ -17,8 +_,26 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.phys.Vec3;
++import org.bukkit.craftbukkit.inventory.CraftInventoryGrindstone;
++import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+ 
+ public class GrindstoneMenu extends AbstractContainerMenu {
++
++   // CraftBukkit start
++   private CraftInventoryView bukkitEntity = null;
++   private org.bukkit.entity.Player player;
++
++   @Override
++   public CraftInventoryView getBukkitView() {
++      if (bukkitEntity != null) {
++         return bukkitEntity;
++      }
++
++      CraftInventoryGrindstone inventory = new CraftInventoryGrindstone(this.f_39560_, this.f_39559_);
++      bukkitEntity = new CraftInventoryView(this.player, inventory, this);
++      return bukkitEntity;
++   }
++   // CraftBukkit end
+    public static final int f_150565_ = 35;
+    public static final int f_150566_ = 0;
+    public static final int f_150567_ = 1;
 @@ -144,12 +_,13 @@
              }
  

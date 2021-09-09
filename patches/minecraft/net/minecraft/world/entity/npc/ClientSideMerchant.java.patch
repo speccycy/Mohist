@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/entity/npc/ClientSideMerchant.java
++++ b/net/minecraft/world/entity/npc/ClientSideMerchant.java
+@@ -9,6 +_,7 @@
+ import net.minecraft.world.item.trading.MerchantOffer;
+ import net.minecraft.world.item.trading.MerchantOffers;
+ import net.minecraft.world.level.Level;
++import org.bukkit.craftbukkit.inventory.CraftMerchant;
+ 
+ public class ClientSideMerchant implements Merchant {
+    private final Player f_35340_;
+@@ -59,5 +_,10 @@
+ 
+    public SoundEvent m_7596_() {
+       return SoundEvents.f_12509_;
++   }
++
++   @Override
++   public CraftMerchant getCraftMerchant() {
++      return null;
+    }
+ }

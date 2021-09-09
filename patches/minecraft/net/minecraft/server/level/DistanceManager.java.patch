@@ -1,5 +1,22 @@
 --- a/net/minecraft/server/level/DistanceManager.java
 +++ b/net/minecraft/server/level/DistanceManager.java
+@@ -33,6 +_,7 @@
+ import net.minecraft.world.level.chunk.LevelChunk;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.plugin.Plugin;
+ 
+ public abstract class DistanceManager {
+    static final Logger f_140758_ = LogManager.getLogger();
+@@ -40,7 +_,7 @@
+    static final int f_140759_ = 33 + ChunkStatus.m_62370_(ChunkStatus.f_62326_) - 2;
+    private static final int f_143206_ = 4;
+    final Long2ObjectMap<ObjectSet<ServerPlayer>> f_140760_ = new Long2ObjectOpenHashMap<>();
+-   final Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> f_140761_ = new Long2ObjectOpenHashMap<>();
++   public final Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> f_140761_ = new Long2ObjectOpenHashMap<>();
+    private final DistanceManager.ChunkTicketTracker f_140762_ = new DistanceManager.ChunkTicketTracker();
+    private final DistanceManager.FixedPlayerDistanceChunkTracker f_140763_ = new DistanceManager.FixedPlayerDistanceChunkTracker(8);
+    private final DistanceManager.PlayerTicketTracker f_140764_ = new DistanceManager.PlayerTicketTracker(33);
 @@ -52,6 +_,8 @@
     final Executor f_140770_;
     private long f_140771_;
@@ -20,10 +37,11 @@
     }
  
     void m_140818_(long p_140819_, Ticket<?> p_140820_) {
-@@ -158,6 +_,13 @@
+@@ -158,7 +_,20 @@
        }
  
        this.f_140762_.m_140715_(p_140819_, m_140797_(sortedarrayset), false);
+-   }
 +
 +      if (p_140820_.isForceTicks()) {
 +          SortedArraySet<Ticket<?>> tickets = forcedTickets.get(p_140819_);
@@ -31,9 +49,16 @@
 +              tickets.remove(p_140820_);
 +          }
 +      }
-    }
++   }
++
++   // CraftBukkit - start
++   public <T> boolean addTicketAtLevel(TicketType<T> ticketType, ChunkPos chunkcoordintpair, int level, T identifier) {
++      return false;
++   }
++   // CraftBukkit - end
  
     public <T> void m_140792_(TicketType<T> p_140793_, ChunkPos p_140794_, int p_140795_, T p_140796_) {
+       this.m_140784_(p_140794_.m_45588_(), new Ticket<>(p_140793_, p_140795_, p_140796_));
 @@ -178,6 +_,14 @@
        this.m_140818_(p_140851_.m_45588_(), ticket);
     }
@@ -49,15 +74,29 @@
     private SortedArraySet<Ticket<?>> m_140857_(long p_140858_) {
        return this.f_140761_.computeIfAbsent(p_140858_, (p_140867_) -> {
           return SortedArraySet.m_14246_(4);
-@@ -243,6 +_,11 @@
- 
-    public String m_140837_() {
+@@ -245,6 +_,11 @@
        return this.f_140766_.m_140558_();
-+   }
-+
+    }
+ 
 +   public boolean shouldForceTicks(long chunkPos) {
 +       SortedArraySet<Ticket<?>> tickets = forcedTickets.get(chunkPos);
 +       return tickets != null && !tickets.isEmpty();
++   }
++
+    private void m_143207_(String p_143208_) {
+       try {
+          FileOutputStream fileoutputstream = new FileOutputStream(new File(p_143208_));
+@@ -272,6 +_,13 @@
+          f_140758_.error(ioexception);
+       }
+ 
++   }
++
++   public boolean removeTicketAtLevel(TicketType<Plugin> pluginTicket, ChunkPos chunkPos, int i, Plugin plugin) {
++      return false;
++   }
++
++   public void removeAllTicketsFor(TicketType<Plugin> pluginTicket, int i, Plugin plugin) {
     }
  
-    private void m_143207_(String p_143208_) {
+    class ChunkTicketTracker extends ChunkTracker {

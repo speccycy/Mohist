@@ -8,6 +8,23 @@
  
        this.f_82090_.findAmbiguities((p_82108_, p_82109_, p_82110_, p_82111_) -> {
           f_82089_.warn("Ambiguity between arguments {} and {} with inputs: {}", this.f_82090_.getPath(p_82109_), this.f_82090_.getPath(p_82110_), p_82111_);
+@@ -202,7 +_,15 @@
+       });
+    }
+ 
+-   public int m_82117_(CommandSourceStack p_82118_, String p_82119_) {
++    public Commands() {
++
++    }
++
++   public int performCommand(CommandSourceStack commandlistenerwrapper, String s, String label, boolean stripSlash) {
++      return m_82117_(commandlistenerwrapper, s);
++   }
++
++    public int m_82117_(CommandSourceStack p_82118_, String p_82119_) {
+       StringReader stringreader = new StringReader(p_82119_);
+       if (stringreader.canRead() && stringreader.peek() == '/') {
+          stringreader.skip();
 @@ -212,7 +_,15 @@
  
        try {

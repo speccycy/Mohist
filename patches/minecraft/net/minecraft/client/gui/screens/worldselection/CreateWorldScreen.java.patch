@@ -9,6 +9,15 @@
     }
  
     private CreateWorldScreen(@Nullable Screen p_100861_, DataPackConfig p_100862_, WorldGenSettingsComponent p_100863_) {
+@@ -486,7 +_,7 @@
+    private boolean m_100977_() {
+       if (this.f_100831_ != null) {
+          try {
+-            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().m_78260_(this.f_100857_);
++            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().createAccess(this.f_100857_, null);
+ 
+             try {
+                Stream<Path> stream = Files.walk(this.f_100831_);
 @@ -596,6 +_,7 @@
           File file1 = path.toFile();
           if (this.f_100832_ == null) {

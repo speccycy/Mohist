@@ -1,0 +1,29 @@
+--- a/net/minecraft/world/inventory/LoomMenu.java
++++ b/net/minecraft/world/inventory/LoomMenu.java
+@@ -15,8 +_,26 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.entity.BannerPattern;
++import org.bukkit.craftbukkit.inventory.CraftInventoryLoom;
++import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+ 
+ public class LoomMenu extends AbstractContainerMenu {
++
++   // CraftBukkit start
++   private CraftInventoryView bukkitEntity = null;
++   private org.bukkit.entity.Player player;
++
++   @Override
++   public CraftInventoryView getBukkitView() {
++      if (bukkitEntity != null) {
++         return bukkitEntity;
++      }
++
++      CraftInventoryLoom inventory = new CraftInventoryLoom(this.f_39853_, this.f_39854_);
++      bukkitEntity = new CraftInventoryView(this.player, inventory, this);
++      return bukkitEntity;
++   }
++   // CraftBukkit end
+    private static final int f_150612_ = 4;
+    private static final int f_150613_ = 31;
+    private static final int f_150614_ = 31;

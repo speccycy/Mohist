@@ -322,7 +322,7 @@
           return p_91204_.m_46934_();
        }, (p_167886_, p_167887_, p_167888_, p_167889_) -> {
           RegistryWriteOps<JsonElement> registrywriteops = RegistryWriteOps.m_135767_(JsonOps.INSTANCE, p_91205_);
-@@ -1828,10 +_,10 @@
+@@ -1828,13 +_,13 @@
           });
           WorldGenSettings worldgensettings = dataresult.resultOrPartial(Util.m_137489_("Error reading worldgen settings after loading data packs: ", f_90982_::error)).orElse(p_91206_);
           return new PrimaryLevelData(p_91204_, worldgensettings, dataresult.lifecycle());
@@ -334,7 +334,11 @@
 +   private void doLoadLevel(String p_91220_, RegistryAccess.RegistryHolder p_91221_, Function<LevelStorageSource.LevelStorageAccess, DataPackConfig> p_91222_, Function4<LevelStorageSource.LevelStorageAccess, RegistryAccess.RegistryHolder, ResourceManager, DataPackConfig, WorldData> p_91223_, boolean p_91224_, Minecraft.ExperimentalDialogType p_91225_, boolean creating) {
        LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess;
        try {
-          levelstoragesource$levelstorageaccess = this.f_91031_.m_78260_(p_91220_);
+-         levelstoragesource$levelstorageaccess = this.f_91031_.m_78260_(p_91220_);
++         levelstoragesource$levelstorageaccess = this.f_91031_.createAccess(p_91220_, null);
+       } catch (IOException ioexception2) {
+          f_90982_.warn("Failed to read level {} data", p_91220_, ioexception2);
+          SystemToast.m_94852_(this, p_91220_);
 @@ -1843,12 +_,17 @@
        }
  
@@ -392,6 +396,15 @@
           });
           minecraft$serverstem.close();
  
+@@ -1968,7 +_,7 @@
+                this.m_91152_((Screen)null);
+ 
+                try {
+-                  LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_91031_.m_78260_(p_91145_);
++                  LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_91031_.createAccess(p_91145_, null);
+ 
+                   try {
+                      levelstoragesource$levelstorageaccess.m_78311_();
 @@ -2016,6 +_,7 @@
     }
  

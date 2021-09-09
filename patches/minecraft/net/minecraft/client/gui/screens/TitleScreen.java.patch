@@ -34,6 +34,24 @@
           this.m_96793_();
        }, button$ontooltip))).f_93623_ = flag;
     }
+@@ -178,7 +_,7 @@
+          LevelStorageSource levelstoragesource = this.f_96541_.m_91392_();
+ 
+          try {
+-            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = levelstoragesource.m_78260_("Demo_World");
++            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = levelstoragesource.createAccess("Demo_World", null);
+ 
+             try {
+                LevelSummary levelsummary = levelstoragesource$levelstorageaccess.m_78308_();
+@@ -211,7 +_,7 @@
+ 
+    private boolean m_96792_() {
+       try {
+-         LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().m_78260_("Demo_World");
++         LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().createAccess("Demo_World", null);
+ 
+          boolean flag;
+          try {
 @@ -283,6 +_,7 @@
  
           RenderSystem.m_157456_(0, f_96724_);
@@ -66,3 +84,12 @@
  
        }
     }
+@@ -349,7 +_,7 @@
+    private void m_96777_(boolean p_96778_) {
+       if (p_96778_) {
+          try {
+-            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().m_78260_("Demo_World");
++            LevelStorageSource.LevelStorageAccess levelstoragesource$levelstorageaccess = this.f_96541_.m_91392_().createAccess("Demo_World", null);
+ 
+             try {
+                levelstoragesource$levelstorageaccess.m_78311_();

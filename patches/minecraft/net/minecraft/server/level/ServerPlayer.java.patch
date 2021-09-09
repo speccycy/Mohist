@@ -1,5 +1,46 @@
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -134,6 +_,8 @@
+ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.WeatherType;
++import org.bukkit.craftbukkit.entity.CraftPlayer;
+ 
+ public class ServerPlayer extends Player {
+    private static final Logger f_8907_ = LogManager.getLogger();
+@@ -153,8 +_,8 @@
+    private float f_8917_ = -1.0E8F;
+    private int f_8918_ = -99999999;
+    private boolean f_8919_ = true;
+-   private int f_8920_ = -99999999;
+-   private int f_8921_ = 60;
++   public int f_8920_ = -99999999;
++   public int f_8921_ = 60;
+    private ChatVisiblity f_8922_ = ChatVisiblity.FULL;
+    private boolean f_8923_ = true;
+    private long f_8925_ = Util.m_137550_();
+@@ -219,6 +_,20 @@
+    public int f_8943_;
+    public boolean f_8944_;
+ 
++   // CraftBukkit start
++   public String displayName;
++   public Component listName;
++   public org.bukkit.Location compassTarget;
++   public int newExp = 0;
++   public int newLevel = 0;
++   public int newTotalExp = 0;
++   public boolean keepLevel = false;
++   public double maxHealthCache;
++   public boolean joining = true;
++   public boolean sentListPacket = false;
++   public Integer clientViewDistance;
++   // CraftBukkit end
++
+    public ServerPlayer(MinecraftServer p_143384_, ServerLevel p_143385_, GameProfile p_143386_) {
+       super(p_143385_, p_143385_.m_8900_(), p_143385_.m_8901_(), p_143386_);
+       this.f_8939_ = p_143384_.m_7950_(this);
 @@ -500,6 +_,7 @@
     }
  
@@ -69,9 +110,15 @@
           }
  
           return this;
-@@ -768,6 +_,9 @@
+@@ -767,7 +_,15 @@
+       this.f_36096_.m_38946_();
     }
  
++   @Override
++   public Either<Player.BedSleepingProblem, Unit> sleep(BlockPos p_9115_, boolean force) {
++      return m_7720_(p_9115_);
++   }
++
     public Either<Player.BedSleepingProblem, Unit> m_7720_(BlockPos p_9115_) {
 +      java.util.Optional<BlockPos> optAt = java.util.Optional.of(p_9115_);
 +      Player.BedSleepingProblem ret = net.minecraftforge.event.ForgeEventFactory.onPlayerSleepInBed(this, optAt);
@@ -96,6 +143,18 @@
        return this.m_9222_(p_9117_) || this.m_9222_(p_9117_.m_142300_(p_9118_.m_122424_()));
     }
  
+@@ -904,6 +_,11 @@
+       this.f_8940_ = this.f_8940_ % 100 + 1;
+    }
+ 
++   public int nextContainerCounterInt() {
++      this.f_8940_ = this.f_8940_ % 100 + 1;
++      return f_8940_; // CraftBukkit
++   }
++
+    public OptionalInt m_5893_(@Nullable MenuProvider p_9033_) {
+       if (p_9033_ == null) {
+          return OptionalInt.empty();
 @@ -924,6 +_,7 @@
              this.f_8906_.m_141995_(new ClientboundOpenScreenPacket(abstractcontainermenu.f_38840_, abstractcontainermenu.m_6772_(), p_9033_.m_5446_()));
              this.m_143399_(abstractcontainermenu);
@@ -211,7 +270,7 @@
        }
     }
  
-+   private String language = "en_us";
++   public String language = "en_us";
 +   /**
 +    * Returns the language last reported by the player as their local language.
 +    * Defaults to en_us if the value is unknown.
@@ -237,7 +296,7 @@
     public TextFilter m_8967_() {
        return this.f_8939_;
     }
-@@ -1481,10 +_,12 @@
+@@ -1481,10 +_,102 @@
  
     public boolean m_182294_(boolean p_182295_) {
        Inventory inventory = this.m_150109_();
@@ -248,6 +307,97 @@
           this.f_36096_.m_150404_(p_182293_, inventory.m_36056_());
        });
 -      return this.m_7197_(itemstack, false, true) != null;
+-   }
 +      return net.minecraftforge.common.ForgeHooks.onPlayerTossEvent(this, itemstack, true) != null;
-    }
++   }
++
++   // CraftBukkit start - Add per-player time and weather.
++   public long timeOffset = 0;
++   public boolean relativeTime = true;
++
++   public long getPlayerTime() {
++      if (this.relativeTime) {
++         // Adds timeOffset to the current server time.
++         return this.f_19853_.m_46468_() + this.timeOffset;
++      } else {
++         // Adds timeOffset to the beginning of this day.
++         return this.f_19853_.m_46468_() - (this.f_19853_.m_46468_() % 24000) + this.timeOffset;
++      }
++   }
++
++   public WeatherType weather = null;
++
++   public WeatherType getPlayerWeather() {
++      return this.weather;
++   }
++
++   public void setPlayerWeather(WeatherType type, boolean plugin) {
++      if (!plugin && this.weather != null) {
++         return;
++      }
++
++      if (plugin) {
++         this.weather = type;
++      }
++
++      if (type == WeatherType.DOWNFALL) {
++         this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132155_, 0));
++      } else {
++         this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132154_, 0));
++      }
++   }
++
++   private float pluginRainPosition;
++   private float pluginRainPositionPrevious;
++
++   public void updateWeather(float oldRain, float newRain, float oldThunder, float newThunder) {
++      if (this.weather == null) {
++         // Vanilla
++         if (oldRain != newRain) {
++            this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132160_, newRain));
++         }
++      } else {
++         // Plugin
++         if (pluginRainPositionPrevious != pluginRainPosition) {
++            this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132160_, pluginRainPosition));
++         }
++      }
++
++      if (oldThunder != newThunder) {
++         if (weather == WeatherType.DOWNFALL || weather == null) {
++            this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132161_, newThunder));
++         } else {
++            this.f_8906_.m_141995_(new ClientboundGameEventPacket(ClientboundGameEventPacket.f_132161_, 0));
++         }
++      }
++   }
++
++   public void tickWeather() {
++      if (this.weather == null) return;
++
++      pluginRainPositionPrevious = pluginRainPosition;
++      if (weather == WeatherType.DOWNFALL) {
++         pluginRainPosition += 0.01;
++      } else {
++         pluginRainPosition -= 0.01;
++      }
++
++      pluginRainPosition = Mth.m_14036_(pluginRainPosition, 0.0F, 1.0F);
++   }
++
++   public void resetPlayerWeather() {
++      this.weather = null;
++      this.setPlayerWeather(this.f_19853_.m_6106_().m_6533_() ? WeatherType.DOWNFALL : WeatherType.CLEAR, false);
++   }
++
++   @Override
++   public String toString() {
++      return super.toString() + "(" + this.m_7755_() + " at " + this.m_20185_() + "," + this.m_20186_() + "," + this.m_20189_() + ")";
++   }
++
++   @Override
++   public CraftPlayer getBukkitEntity() {
++      return (CraftPlayer) super.getBukkitEntity();
++   }
++   // CraftBukkit end
  }

@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/level/WorldGenLevel.java
++++ b/net/minecraft/world/level/WorldGenLevel.java
+@@ -3,6 +_,7 @@
+ import java.util.stream.Stream;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.SectionPos;
++import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.world.level.levelgen.feature.StructureFeature;
+ import net.minecraft.world.level.levelgen.structure.StructureStart;
+ 
+@@ -13,5 +_,10 @@
+ 
+    default boolean m_180807_(BlockPos p_181157_) {
+       return true;
++   }
++
++   @Override
++   default ServerLevel getMinecraftWorld() {
++      return m_6018_();
+    }
+ }

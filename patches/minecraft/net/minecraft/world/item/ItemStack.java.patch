@@ -13,12 +13,21 @@
           return Optional.ofNullable(p_150939_.f_41590_);
        })).apply(p_41697_, ItemStack::new);
     });
-+   private final net.minecraftforge.registries.IRegistryDelegate<Item> delegate;
++   private net.minecraftforge.registries.IRegistryDelegate<Item> delegate;
 +   private CompoundTag capNBT;
 +
     private static final Logger f_41585_ = LogManager.getLogger();
     public static final ItemStack f_41583_ = new ItemStack((Item)null);
     public static final DecimalFormat f_41584_ = Util.m_137469_(new DecimalFormat("#.##"), (p_41704_) -> {
+@@ -105,7 +_,7 @@
+    private int f_41587_;
+    private int f_41588_;
+    @Deprecated
+-   private final Item f_41589_;
++   private Item f_41589_;
+    private CompoundTag f_41590_;
+    private boolean f_41591_;
+    private Entity f_41592_;
 @@ -127,14 +_,19 @@
        p_41606_.ifPresent(this::m_41751_);
     }
@@ -225,12 +234,10 @@
        return multimap;
     }
  
-@@ -1005,6 +_,24 @@
- 
-    public boolean m_41614_() {
+@@ -1007,6 +_,24 @@
        return this.m_41720_().m_41472_();
-+   }
-+
+    }
+ 
 +   // FORGE START
 +   public void deserializeNBT(CompoundTag nbt) {
 +      final ItemStack itemStack = ItemStack.m_41712_(nbt);
@@ -247,6 +254,28 @@
 +         this.gatherCapabilities(provider);
 +         if (this.capNBT != null) deserializeCaps(this.capNBT);
 +      }
++   }
++
+    public SoundEvent m_41615_() {
+       return this.m_41720_().m_6023_();
+    }
+@@ -1020,7 +_,18 @@
+       return this.m_41720_().m_142602_();
     }
  
-    public SoundEvent m_41615_() {
+-   public static enum TooltipPart {
++   // CraftBukkit start
++   @Deprecated
++   public void setItem(Item item) {
++      this.f_41589_ = item;
++      this.delegate = item.delegate;
++   }
++
++   public void convertStack(int version) {
++   }
++   // CraftBukkit end
++
++    public static enum TooltipPart {
+       ENCHANTMENTS,
+       MODIFIERS,
+       UNBREAKABLE,

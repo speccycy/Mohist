@@ -1,5 +1,25 @@
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -62,6 +_,7 @@
+ import net.minecraft.world.level.storage.WorldData;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.command.CommandSender;
+ 
+ public class DedicatedServer extends MinecraftServer implements ServerInterface {
+    static final Logger f_139598_ = LogManager.getLogger();
+@@ -70,9 +_,9 @@
+    private static final Pattern f_139599_ = Pattern.compile("^[a-fA-F0-9]{40}$");
+    public final List<ConsoleInput> f_139600_ = Collections.synchronizedList(Lists.newArrayList());
+    private QueryThreadGs4 f_139601_;
+-   private final RconConsoleSource f_139602_;
++   public final RconConsoleSource f_139602_;
+    private RconThread f_139603_;
+-   private final DedicatedServerSettings f_139604_;
++   public DedicatedServerSettings f_139604_;
+    @Nullable
+    private MinecraftServerGui f_139605_;
+    @Nullable
 @@ -91,6 +_,7 @@
     public boolean m_7038_() throws IOException {
        Thread thread = new Thread("Server console handler") {
@@ -37,15 +57,31 @@
        }
     }
  
-@@ -556,6 +_,11 @@
- 
-    public boolean m_7779_(GameProfile p_139642_) {
+@@ -558,6 +_,11 @@
        return false;
-+   }
-+
+    }
+ 
 +   @Override //Forge: Enable formated text for colors in console.
 +   public void m_6352_(net.minecraft.network.chat.Component message, java.util.UUID p_108776_) {
 +      f_139598_.info(message.getString());
-    }
- 
++   }
++
     public int m_7186_(int p_139659_) {
+       return this.m_7913_().f_139723_ * p_139659_ / 100;
+    }
+@@ -601,4 +_,15 @@
+    public Component m_141958_() {
+       return this.f_142863_;
+    }
++
++   // CraftBukkit start
++   public boolean isDebugging() {
++      return false;
++   }
++
++   @Override
++   public CommandSender getBukkitSender(CommandSourceStack wrapper) {
++      return console;
++   }
++   // CraftBukkit end
+ }
