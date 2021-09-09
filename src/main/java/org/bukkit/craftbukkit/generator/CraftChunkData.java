@@ -151,7 +151,7 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
         }
 
         ChunkAccess access = getHandle();
-        return access.getBlockState(new BlockPos(access.getPos().d() + x, y, access.getPos().e() + z));
+        return access.getBlockState(new BlockPos(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z));
     }
 
     @Override
@@ -165,11 +165,11 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
         }
 
         ChunkAccess access = getHandle();
-        BlockPos blockPosition = new BlockPos(access.getPos().d() + x, y, access.getPos().e() + z);
+        BlockPos blockPosition = new BlockPos(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z);
         net.minecraft.world.level.block.state.BlockState oldBlockData = access.setBlockState(blockPosition, type, false);
 
         if (type.hasBlockEntity()) {
-            BlockEntity tileEntity = ((EntityBlock) type.getBlock()).createTile(blockPosition, type);
+            BlockEntity tileEntity = ((EntityBlock) type.getBlock()).newBlockEntity(blockPosition, type);
 
             // createTile can return null, currently only the case with material MOVING_PISTON
             if (tileEntity == null) {

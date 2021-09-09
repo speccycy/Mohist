@@ -13,7 +13,7 @@ public class CraftSkeleton extends CraftAbstractSkeleton implements Skeleton {
 
     @Override
     public boolean isConverting() {
-        return this.getHandle().fw(); // PAIL rename isStrayConverting
+        return this.getHandle().isShaking(); // PAIL rename isStrayConverting
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CraftSkeleton extends CraftAbstractSkeleton implements Skeleton {
             this.getHandle().conversionTime = -1;
             this.getHandle().getEntityData().set(net.minecraft.world.entity.monster.Skeleton.DATA_STRAY_CONVERSION_ID, false);
         } else {
-            this.getHandle().a(time); // PAIL rename startStrayConversion
+            this.getHandle().startFreezeConversion(time); // PAIL rename startStrayConversion
         }
     }
 

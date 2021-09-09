@@ -16,6 +16,8 @@ import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkBiomeContainer;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -106,17 +108,17 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
         WorldgenRandom random = new WorldgenRandom();
         int x = ichunkaccess.getPos().x;
         int z = ichunkaccess.getPos().z;
-        random.a(x, z); // PAIL rename surfaceSeeded
+        random.setBaseChunkSeed(x, z); // PAIL rename surfaceSeeded
         generator.generateSurface(this.world.getWorld(), random, x, z, chunkData);
 
         if (generator.shouldGenerateBedrock()) {
             random = new WorldgenRandom();
-            random.a(x, z); // PAIL rename surfaceSeeded
+            random.setBaseChunkSeed(x, z); // PAIL rename surfaceSeeded
             delegate.buildBedrock(ichunkaccess, random);
         }
 
         random = new WorldgenRandom();
-        random.a(x, z); // PAIL rename surfaceSeeded
+        random.setBaseChunkSeed(x, z); // PAIL rename surfaceSeeded
         generator.generateBedrock(this.world.getWorld(), random, x, z, chunkData);
         chunkData.breakLink();
 
@@ -130,7 +132,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
         this.random.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
 
         // Get default biome data for chunk
-        CustomBiomeGrid biomegrid = new CustomBiomeGrid(new ChunkBiomeContainer(world.t().d(net.minecraft.core.Registry.BIOME_REGISTRY), regionlimitedworldaccess, ichunkaccess.getPos(), this.getBiomeSource()));
+        CustomBiomeGrid biomegrid = new CustomBiomeGrid(new ChunkBiomeContainer(world.registryAccess().registryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY), regionlimitedworldaccess, ichunkaccess.getPos(), this.getBiomeSource()));
 
         ChunkData data;
         try {
@@ -164,7 +166,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
         }
 
         // Set biome grid
-        ((ProtoChunk) ichunkaccess).a(biomegrid.biome);
+        ((ProtoChunk) ichunkaccess).setBiomes(biomegrid.biome);
 
         if (craftData.getTiles() != null) {
             for (BlockPos pos : craftData.getTiles()) {
@@ -174,15 +176,15 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
                 net.minecraft.world.level.block.state.BlockState block = craftData.getTypeId(tx, ty, tz);
 
                 if (block.hasBlockEntity()) {
-                    TileEntity tile = ((ITileEntity) block.getBlock()).createTile(new BlockPos((x << 4) + tx, ty, (z << 4) + tz), block);
-                    ichunkaccess.setTileEntity(tile);
+                    BlockEntity tile = ((EntityBlock) block.getBlock()).newBlockEntity(new BlockPos((x << 4) + tx, ty, (z << 4) + tz), block);
+                    ichunkaccess.setBlockEntity(tile);
                 }
             }
         }
 
         // Apply captured light blocks
         for (BlockPos lightPosition : craftData.getLights()) {
-            ((ProtoChunk) ichunkaccess).j(new BlockPos((x << 4) + lightPosition.getX(), lightPosition.getY(), (z << 4) + lightPosition.getZ())); // PAIL rename addLightBlock
+            ((ProtoChunk) ichunkaccess).addLight(new BlockPos((x << 4) + lightPosition.getX(), lightPosition.getY(), (z << 4) + lightPosition.getZ())); // PAIL rename addLightBlock
         }
     }
 
@@ -197,7 +199,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
             WorldgenRandom random = new WorldgenRandom();
             int x = ichunkaccess.getPos().x;
             int z = ichunkaccess.getPos().z;
-            random.c(seed, 0, 0); // PAIL rename carvingSeeded
+            random.setBaseChunkSeed(seed, 0, 0); // PAIL rename carvingSeeded
 
             generator.generateCaves(this.world.getWorld(), random, x, z, chunkData);
             chunkData.breakLink();
@@ -250,14 +252,14 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     }
 
     @Override
-    public void addDecorations(WorldGenRegion regionlimitedworldaccess, StructureFeatureManager structuremanager) {
+    public void applyBiomeDecoration(WorldGenRegion regionlimitedworldaccess, StructureFeatureManager structuremanager) {
         super.addDecorations(regionlimitedworldaccess, structuremanager, generator.shouldGenerateDecorations());
     }
 
     @Override
-    public void addMobs(WorldGenRegion regionlimitedworldaccess) {
+    public void spawnOriginalMobs(WorldGenRegion regionlimitedworldaccess) {
         if (generator.shouldGenerateMobs()) {
-            delegate.addMobs(regionlimitedworldaccess);
+            delegate.spawnOriginalMobs(regionlimitedworldaccess);
         }
     }
 
@@ -267,8 +269,8 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     }
 
     @Override
-    public int getGenerationDepth() {
-        return delegate.getGenerationDepth();
+    public int getGenDepth() {
+        return delegate.getGenDepth();
     }
 
     @Override
@@ -277,7 +279,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     }
 
     @Override
-    protected Codec<? extends net.minecraft.world.level.chunk.ChunkGenerator> a() {
+    protected Codec<? extends net.minecraft.world.level.chunk.ChunkGenerator> codec() {
         throw new UnsupportedOperationException("Cannot serialize CustomChunkGenerator");
     }
 }

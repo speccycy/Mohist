@@ -42,15 +42,15 @@ public class CraftLimitedRegion extends CraftRegionAccessor implements LimitedRe
 
     public CraftLimitedRegion(WorldGenRegion access) {
         this.weakAccess = new WeakReference<>(access);
-        centerChunkX = access.a().x; // PAIL rename getCenter
-        centerChunkZ = access.a().z; // PAIL rename getCenter
+        centerChunkX = access.getCenter().x; // PAIL rename getCenter
+        centerChunkZ = access.getCenter().z; // PAIL rename getCenter
 
         // load entities which are already present
         for (int x = -(buffer >> 4); x <= (buffer >> 4); x++) {
             for (int z = -(buffer >> 4); z <= (buffer >> 4); z++) {
-                ProtoChunk chunk = (ProtoChunk) access.getChunkAt(centerChunkX + x, centerChunkZ + z);
-                for (CompoundTag compound : chunk.z()) {  // PAIL rename getGenerationEntities
-                    net.minecraft.world.entity.EntityType.fa(compound, access.getMinecraftWorld(), (entity) -> {  // PAIL rename fromNBTTag
+                ProtoChunk chunk = (ProtoChunk) access.getChunk(centerChunkX + x, centerChunkZ + z);
+                for (CompoundTag compound : chunk.getEntities()) {  // PAIL rename getGenerationEntities
+                    net.minecraft.world.entity.EntityType.loadEntityRecursive(compound, access.getMinecraftWorld(), (entity) -> {  // PAIL rename fromNBTTag
                         entity.generation = true;
                         entities.add(entity);
                         return entity;
@@ -84,8 +84,8 @@ public class CraftLimitedRegion extends CraftRegionAccessor implements LimitedRe
         WorldGenLevel access = getHandle();
         for (int x = -(buffer >> 4); x <= (buffer >> 4); x++) {
             for (int z = -(buffer >> 4); z <= (buffer >> 4); z++) {
-                ProtoChunk chunk = (ProtoChunk) access.getChunkAt(centerChunkX + x, centerChunkZ + z);
-                chunk.z().clear(); // PAIL rename getGenerationEntities
+                ProtoChunk chunk = (ProtoChunk) access.getChunk(centerChunkX + x, centerChunkZ + z);
+                chunk.getEntities().clear(); // PAIL rename getGenerationEntities
             }
         }
 
@@ -126,7 +126,7 @@ public class CraftLimitedRegion extends CraftRegionAccessor implements LimitedRe
     @Override
     public void setBiome(int x, int y, int z, net.minecraft.world.level.biome.Biome biomeBase) {
         Preconditions.checkArgument(isInRegion(x, y, z), "Coordinates %s, %s, %s are not in the region", x, y, z);
-        ChunkAccess chunk = getHandle().getChunkAt(x >> 4, z >> 4, ChunkStatus.EMPTY);
+        ChunkAccess chunk = getHandle().getChunk(x >> 4, z >> 4, ChunkStatus.EMPTY);
         chunk.getBiomes().setBiome(x >> 2, y >> 2, z >> 2, biomeBase);
     }
 

@@ -108,7 +108,7 @@ public class CraftFishHook extends CraftProjectile implements FishHook {
             return false;
         }
 
-        hook.reel(hook.hookedIn);
+        hook.pullEntity(hook.hookedIn);
         return true;
     }
 
