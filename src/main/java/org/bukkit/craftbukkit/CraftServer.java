@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -55,6 +56,7 @@ import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RepairItemRecipe;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
@@ -66,6 +68,7 @@ import net.minecraft.world.level.levelgen.PatrolSpawner;
 import net.minecraft.world.level.levelgen.PhantomSpawner;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.level.storage.PrimaryLevelData;
@@ -138,6 +141,7 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.generator.CraftChunkData;
 import org.bukkit.craftbukkit.generator.CraftWorldInfo;
 import org.bukkit.craftbukkit.generator.CustomWorldChunkManager;
+import org.bukkit.craftbukkit.generator.OldCraftChunkData;
 import org.bukkit.craftbukkit.help.SimpleHelpMap;
 import org.bukkit.craftbukkit.inventory.CraftBlastingRecipe;
 import org.bukkit.craftbukkit.inventory.CraftCampfireRecipe;
@@ -590,7 +594,7 @@ public final class CraftServer implements Server {
 
     @Override
     public boolean getGenerateStructures() {
-        return this.getProperties().a(this.getServer().getCustomRegistry()).shouldGenerateMapFeatures();
+        return this.getProperties().getWorldGenSettings(this.getServer().registryAccess()).generateFeatures();
     }
 
     @Override
@@ -736,7 +740,7 @@ public final class CraftServer implements Server {
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());
         commandsConfiguration = YamlConfiguration.loadConfiguration(getCommandsConfigFile());
 
-        console.settings = new DedicatedServerSettings(console.options);
+        console.settings = new DedicatedServerSettings(Paths.get("server.properties"));
         DedicatedServerProperties config = console.settings.getProperties();
 
         console.setPvpAllowed(config.pvp);
@@ -984,7 +988,7 @@ public final class CraftServer implements Server {
             properties.put("generate-structures", Objects.toString(creator.generateStructures()));
             properties.put("level-type", Objects.toString(creator.type().getName()));
 
-            WorldGenSettings generatorsettings = WorldGenSettings.create(console.getCustomRegistry(), properties);
+            WorldGenSettings generatorsettings = WorldGenSettings.create(console.registryAccess(), properties);
             worldSettings = new LevelSettings(name, GameType.byId(getDefaultGameMode().getValue()), hardcore, net.minecraft.world.Difficulty.EASY, false, new GameRules(), console.datapackconfiguration);
             worlddata = new PrimaryLevelData(worldSettings, generatorsettings, Lifecycle.stable());
         }
@@ -1233,7 +1237,7 @@ public final class CraftServer implements Server {
         };
         CraftingContainer inventoryCrafting = new CraftingContainer(container, 3, 3);
 
-        return getNMSRecipe(craftingMatrix, inventoryCrafting, (CraftWorld) world).map(IRecipe::toBukkitRecipe).orElse(null);
+        return getNMSRecipe(craftingMatrix, inventoryCrafting, (CraftWorld) world).map(net.minecraft.world.item.crafting.Recipe::toBukkitRecipe).orElse(null);
     }
 
     @Override
@@ -1262,12 +1266,12 @@ public final class CraftServer implements Server {
         }
 
         // Call Bukkit event to check for matrix/result changes.
-        net.minecraft.world.item.ItemStack result = CraftEventFactory.callPreCraftEvent(inventoryCrafting, craftResult, itemstack, container.getBukkitView(), recipe.orElse(null) instanceof RecipeRepair);
+        net.minecraft.world.item.ItemStack result = CraftEventFactory.callPreCraftEvent(inventoryCrafting, craftResult, itemstack, container.getBukkitView(), recipe.orElse(null) instanceof RepairItemRecipe);
 
         // Set the resulting matrix items
         for (int i = 0; i < craftingMatrix.length; i++) {
             Item remaining = inventoryCrafting.getContents().get(i).getItem().getCraftingRemainingItem();
-            craftingMatrix[i] = (remaining != null) ? CraftItemStack.asBukkitCopy(remaining.createItemStack()) : null;
+            craftingMatrix[i] = (remaining != null) ? CraftItemStack.asBukkitCopy(remaining.getDefaultInstance()) : null;
         }
 
         return CraftItemStack.asBukkitCopy(result);
@@ -1282,7 +1286,7 @@ public final class CraftServer implements Server {
             inventoryCrafting.setItem(i, CraftItemStack.asNMSCopy(craftingMatrix[i]));
         }
 
-        return getServer().getRecipeManager().craft(RecipeType.CRAFTING, inventoryCrafting, world.getHandle());
+        return getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventoryCrafting, world.getHandle());
     }
 
     @Override
@@ -1305,7 +1309,7 @@ public final class CraftServer implements Server {
         Preconditions.checkArgument(recipeKey != null, "recipeKey == null");
 
         ResourceLocation mcKey = CraftNamespacedKey.toMinecraft(recipeKey);
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipes : getServer().getRecipeManager().recipes.values()) {
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipes : getServer().getRecipeManager().recipesCB.values()) {
             if (recipes.remove(mcKey) != null) {
                 return true;
             }
@@ -1451,7 +1455,7 @@ public final class CraftServer implements Server {
     @Override
     @Deprecated
     public CraftMapView getMap(int id) {
-        WorldMap worldmap = console.getServerLevel(net.minecraft.world.level.World.OVERWORLD).a("map_" + id);
+        MapItemSavedData worldmap = console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData("map_" + id);
         if (worldmap == null) {
             return null;
         }
@@ -1464,8 +1468,8 @@ public final class CraftServer implements Server {
 
         net.minecraft.world.level.Level minecraftWorld = ((CraftWorld) world).getHandle();
         // creates a new map at world spawn with the scale of 3, with out tracking position and unlimited tracking
-        int newId = MapItem.createNewSavedData(minecraftWorld, minecraftWorld.getLevelData().a(), minecraftWorld.getLevelData().c(), 3, false, false, minecraftWorld.dimension());
-        return minecraftWorld.a(MapItem.a(newId)).mapView;
+        int newId = MapItem.createNewSavedData(minecraftWorld, minecraftWorld.getLevelData().getXSpawn(), minecraftWorld.getLevelData().getZSpawn(), 3, false, false, minecraftWorld.dimension());
+        return minecraftWorld.getMapData(MapItem.makeKey(newId)).mapView;
     }
 
     @Override
@@ -1531,7 +1535,7 @@ public final class CraftServer implements Server {
         OfflinePlayer result = getPlayerExact(name);
         if (result == null) {
             // This is potentially blocking :(
-            GameProfile profile = console.getProfileCache().get(name);
+            GameProfile profile = console.getProfileCache().get(name).orElse(null);
             if (profile == null) {
                 // Make an OfflinePlayer using an offline mode UUID since the name has no profile
                 result = getOfflinePlayer(new GameProfile(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name));
@@ -1659,7 +1663,7 @@ public final class CraftServer implements Server {
 
     @Override
     public GameMode getDefaultGameMode() {
-        return GameMode.getByValue(console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getServerWorldInfo().getGameType().getId());
+        return GameMode.getByValue(console.getLevel(net.minecraft.world.level.Level.OVERWORLD).serverLevelData.getGameType().getId());
     }
 
     @Override
@@ -1667,7 +1671,7 @@ public final class CraftServer implements Server {
         Validate.notNull(mode, "Mode cannot be null");
 
         for (World world : getWorlds()) {
-            ((CraftWorld) world).getHandle().getServerWorldInfo().setGameType(GameType.byId(mode.getValue()));
+            ((CraftWorld) world).getHandle().serverLevelData.setGameType(GameType.byId(mode.getValue()));
         }
     }
 

@@ -67,6 +67,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.Validate;
@@ -174,7 +175,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public InetSocketAddress getAddress() {
         if (getHandle().connection == null) return null;
 
-        SocketAddress addr = getHandle().connection.connection.getSocketAddress();
+        SocketAddress addr = getHandle().connection.connection.getRemoteAddress();
         if (addr instanceof InetSocketAddress) {
             return (InetSocketAddress) addr;
         } else {
@@ -395,7 +396,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
 
         float f = (float) Math.pow(2.0D, (note - 12.0D) / 12.0D);
-        getHandle().connection.send(new ClientboundSoundPacket(CraftSound.getSoundEffect("block.note_block." + instrumentName), net.minecraft.sounds.SoundCategory.RECORDS, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 3.0f, f));
+        getHandle().connection.send(new ClientboundSoundPacket(CraftSound.getSoundEffect("block.note_block." + instrumentName), net.minecraft.sounds.SoundSource.RECORDS, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 3.0f, f));
     }
 
     @Override
@@ -457,7 +458,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
                 break;
         }
         float f = (float) Math.pow(2.0D, (note.getId() - 12.0D) / 12.0D);
-        getHandle().connection.send(new ClientboundSoundPacket(CraftSound.getSoundEffect("block.note_block." + instrumentName), net.minecraft.sounds.SoundCategory.RECORDS, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 3.0f, f));
+        getHandle().connection.send(new ClientboundSoundPacket(CraftSound.getSoundEffect("block.note_block." + instrumentName), net.minecraft.sounds.SoundSource.RECORDS, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 3.0f, f));
     }
 
     @Override
@@ -534,7 +535,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         Preconditions.checkArgument(block != null, "Block cannot be null");
         Preconditions.checkArgument(block.getWorld().equals(getWorld()), "Cannot break blocks across worlds");
 
-        return getHandle().gameMode.breakBlock(new BlockPos(block.getX(), block.getY(), block.getZ()));
+        return getHandle().gameMode.destroyBlock(new BlockPos(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
@@ -592,10 +593,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
 
         Component[] components = CraftSign.sanitizeLines(lines);
-        SignBlockEntity sign = new SignBlockEntity(new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), Blocks.OAK_SIGN.getBlockData());
+        SignBlockEntity sign = new SignBlockEntity(new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), Blocks.OAK_SIGN.defaultBlockState());
         sign.setColor(net.minecraft.world.item.DyeColor.byId(dyeColor.getWoolData()));
         for (int i = 0; i < components.length; i++) {
-            sign.a(i, components[i]);
+            sign.setMessage(i, components[i]);
         }
 
         getHandle().connection.send(sign.getUpdatePacket());
@@ -647,7 +648,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             }
         }
 
-        ClientboundMapItemDataPacket packet = new ClientboundMapItemDataPacket(map.getId(), map.getScale().getValue(), map.isLocked(), icons, new WorldMap.b(0, 0, 128, 128, data.buffer));
+        ClientboundMapItemDataPacket packet = new ClientboundMapItemDataPacket(map.getId(), map.getScale().getValue(), map.isLocked(), icons, new MapItemSavedData.MapPatch(0, 0, 128, 128, data.buffer));
         getHandle().connection.send(packet);
     }
 
@@ -752,7 +753,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Deprecated
     @Override
     public void updateInventory() {
-        getHandle().containerMenu.updateInventory();
+        getHandle().containerMenu.sendAllDataToRemote();
     }
 
     @Override
@@ -775,7 +776,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             Optional<Vec3> spawnLoc = net.minecraft.world.entity.player.Player.findRespawnPositionAndUseSpawnBlock(world, bed, getHandle().getRespawnAngle(), getHandle().isRespawnForced(), true);
             if (spawnLoc.isPresent()) {
                 Vec3 vec = spawnLoc.get();
-                return new Location(world.getWorld(), vec.x, vec.y, vec.z, getHandle().getSpawnAngle(), 0);
+                return new Location(world.getWorld(), vec.x, vec.y, vec.z, getHandle().getRespawnAngle(), 0);
             }
         }
         return null;
@@ -1085,7 +1086,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         ServerPlayer other = ((CraftPlayer) player).getHandle();
         ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
         if (entry != null) {
-            entry.clear(getHandle());
+            entry.removePlayer(getHandle());
         }
 
         // Remove the hidden player from this player user list, if they're on it
@@ -1130,7 +1131,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
         if (entry != null && !entry.seenBy.contains(getHandle())) {
-            entry.updateTrackingState(getHandle());
+            entry.updatePlayer(getHandle());
         }
     }
 
