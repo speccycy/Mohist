@@ -57,8 +57,8 @@ ext {
     INSTALLER_VERSION = '2.1.5'
 
     GIT_INFO = gradleutils.gitInfo
-    VERSION = '1.17.1-37.0.39'
-    FORGE_VERSION = '37.0.39'
+    VERSION = '1.17.1-37.0.58'
+    FORGE_VERSION = '37.0.58'
 
     SPECIAL_SOURCE = 'net.md-5:SpecialSource:1.10.0'
     VIGNETTE = 'net.minecraftforge.lex:vignette:0.2.0.16'
@@ -550,7 +550,7 @@ project(':fmlonly') {
         }
     }
 
-    task installerJson(type: InstallerJson) {
+    task installerJson(type: InstallerJson, dependsOn: 'signUniversalJar') {
         icon = rootProject.file('icon.ico')
         packedDependencies = PACKED_DEPS
 
@@ -976,7 +976,7 @@ project(':forge') {
         }
     }
 
-    task installerJson(type: InstallerJson, dependsOn: [launcherJson, genClientBinPatches, applyClientBinPatches, applyServerBinPatches]) {
+    task installerJson(type: InstallerJson, dependsOn: [launcherJson, genClientBinPatches, applyClientBinPatches, applyServerBinPatches, 'signUniversalJar']) {
         ext {
             // remove :fatjar
             BIN_PATCHER = BINPATCH_TOOL.substring(0, BINPATCH_TOOL.length() - 1 - BINPATCH_TOOL.split(':')[3].length())

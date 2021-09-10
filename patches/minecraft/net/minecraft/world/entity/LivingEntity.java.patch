@@ -688,6 +688,24 @@
     public AABB m_6921_() {
        if (this.m_6844_(EquipmentSlot.HEAD).m_150930_(Items.f_42683_)) {
           float f = 0.5F;
+@@ -3210,6 +_,8 @@
+    }
+ 
+    public static EquipmentSlot m_147233_(ItemStack p_147234_) {
++      final EquipmentSlot slot = p_147234_.getEquipmentSlot();
++      if (slot != null) return slot; // FORGE: Allow modders to set a non-default equipment slot for a stack; e.g. a non-armor chestplate-slot item
+       Item item = p_147234_.m_41720_();
+       if (!p_147234_.m_150930_(Items.f_42047_) && (!(item instanceof BlockItem) || !(((BlockItem)item).m_40614_() instanceof AbstractSkullBlock))) {
+          if (item instanceof ArmorItem) {
+@@ -3217,7 +_,7 @@
+          } else if (p_147234_.m_150930_(Items.f_42741_)) {
+             return EquipmentSlot.CHEST;
+          } else {
+-            return p_147234_.m_150930_(Items.f_42740_) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
++            return p_147234_.canPerformAction(net.minecraftforge.common.ToolActions.SHIELD_BLOCK) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+          }
+       } else {
+          return EquipmentSlot.HEAD;
 @@ -3279,4 +_,12 @@
        this.m_19890_(d0, d1, d2, f, f1);
        this.m_20334_((double)((float)p_147206_.m_131560_() / 8000.0F), (double)((float)p_147206_.m_131561_() / 8000.0F), (double)((float)p_147206_.m_131562_() / 8000.0F));
