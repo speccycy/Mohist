@@ -656,11 +656,18 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         world.captureTreeGeneration = true;
+        world.captureBlockStates = true;
         boolean grownTree = generateTree(loc, type);
         world.captureTreeGeneration = false;
+        world.captureBlockStates = false;
         if (grownTree) { // Copy block data to delegate
             for (BlockState blockstate : world.capturedBlockStates.values()) {
-                blockstate.update(true);
+                BlockPos position = ((CraftBlockState) blockstate).getPosition();
+                net.minecraft.world.level.block.state.BlockState oldBlock = world.getBlockState(position);
+                int flag = ((CraftBlockState) blockstate).getFlag();
+                delegate.setBlockData(blockstate.getX(), blockstate.getY(), blockstate.getZ(), blockstate.getBlockData());
+                net.minecraft.world.level.block.state.BlockState newBlock = world.getBlockState(position);
+                world.notifyAndUpdatePhysics(position, null, oldBlock, newBlock, newBlock, flag, 512);
             }
             world.capturedBlockStates.clear();
             return true;

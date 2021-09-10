@@ -64,12 +64,13 @@ public class CraftEnderDragon extends CraftComplexLivingEntity implements EnderD
 
     @Override
     public BossBar getBossBar() {
-        return getDragonBattle().getBossBar();
+        DragonBattle battle = getDragonBattle();
+        return battle != null ? battle.getBossBar() : null;
     }
 
     @Override
     public DragonBattle getDragonBattle() {
-        return new CraftDragonBattle(getHandle().getDragonFight());
+        return getHandle().getDragonFight() != null ? new CraftDragonBattle(getHandle().getDragonFight()) : null;
     }
 
     @Override

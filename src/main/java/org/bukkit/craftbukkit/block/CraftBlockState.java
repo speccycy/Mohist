@@ -33,12 +33,7 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
         this.data = ((CraftBlock) block).getNMS();
         this.flag = 3;
 
-        LevelAccessor generatorAccess = ((CraftBlock) block).getHandle();
-        if (generatorAccess instanceof net.minecraft.world.level.Level) {
-            this.weakWorld = null;
-        } else {
-            this.weakWorld = new WeakReference<>(generatorAccess);
-        }
+        setWorldHandle(((CraftBlock) block).getHandle());
     }
 
     public CraftBlockState(final Block block, int flag) {
@@ -59,6 +54,14 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
 
     public static CraftBlockState getBlockState(LevelAccessor world, net.minecraft.core.BlockPos pos, int flag) {
         return new CraftBlockState(CraftBlock.at(world, pos), flag);
+    }
+
+    public void setWorldHandle(LevelAccessor generatorAccess) {
+        if (generatorAccess instanceof net.minecraft.world.level.Level) {
+            this.weakWorld = null;
+        } else {
+            this.weakWorld = new WeakReference<>(generatorAccess);
+        }
     }
 
     public LevelAccessor getWorldHandle() {

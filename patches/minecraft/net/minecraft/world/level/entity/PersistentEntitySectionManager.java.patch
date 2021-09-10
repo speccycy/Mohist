@@ -1,0 +1,53 @@
+--- a/net/minecraft/world/level/entity/PersistentEntitySectionManager.java
++++ b/net/minecraft/world/level/entity/PersistentEntitySectionManager.java
+@@ -12,10 +_,7 @@
+ import java.io.IOException;
+ import java.io.UncheckedIOException;
+ import java.io.Writer;
+-import java.util.List;
+-import java.util.Queue;
+-import java.util.Set;
+-import java.util.UUID;
++import java.util.*;
+ import java.util.function.Consumer;
+ import java.util.stream.Collectors;
+ import java.util.stream.Stream;
+@@ -178,7 +_,7 @@
+       });
+    }
+ 
+-   private void m_157555_(long p_157556_) {
++   public void m_157555_(long p_157556_) {
+       PersistentEntitySectionManager.ChunkLoadStatus persistententitysectionmanager$chunkloadstatus = this.f_157498_.get(p_157556_);
+       if (persistententitysectionmanager$chunkloadstatus == PersistentEntitySectionManager.ChunkLoadStatus.FRESH) {
+          this.m_157562_(p_157556_);
+@@ -301,7 +_,15 @@
+    }
+ 
+    public void close() throws IOException {
+-      this.m_157561_();
++      // CraftBukkit start - add save boolean
++      close(true);
++   }
++
++   public void close(boolean save) throws IOException {
++      if (save) {
++         this.m_157561_();
++      }
++      // CraftBukkit end
+       this.f_157493_.close();
+    }
+ 
+@@ -347,6 +_,12 @@
+    public String m_157572_() {
+       return this.f_157491_.size() + "," + this.f_157494_.m_156821_() + "," + this.f_157495_.m_156887_() + "," + this.f_157498_.size() + "," + this.f_157497_.size() + "," + this.f_157500_.size() + "," + this.f_157499_.size();
+    }
++
++   // CraftBukkit start - add method to get all entities in chunk
++   public List<Entity> getEntities(ChunkPos chunkCoordIntPair) {
++      return f_157495_.m_156888_(chunkCoordIntPair.m_45588_()).flatMap(EntitySection::m_156845_).map(entiy -> (Entity) entiy).collect(Collectors.toList());
++   }
++   // CraftBukkit end
+ 
+    class Callback implements EntityInLevelCallback {
+       private final T f_157609_;

@@ -242,7 +242,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
 
     @Override
     public void setBlockData(int x, int y, int z, BlockData blockData) {
-        getHandle().setBlock(new BlockPos(x, y, z), ((CraftBlockData) blockData).getState(), 3);
+        CraftBlock.at(getHandle(), new BlockPos(x, y, z)).setTypeAndData(((CraftBlockData) blockData).getState(), true);
     }
 
     @Override
@@ -266,6 +266,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         BlockStateListPopulator populator = new BlockStateListPopulator(getHandle());
         boolean result = generateTree(populator, getHandle().getMinecraftWorld().getChunkSource().generator, pos, random, treeType);
+        populator.refreshTiles();
 
         for (BlockState blockState : populator.getList()) {
             if (consumer != null) {

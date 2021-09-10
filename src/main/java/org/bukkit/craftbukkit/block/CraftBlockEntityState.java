@@ -42,6 +42,10 @@ public class CraftBlockEntityState<T extends BlockEntity> extends CraftBlockStat
         this.load(snapshot);
     }
 
+    public void refreshSnapshot() {
+        this.load(tileEntity);
+    }
+
     private T createSnapshot(T tileEntity) {
         if (tileEntity == null) {
             return null;

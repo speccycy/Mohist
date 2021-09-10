@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.WorldGenLevel;
@@ -115,6 +117,22 @@ public class CraftLimitedRegion extends CraftRegionAccessor implements LimitedRe
     @Override
     public boolean isInRegion(int x, int y, int z) {
         return region.contains(x, y, z);
+    }
+
+    @Override
+    public List<BlockState> getTileEntities() {
+        List<BlockState> blockStates = new ArrayList<>();
+
+        for (int x = -(buffer >> 4); x <= (buffer >> 4); x++) {
+            for (int z = -(buffer >> 4); z <= (buffer >> 4); z++) {
+                ProtoChunk chunk = (ProtoChunk) getHandle().getChunk(centerChunkX + x, centerChunkZ + z);
+                for (BlockPos position : chunk.getBlockEntitiesPos()) { // PAIL rename getTilePositions
+                    blockStates.add(getBlockState(position.getX(), position.getY(), position.getZ()));
+                }
+            }
+        }
+
+        return blockStates;
     }
 
     @Override

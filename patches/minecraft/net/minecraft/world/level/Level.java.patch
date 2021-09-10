@@ -263,12 +263,10 @@
                    blockstate.m_60690_(this, blockpos, p_46719_, p_46718_, false);
                 }
              }
-@@ -856,6 +_,18 @@
- 
-    public BiomeManager m_7062_() {
+@@ -858,6 +_,18 @@
        return this.f_46420_;
-+   }
-+
+    }
+ 
 +   private double maxEntityRadius = 2.0D;
 +   @Override
 +   public double getMaxEntityRadius() {
@@ -279,6 +277,16 @@
 +      if (value > maxEntityRadius)
 +         maxEntityRadius = value;
 +      return maxEntityRadius;
-    }
- 
++   }
++
     public final boolean m_46659_() {
+       return this.f_46424_;
+    }
+@@ -884,4 +_,7 @@
+       }
+ 
+    }
++
++    public void notifyAndUpdatePhysics(BlockPos position, Object o, BlockState oldBlock, BlockState newBlock, BlockState newBlock1, int flag, int i) {
++    }
+ }

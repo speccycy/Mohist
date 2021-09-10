@@ -76,6 +76,7 @@ public class Step extends TexturedMaterial {
     /**
      * {@inheritDoc}
      *
+     * @deprecated Magic value
      */
     @Override
     protected int getTextureIndex() {
@@ -85,6 +86,7 @@ public class Step extends TexturedMaterial {
     /**
      * {@inheritDoc}
      *
+     * @deprecated Magic value
      */
     @Deprecated
     @Override
