@@ -253,7 +253,7 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
 
     @Override
     public void applyBiomeDecoration(WorldGenRegion regionlimitedworldaccess, StructureFeatureManager structuremanager) {
-        super.applyBiomeDecoration(regionlimitedworldaccess, structuremanager, generator.shouldGenerateDecorations());
+        super.addDecorations(regionlimitedworldaccess, structuremanager, generator.shouldGenerateDecorations());
     }
 
     @Override

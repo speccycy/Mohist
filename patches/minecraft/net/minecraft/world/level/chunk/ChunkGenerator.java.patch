@@ -1,23 +1,30 @@
 --- a/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -195,6 +_,14 @@
+@@ -212,7 +_,38 @@
+       }
     }
  
-    public void m_7399_(WorldGenRegion p_62168_, StructureFeatureManager p_62169_) {
-+      // CraftBukkit start
-+      applyBiomeDecoration(p_62168_, p_62169_, true);
-+   }
-+
-+   public void applyBiomeDecoration(WorldGenRegion p_62168_, StructureFeatureManager p_62169_, boolean vanilla) {
++   public void addDecorations(WorldGenRegion p_62168_, StructureFeatureManager p_62169_, boolean vanilla) {
 +      if (vanilla) {
 +         m_7399_(p_62168_, p_62169_);
 +      }
-       ChunkPos chunkpos = p_62168_.m_143488_();
-       int i = chunkpos.m_45604_();
-       int j = chunkpos.m_45605_();
-@@ -213,6 +_,16 @@
-    }
- 
++      org.bukkit.World world = p_62168_.getMinecraftWorld().getWorld();
++      // only call when a populator is present (prevents unnecessary entity conversion)
++      if (world.getPopulators().size() != 0) {
++         org.bukkit.craftbukkit.generator.CraftLimitedRegion limitedRegion = new org.bukkit.craftbukkit.generator.CraftLimitedRegion(p_62168_);
++         int x = p_62168_.m_143488_().f_45578_;
++         int z = p_62168_.m_143488_().f_45579_;
++         for (org.bukkit.generator.BlockPopulator populator : world.getPopulators()) {
++            WorldgenRandom seededrandom = new WorldgenRandom();
++            seededrandom.m_64690_(p_62168_.m_7328_(), x, z);
++            populator.populate(world, seededrandom, x, z, limitedRegion);
++         }
++         limitedRegion.saveEntities();
++         limitedRegion.breakLink();
++      }
++      // CraftBukkit end
++   }
++
     public abstract void m_7338_(WorldGenRegion p_62170_, ChunkAccess p_62171_);
 +
 +   // CraftBukkit start - spilt surface and bedrock generation code

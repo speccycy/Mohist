@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNBTTagConfigSerializer;
 import org.bukkit.persistence.PersistentDataAdapterContext;
