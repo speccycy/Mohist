@@ -1,11 +1,31 @@
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -76,6 +_,8 @@
+@@ -11,6 +_,7 @@
+ import java.net.Proxy;
+ import java.nio.file.Path;
+ import java.nio.file.Paths;
++import java.util.Arrays;
+ import java.util.Optional;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.function.BooleanSupplier;
+@@ -76,6 +_,20 @@
        OptionSpec<Integer> optionspec11 = optionparser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(-1);
        OptionSpec<String> optionspec12 = optionparser.accepts("serverId").withRequiredArg();
        OptionSpec<String> optionspec13 = optionparser.nonOptions();
 +      optionparser.accepts("allowUpdates").withRequiredArg().ofType(Boolean.class).defaultsTo(Boolean.TRUE); // Forge: allow mod updates to proceed
 +      optionparser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(new File(".")); //Forge: Consume this argument, we use it in the launcher, and the client side.
++
++      optionparser.acceptsAll(Arrays.asList("b", "bukkit-settings"), "File for bukkit settings")
++              .withRequiredArg()
++              .ofType(File.class)
++              .defaultsTo(new File("bukkit.yml"))
++              .describedAs("Yml file");
++
++      optionparser.acceptsAll(Arrays.asList("C", "commands-settings"), "File for command settings")
++              .withRequiredArg()
++              .ofType(File.class)
++              .defaultsTo(new File("commands.yml"))
++              .describedAs("Yml file");
  
        try {
           OptionSet optionset = optionparser.parse(p_129699_);
@@ -64,8 +84,11 @@
              worlddata = new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable());
           }
  
-@@ -173,7 +_,7 @@
+@@ -171,9 +_,10 @@
+             dedicatedserver1.m_129801_(optionset.valueOf(optionspec11));
+             dedicatedserver1.m_129975_(optionset.has(optionspec2));
              dedicatedserver1.m_129948_(optionset.valueOf(optionspec12));
++            dedicatedserver1.options = optionset;
              boolean flag1 = !optionset.has(optionspec) && !optionset.valuesOf(optionspec13).contains("nogui");
              if (flag1 && !GraphicsEnvironment.isHeadless()) {
 -               dedicatedserver1.m_139667_();
