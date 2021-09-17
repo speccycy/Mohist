@@ -58,8 +58,8 @@ ext {
     MIXIN_VERSION = '0.8.4'
 
     GIT_INFO = gradleutils.gitInfo
-    VERSION = '1.17.1-37.0.59'
-    FORGE_VERSION = '37.0.59'
+    VERSION = '1.17.1-37.0.61'
+    FORGE_VERSION = '37.0.61'
 
     SPECIAL_SOURCE = 'net.md-5:SpecialSource:1.10.0'
     VIGNETTE = 'net.minecraftforge.lex:vignette:0.2.0.16'
@@ -189,7 +189,7 @@ def sharedDeps = {
     installer 'org.jline:jline-terminal:3.12.1' //Dep of TerminaalConsoleeAppender
     installer 'net.sf.jopt-simple:jopt-simple:5.0.4'
     installer "org.spongepowered:mixin:${MIXIN_VERSION}"
-    installer 'org.openjdk.nashorn:nashorn-core:15.1.1'
+    installer 'org.openjdk.nashorn:nashorn-core:15.3'
     installer 'com.google.guava:guava:21.0'
     installer 'com.google.code.gson:gson:2.8.0'
 
