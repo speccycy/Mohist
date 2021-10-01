@@ -205,10 +205,12 @@
        Entity entity = this.m_142646_().m_142694_(p_8854_.m_142081_());
        if (entity != null) {
           f_8566_.warn("Force-added player with duplicate UUID {}", (Object)p_8854_.m_142081_().toString());
-@@ -747,21 +_,39 @@
+@@ -746,22 +_,39 @@
+          this.m_143261_((ServerPlayer)entity, Entity.RemovalReason.DISCARDED);
        }
  
-       this.f_143244_.m_157533_(p_8854_);
+-      this.f_143244_.m_157533_(p_8854_);
++      this.f_143244_.addNewEntityWithoutEvent(p_8854_);
 +      p_8854_.onAddedToWorld();
     }
  
@@ -218,7 +220,6 @@
 +         // LOGGER.warn("Tried to add entity {} but it was marked as removed already", (Object)EntityType.getKey(p_8873_.getType()));
           return false;
        } else {
-+         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(p_8873_, this))) return false;
           return this.f_143244_.m_157533_(p_8873_);
        }
     }
@@ -229,7 +230,7 @@
 +         // LOGGER.warn("Tried to add entity {} but it was marked as removed already", EntityTypes.getName(entity.getEntityType())); // CraftBukkit
 +         return false;
 +      } else {
-+         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(entity, this)) || !CraftEventFactory.doEntityAddEventCalling(this, entity, spawnReason)) {
++         if (!CraftEventFactory.doEntityAddEventCalling(this, entity, spawnReason)) {
 +            return false;
 +         }
 +         // CraftBukkit end

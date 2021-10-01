@@ -19,16 +19,12 @@
 
 package net.minecraftforge.fluids.capability;
 
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.capabilities.*;
 
 public class CapabilityFluidHandler
 {
-    @CapabilityInject(IFluidHandler.class)
-    public static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY = null;
-    @CapabilityInject(IFluidHandlerItem.class)
-    public static Capability<IFluidHandlerItem> FLUID_HANDLER_ITEM_CAPABILITY = null;
+    public static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static Capability<IFluidHandlerItem> FLUID_HANDLER_ITEM_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
     public static void register(RegisterCapabilitiesEvent event)
     {
