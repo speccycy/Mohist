@@ -9,20 +9,6 @@
     static final Logger f_62771_ = LogManager.getLogger();
     private static final TickingBlockEntity f_156361_ = new TickingBlockEntity() {
        public void m_142224_() {
-@@ -82,10 +_,10 @@
-    private final Map<BlockPos, CompoundTag> f_62774_ = Maps.newHashMap();
-    private final Map<BlockPos, LevelChunk.RebindableTickingBlockEntityWrapper> f_156362_ = Maps.newHashMap();
-    private boolean f_62775_;
--   final Level f_62776_;
--   private final Map<Heightmap.Types, Heightmap> f_62777_ = Maps.newEnumMap(Heightmap.Types.class);
-+   public final Level f_62776_;
-+   public final Map<Heightmap.Types, Heightmap> f_62777_ = Maps.newEnumMap(Heightmap.Types.class);
-    private final UpgradeData f_62778_;
--   private final Map<BlockPos, BlockEntity> f_62779_ = Maps.newHashMap();
-+   public final Map<BlockPos, BlockEntity> f_62779_ = Maps.newHashMap();
-    private final Map<StructureFeature<?>, StructureStart<?>> f_62781_ = Maps.newHashMap();
-    private final Map<StructureFeature<?>, LongSet> f_62782_ = Maps.newHashMap();
-    private final ShortList[] f_62783_;
 @@ -101,11 +_,24 @@
     private volatile boolean f_62793_;
     private final Int2ObjectMap<GameEventDispatcher> f_156363_;

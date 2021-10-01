@@ -9,24 +9,10 @@
  
  public class BeaconBlockEntity extends BlockEntity implements MenuProvider {
     private static final int f_155085_ = 4;
-@@ -48,15 +_,26 @@
-    private static final int f_155086_ = 10;
-    List<BeaconBlockEntity.BeaconBeamSection> f_58648_ = Lists.newArrayList();
-    private List<BeaconBlockEntity.BeaconBeamSection> f_58649_ = Lists.newArrayList();
--   int f_58650_;
-+   public int f_58650_;
-    private int f_58651_;
+@@ -57,6 +_,15 @@
     @Nullable
-+   public
-    MobEffect f_58652_;
-    @Nullable
-+   public
-    MobEffect f_58653_;
-    @Nullable
--   private Component f_58654_;
--   private LockCode f_58655_ = LockCode.f_19102_;
-+   public Component f_58654_;
-+   public LockCode f_58655_ = LockCode.f_19102_;
+    public Component f_58654_;
+    public LockCode f_58655_ = LockCode.f_19102_;
 +   // CraftBukkit start - add fields and methods
 +   public PotionEffect getPrimaryEffect() {
 +      return null;

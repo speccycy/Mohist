@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/BaseSpawner.java
 +++ b/net/minecraft/world/level/BaseSpawner.java
-@@ -30,23 +_,23 @@
+@@ -30,7 +_,7 @@
     private static final Logger f_45441_ = LogManager.getLogger();
     private static final int f_151303_ = 1;
     private static WeightedRandomList<SpawnData> f_151304_ = WeightedRandomList.m_146332_();
@@ -9,21 +9,7 @@
     private WeightedRandomList<SpawnData> f_45443_ = f_151304_;
     private SpawnData f_45444_ = new SpawnData();
     private double f_45445_;
-    private double f_45446_;
--   private int f_45447_ = 200;
--   private int f_45448_ = 800;
--   private int f_45449_ = 4;
-+   public int f_45447_ = 200;
-+   public int f_45448_ = 800;
-+   public int f_45449_ = 4;
-    @Nullable
-    private Entity f_45450_;
--   private int f_45451_ = 6;
--   private int f_45452_ = 16;
--   private int f_45453_ = 4;
-+   public int f_45451_ = 6;
-+   public int f_45452_ = 16;
-+   public int f_45453_ = 4;
+@@ -46,7 +_,7 @@
     private final Random f_151305_ = new Random();
  
     @Nullable

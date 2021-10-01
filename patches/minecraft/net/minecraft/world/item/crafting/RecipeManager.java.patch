@@ -9,12 +9,10 @@
  import net.minecraft.Util;
  import net.minecraft.core.NonNullList;
  import net.minecraft.core.Registry;
-@@ -36,7 +_,8 @@
- public class RecipeManager extends SimpleJsonResourceReloadListener {
+@@ -37,6 +_,7 @@
     private static final Gson f_44005_ = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger f_44006_ = LogManager.getLogger();
--   private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
-+   public Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
+    public Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
 +   public Map<RecipeType<?>, Object2ObjectLinkedOpenHashMap<ResourceLocation, Recipe<?>>> recipesCB = ImmutableMap.of(); // CraftBukkit
     private boolean f_44008_;
  

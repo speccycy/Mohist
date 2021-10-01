@@ -1,22 +1,5 @@
 --- a/net/minecraft/world/entity/monster/ZombieVillager.java
 +++ b/net/minecraft/world/entity/monster/ZombieVillager.java
-@@ -46,14 +_,14 @@
- import net.minecraft.world.level.gameevent.GameEvent;
- 
- public class ZombieVillager extends Zombie implements VillagerDataHolder {
--   private static final EntityDataAccessor<Boolean> f_34359_ = SynchedEntityData.m_135353_(ZombieVillager.class, EntityDataSerializers.f_135035_);
-+   public static final EntityDataAccessor<Boolean> f_34359_ = SynchedEntityData.m_135353_(ZombieVillager.class, EntityDataSerializers.f_135035_);
-    private static final EntityDataAccessor<VillagerData> f_34364_ = SynchedEntityData.m_135353_(ZombieVillager.class, EntityDataSerializers.f_135043_);
-    private static final int f_149888_ = 3600;
-    private static final int f_149885_ = 6000;
-    private static final int f_149886_ = 14;
-    private static final int f_149887_ = 4;
-    private int f_34365_;
--   private UUID f_34360_;
-+   public UUID f_34360_;
-    private Tag f_34361_;
-    private CompoundTag f_34362_;
-    private int f_34363_;
 @@ -119,7 +_,7 @@
        if (!this.f_19853_.f_46443_ && this.m_6084_() && this.m_34408_()) {
           int i = this.m_34410_();

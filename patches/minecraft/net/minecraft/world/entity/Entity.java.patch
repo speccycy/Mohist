@@ -12,7 +12,7 @@
     protected static final Logger f_19849_ = LogManager.getLogger();
     public static final String f_146815_ = "id";
     public static final String f_146816_ = "Passengers";
-@@ -132,10 +_,11 @@
+@@ -132,6 +_,7 @@
     private static final double f_146812_ = 0.0023333333333333335D;
     public static final String f_146824_ = "UUID";
     private static double f_19846_ = 1.0D;
@@ -20,36 +20,10 @@
     private final EntityType<?> f_19847_;
     private int f_19848_ = f_19843_.incrementAndGet();
     public boolean f_19850_;
--   private ImmutableList<Entity> f_19823_ = ImmutableList.of();
-+   public ImmutableList<Entity> f_19823_ = ImmutableList.of();
-    protected int f_19851_;
-    @Nullable
-    private Entity f_19824_;
-@@ -173,7 +_,7 @@
-    public boolean f_19794_;
-    protected final Random f_19796_ = new Random();
-    public int f_19797_;
--   private int f_19831_ = -this.m_6101_();
-+   public int f_19831_ = -this.m_6101_();
-    protected boolean f_19798_;
-    protected Object2DoubleMap<Tag<Fluid>> f_19799_ = new Object2DoubleArrayMap<>(2);
-    protected boolean f_19800_;
-@@ -201,7 +_,7 @@
-    private Vec3 f_19838_;
-    public boolean f_19811_;
-    public boolean f_19812_;
--   private int f_19839_;
-+   public int f_19839_;
-    protected boolean f_19817_;
-    protected int f_19818_;
-    protected BlockPos f_19819_;
-@@ -219,9 +_,40 @@
-    public boolean f_146810_;
-    private float f_146803_;
+@@ -221,7 +_,38 @@
     private int f_146804_;
--   private boolean f_146813_;
-+   public boolean f_146813_;
-+
+    public boolean f_146813_;
+ 
 +   // CraftBukkit start
 +   public boolean persist = true;
 +   public boolean valid;
@@ -79,7 +53,7 @@
 +      return f_19853_.m_7232_((int) Math.floor(this.m_20185_()) >> 4, (int) Math.floor(this.m_20189_()) >> 4);
 +   }
 +   // CraftBukkit end
- 
++
     public Entity(EntityType<?> p_19870_, Level p_19871_) {
 +      super(Entity.class);
        this.f_19847_ = p_19870_;
