@@ -769,6 +769,7 @@ public final class CraftServer implements Server {
             logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
         }
 
+        org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
         for (ServerLevel world : console.getAllLevels()) {
             world.getServer().getWorldData().setDifficulty(config.difficulty);
             world.setSpawnSettings(config.spawnMonsters, config.spawnAnimals);

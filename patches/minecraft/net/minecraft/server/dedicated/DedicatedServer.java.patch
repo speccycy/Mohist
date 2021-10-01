@@ -28,6 +28,15 @@
              BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
  
              String s1;
+@@ -122,6 +_,8 @@
+          this.m_129913_(dedicatedserverproperties.f_139730_);
+       }
+ 
++      org.spigotmc.SpigotConfig.init((java.io.File) options.valueOf("spigot-settings"));
++
+       this.m_129997_(dedicatedserverproperties.f_139733_);
+       this.m_129999_(dedicatedserverproperties.f_139734_);
+       this.m_129853_(dedicatedserverproperties.f_139735_, this.m_139664_());
 @@ -171,11 +_,13 @@
           SkullBlockEntity.m_59771_(this.m_129925_());
           SkullBlockEntity.m_182462_(this);

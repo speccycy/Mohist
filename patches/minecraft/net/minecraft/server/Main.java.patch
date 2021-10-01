@@ -8,7 +8,7 @@
  import java.util.Optional;
  import java.util.concurrent.CompletableFuture;
  import java.util.function.BooleanSupplier;
-@@ -76,6 +_,20 @@
+@@ -76,6 +_,28 @@
        OptionSpec<Integer> optionspec11 = optionparser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(-1);
        OptionSpec<String> optionspec12 = optionparser.accepts("serverId").withRequiredArg();
        OptionSpec<String> optionspec13 = optionparser.nonOptions();
@@ -26,6 +26,14 @@
 +              .ofType(File.class)
 +              .defaultsTo(new File("commands.yml"))
 +              .describedAs("Yml file");
++
++      // Spigot Start
++      optionparser.acceptsAll(Arrays.asList("S", "spigot-settings"), "File for spigot settings")
++              .withRequiredArg()
++              .ofType(File.class)
++              .defaultsTo(new File("spigot.yml"))
++              .describedAs("Yml file");
++      // Spigot End
  
        try {
           OptionSet optionset = optionparser.parse(p_129699_);
