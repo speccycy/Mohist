@@ -41,7 +41,7 @@
     private final Thread f_46423_;
     private final boolean f_46424_;
     private int f_46425_;
-@@ -93,14 +_,50 @@
+@@ -93,14 +_,52 @@
     public float f_46440_;
     public final Random f_46441_ = new Random();
     private final DimensionType f_46445_;
@@ -58,10 +58,12 @@
 +
 +   // CraftBukkit start Added the following
 +   private ResourceKey<DimensionType> typeKey;
-+   private CraftWorld world;
++   public CraftWorld world;
 +   public boolean pvpMode;
 +   public boolean keepSpawnInMemory = true;
-+   public org.bukkit.generator.ChunkGenerator generator;
++   public static org.bukkit.generator.ChunkGenerator generator;
++   public static org.bukkit.World.Environment environment;
++   public static org.bukkit.generator.BiomeProvider biomeProvider;
 +
 +   public boolean preventPoiUpdated = false; // CraftBukkit - SPIGOT-5710
 +   public boolean captureBlockStates = false;
