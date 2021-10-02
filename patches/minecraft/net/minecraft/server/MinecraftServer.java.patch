@@ -18,43 +18,7 @@
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements SnooperPopulator, CommandSource, AutoCloseable {
     static final Logger f_129750_ = LogManager.getLogger();
-@@ -180,8 +_,8 @@
-    public static final int f_177883_ = 29999984;
-    public static final LevelSettings f_129743_ = new LevelSettings("Demo World", GameType.SURVIVAL, false, Difficulty.NORMAL, false, new GameRules(), DataPackConfig.f_45842_);
-    private static final long f_177871_ = 50L;
--   protected final LevelStorageSource.LevelStorageAccess f_129744_;
--   protected final PlayerDataStorage f_129745_;
-+   public final LevelStorageSource.LevelStorageAccess f_129744_;
-+   public final PlayerDataStorage f_129745_;
-    private final Snooper f_129751_ = new Snooper("server", this, Util.m_137550_());
-    private final List<Runnable> f_129752_ = Lists.newArrayList();
-    private MetricsRecorder f_177872_ = InactiveMetricsRecorder.f_146153_;
-@@ -202,8 +_,8 @@
-    private final DataFixer f_129759_;
-    private String f_129760_;
-    private int f_129761_ = -1;
--   protected final RegistryAccess.RegistryHolder f_129746_;
--   private final Map<ResourceKey<Level>, ServerLevel> f_129762_ = Maps.newLinkedHashMap();
-+   public final RegistryAccess.RegistryHolder f_129746_;
-+   public final Map<ResourceKey<Level>, ServerLevel> f_129762_ = Maps.newLinkedHashMap();
-    private PlayerList f_129763_;
-    private volatile boolean f_129764_ = true;
-    private boolean f_129765_;
-@@ -232,7 +_,7 @@
-    @Nullable
-    private final GameProfileCache f_129723_;
-    private long f_129724_;
--   private final Thread f_129725_;
-+   public final Thread f_129725_;
-    protected long f_129726_ = Util.m_137550_();
-    private long f_129727_;
-    private boolean f_129728_;
-@@ -248,13 +_,27 @@
-    private final Executor f_129738_;
-    @Nullable
-    private String f_129739_;
--   private ServerResources f_129740_;
-+   public ServerResources f_129740_;
+@@ -252,9 +_,23 @@
     private final StructureManager f_129741_;
     protected final WorldData f_129749_;
  

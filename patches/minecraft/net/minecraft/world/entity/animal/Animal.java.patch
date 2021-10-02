@@ -1,16 +1,5 @@
 --- a/net/minecraft/world/entity/animal/Animal.java
 +++ b/net/minecraft/world/entity/animal/Animal.java
-@@ -30,8 +_,8 @@
- 
- public abstract class Animal extends AgeableMob {
-    static final int f_148714_ = 6000;
--   private int f_27554_;
--   private UUID f_27555_;
-+   public int f_27554_;
-+   public UUID f_27555_;
- 
-    protected Animal(EntityType<? extends Animal> p_27557_, Level p_27558_) {
-       super(p_27557_, p_27558_);
 @@ -201,6 +_,17 @@
  
     public void m_27563_(ServerLevel p_27564_, Animal p_27565_) {
