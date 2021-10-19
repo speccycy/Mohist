@@ -19,35 +19,27 @@
 
 package net.minecraftforge.fmllegacy.packs;
 
-import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.ResourceLocation;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import com.google.common.base.Joiner;
 import net.minecraftforge.forgespi.locating.IModFile;
+import net.minecraftforge.resource.PathResourcePack;
 
-public class ModFileResourcePack extends AbstractPackResources
+import javax.annotation.Nonnull;
+
+@Deprecated(since="1.18", forRemoval = true) // TODO 1.18: Replace usages with PathResourcePack
+public class ModFileResourcePack extends PathResourcePack
 {
     private final IModFile modFile;
     private Pack packInfo;
 
     public ModFileResourcePack(final IModFile modFile)
     {
-        super(new File("dummy"));
+        super(modFile.getFileName(), modFile.getFilePath());
         this.modFile = modFile;
     }
 
@@ -55,74 +47,17 @@ public class ModFileResourcePack extends AbstractPackResources
         return this.modFile;
     }
 
+    @Nonnull
     @Override
-    public String getName()
+    protected Path resolve(@Nonnull String... paths)
     {
-        return modFile.getFileName();
+        return modFile.findResource(paths);
     }
 
     @Override
-    protected InputStream getResource(String name) throws IOException
+    public String toString()
     {
-        final Path path = modFile.findResource(name);
-        if(!Files.exists(path))
-            throw new FileNotFoundException("Can't find resource " + name + " at " + modFile.getFilePath().toString());
-        return Files.newInputStream(path, StandardOpenOption.READ);
-    }
-
-    @Override
-    protected boolean hasResource(String name)
-    {
-        return Files.exists(modFile.findResource(name));
-    }
-
-
-    @Override
-    public Collection<ResourceLocation> getResources(PackType type, String resourceNamespace, String pathIn, int maxDepth, Predicate<String> filter)
-    {
-        try
-        {
-            Path root = modFile.findResource(type.getDirectory(), resourceNamespace).toAbsolutePath();
-            Path inputPath = root.getFileSystem().getPath(pathIn);
-
-            return Files.walk(root)
-                    .map(root::relativize)
-                    .filter(path -> path.getNameCount() <= maxDepth && !path.toString().endsWith(".mcmeta") && path.startsWith(inputPath))
-                    .filter(path -> filter.test(path.getFileName().toString()))
-                    // It is VERY IMPORTANT that we do not rely on Path.toString as this is inconsistent between operating systems
-                    // Join the path names ourselves to force forward slashes
-                    .map(path -> new ResourceLocation(resourceNamespace, Joiner.on('/').join(path)))
-                    .collect(Collectors.toList());
-        }
-        catch (IOException e)
-        {
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public Set<String> getNamespaces(PackType type)
-    {
-        try {
-            Path root = modFile.findResource(type.getDirectory());
-            return Files.walk(root,1)
-                    .map(path -> root.relativize(path))
-                    .filter(path -> path.getNameCount() > 0) // skip the root entry
-                    .map(p->p.toString().replaceAll("/$","")) // remove the trailing slash, if present
-                    .filter(s -> !s.isEmpty()) //filter empty strings, otherwise empty strings default to minecraft in ResourceLocations
-                    .collect(Collectors.toSet());
-        }
-        catch (IOException e)
-        {
-            if (type == PackType.SERVER_DATA) //We still have to add the resource namespace if client resources exist, as we load langs (which are in assets) on server
-            {
-                return this.getNamespaces(PackType.CLIENT_RESOURCES);
-            }
-            else
-            {
-                return Collections.emptySet();
-            }
-        }
+        return String.format("%s: %s", getClass().getName(), getModFile().getFileName());
     }
 
     public InputStream getResource(PackType type, ResourceLocation location) throws IOException {

@@ -202,7 +202,7 @@
        Entity entity = this.m_142646_().m_142694_(p_8854_.m_142081_());
        if (entity != null) {
           f_8566_.warn("Force-added player with duplicate UUID {}", (Object)p_8854_.m_142081_().toString());
-@@ -746,22 +_,39 @@
+@@ -746,15 +_,36 @@
           this.m_143261_((ServerPlayer)entity, Entity.RemovalReason.DISCARDED);
        }
  
@@ -214,13 +214,21 @@
     private boolean m_8872_(Entity p_8873_) {
        if (p_8873_.m_146910_()) {
 -         f_8566_.warn("Tried to add entity {} but it was marked as removed already", (Object)EntityType.m_20613_(p_8873_.m_6095_()));
+-         return false;
+-      } else {
+-         return this.f_143244_.m_157533_(p_8873_);
 +         // LOGGER.warn("Tried to add entity {} but it was marked as removed already", (Object)EntityType.getKey(p_8873_.getType()));
-          return false;
-       } else {
-          return this.f_143244_.m_157533_(p_8873_);
-       }
-    }
- 
++         return false;
++      } else {
++         if (this.f_143244_.m_157533_(p_8873_)) {
++            p_8873_.onAddedToWorld();
++            return true;
++         } else {
++            return false;
++         }
++      }
++   }
++
 +   // CraftBukkit start
 +   private boolean addEntity0(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
 +      if (entity.m_146910_()) {
@@ -233,10 +241,10 @@
 +         // CraftBukkit end
 +
 +         return this.f_143244_.m_157533_(entity);
-+      }
-+   }
-+
-    public boolean m_8860_(Entity p_8861_) {
+       }
+    }
+ 
+@@ -762,6 +_,7 @@
        if (p_8861_.m_142428_().map(Entity::m_142081_).anyMatch(this.f_143244_::m_157550_)) {
           return false;
        } else {

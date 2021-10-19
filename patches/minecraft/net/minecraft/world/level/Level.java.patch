@@ -41,7 +41,7 @@
     private final Thread f_46423_;
     private final boolean f_46424_;
     private int f_46425_;
-@@ -93,14 +_,52 @@
+@@ -93,14 +_,54 @@
     public float f_46440_;
     public final Random f_46441_ = new Random();
     private final DimensionType f_46445_;
@@ -55,6 +55,8 @@
 +   public boolean restoringBlockSnapshots = false;
 +   public boolean captureBlockSnapshots = false;
 +   public java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot> capturedBlockSnapshots = new java.util.ArrayList<>();
++   private final java.util.ArrayList<BlockEntity> freshBlockEntities = new java.util.ArrayList<>();
++   private final java.util.ArrayList<BlockEntity> pendingFreshBlockEntities = new java.util.ArrayList<>();
 +
 +   // CraftBukkit start Added the following
 +   private ResourceKey<DimensionType> typeKey;
@@ -184,12 +186,30 @@
                 }
              });
              CrashReportCategory.m_178950_(crashreportcategory, this, p_46587_, blockstate);
-@@ -404,8 +_,9 @@
+@@ -401,11 +_,28 @@
+       (this.f_151504_ ? this.f_151503_ : this.f_151512_).add(p_151526_);
+    }
+ 
++   public void addFreshBlockEntities(java.util.Collection<BlockEntity> beList) {
++      if (this.f_151504_) {
++         this.pendingFreshBlockEntities.addAll(beList);
++      } else {
++         this.freshBlockEntities.addAll(beList);
++      }
++   }
++
     protected void m_46463_() {
        ProfilerFiller profilerfiller = this.m_46473_();
        profilerfiller.m_6180_("blockEntities");
--      this.f_151504_ = true;
-+      this.f_151504_ = true;// Forge: Move above remove to prevent CMEs
++      if (!this.pendingFreshBlockEntities.isEmpty()) {
++         this.freshBlockEntities.addAll(this.pendingFreshBlockEntities);
++         this.pendingFreshBlockEntities.clear();
++      }
+       this.f_151504_ = true;
++      if (!this.freshBlockEntities.isEmpty()) {
++         this.freshBlockEntities.forEach(BlockEntity::onLoad);
++         this.freshBlockEntities.clear();
++      }
        if (!this.f_151503_.isEmpty()) {
 +         this.f_46434_.forEach(e -> e.onChunkUnloaded());
           this.f_151512_.addAll(this.f_151503_);

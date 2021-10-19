@@ -115,7 +115,6 @@ public final class ItemLayerModel implements IModelGeometry<ItemLayerModel>
             boolean fullbright = fullbrightLayers.contains(i);
             RenderType rt = getLayerRenderType(fullbright);
             builder.addQuads(rt, getQuadsForSprite(i, tas, transform, fullbright));
-
         }
 
         return builder.build();

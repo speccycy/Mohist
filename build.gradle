@@ -58,8 +58,8 @@ ext {
     MIXIN_VERSION = '0.8.4'
 
     GIT_INFO = gradleutils.gitInfo
-    VERSION = '1.17.1-37.0.75'
-    FORGE_VERSION = '37.0.75'
+    VERSION = '1.17.1-37.0.97'
+    FORGE_VERSION = '37.0.97'
 
     SPECIAL_SOURCE = 'net.md-5:SpecialSource:1.10.0'
     VIGNETTE = 'net.minecraftforge.lex:vignette:0.2.0.16'

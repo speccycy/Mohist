@@ -87,7 +87,8 @@ public interface IForgeBlockEntity extends ICapabilitySerializable<CompoundTag>
      default void onChunkUnloaded(){}
 
     /**
-     * Called when this is first added to the world (by {@link World#addTileEntity(TileEntity)}).
+     * Called when this is first added to the world (by {@link LevelChunk#addAndRegisterBlockEntity(BlockEntity)})
+     * or right before the first tick when the chunk is generated or loaded from disk.
      * Override instead of adding {@code if (firstTick)} stuff in update.
      */
      default void onLoad()
