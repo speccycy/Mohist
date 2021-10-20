@@ -99,6 +99,15 @@
              this.f_129726_ = Util.m_137550_();
              this.f_129757_.m_134908_(new TextComponent(this.f_129709_));
              this.f_129757_.m_134912_(new ServerStatus.Version(SharedConstants.m_136187_().getName(), SharedConstants.m_136187_().getProtocolVersion()));
+@@ -661,7 +_,7 @@
+                long i = Util.m_137550_() - this.f_129726_;
+                if (i > 2000L && this.f_129726_ - this.f_129718_ >= 15000L) {
+                   long j = i / 50L;
+-                  f_129750_.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
++                  // LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
+                   this.f_129726_ += j * 50L;
+                   this.f_129718_ = this.f_129726_;
+                }
 @@ -683,7 +_,10 @@
                 this.m_177946_();
                 this.f_129717_ = true;
