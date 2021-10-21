@@ -9,11 +9,10 @@ buildscript {
     }
 }
 
-import groovy.json.JsonBuilder
+
+import com.mohistmc.tasks.JenkinsNumber
 
 import java.nio.file.Files
-import java.util.Date
-import java.util.LinkedHashMap
 import net.minecraftforge.forge.tasks.*
 import static net.minecraftforge.forge.tasks.Util.*
 import net.minecraftforge.gradle.common.tasks.ApplyBinPatches
@@ -29,6 +28,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.36.0'
     id 'net.minecraftforge.gradleutils' version '1.+'
     id 'eclipse'
+    id 'org.ajoberstar.grgit' version '4.1.0'
 }
 
 Util.init() //Init all our extension methods!
@@ -60,6 +60,8 @@ ext {
     GIT_INFO = gradleutils.gitInfo
     VERSION = '1.17.1-37.0.103'
     FORGE_VERSION = '37.0.103'
+
+    MOIHST_VERSION = JenkinsNumber.info()
 
     SPECIAL_SOURCE = 'net.md-5:SpecialSource:1.10.0'
     VIGNETTE = 'net.minecraftforge.lex:vignette:0.2.0.16'
@@ -869,6 +871,22 @@ project(':forge') {
                 'Implementation-Title':     'FML Launcher',
                 'Implementation-Version':   SPEC_VERSION,
                 'Implementation-Vendor':    'Forge'
+            ] as LinkedHashMap,
+            'com/mohistmc/': [
+                    'Specification-Title'   : 'Mohist',
+                    'Specification-Vendor'  : 'MohistMC',
+                    'Specification-Version':  MOIHST_VERSION,
+                    'Implementation-Title'  : 'Mohist',
+                    'Implementation-Version': '1.17.1-' + MOIHST_VERSION,
+                    'Implementation-Vendor' : 'MohistMC'
+            ] as LinkedHashMap,
+            'org/bukkit/craftbukkit/v1_16_R3/': [
+                    'Specification-Title'   : 'Spigot',
+                    'Specification-Vendor'  : 'SpigotMC',
+                    'Specification-Version':  '1.17.1',
+                    'Implementation-Title'  : 'Spigot',
+                    'Implementation-Version': 'dc75aca8',
+                    'Implementation-Vendor' : 'SpigotMC'
             ] as LinkedHashMap
         ]
     }
