@@ -29,6 +29,10 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag.Named;
 
+import javax.annotation.Nullable;
+import java.util.Set;
+import java.util.function.Supplier;
+
 public class Tags
 {
     public static void init ()
@@ -182,6 +186,7 @@ public class Tags
         public static final IOptionalNamedTag<Item> DYES_WHITE = DyeColor.WHITE.getTag();
 
         public static final IOptionalNamedTag<Item> EGGS = tag("eggs");
+        public static final IOptionalNamedTag<Item> ENCHANTING_FUELS = tag("enchanting_fuels", Set.of(() -> net.minecraft.world.item.Items.LAPIS_LAZULI));
         public static final IOptionalNamedTag<Item> END_STONES = tag("end_stones");
         public static final IOptionalNamedTag<Item> ENDER_PEARLS = tag("ender_pearls");
         public static final IOptionalNamedTag<Item> FEATHERS = tag("feathers");
@@ -293,9 +298,14 @@ public class Tags
         public static final IOptionalNamedTag<Item> STORAGE_BLOCKS_REDSTONE = tag("storage_blocks/redstone");
         public static final IOptionalNamedTag<Item> STRING = tag("string");
 
+        private static IOptionalNamedTag<Item> tag(String name, @Nullable Set<Supplier<Item>> defaults)
+        {
+            return ItemTags.createOptional(new ResourceLocation("forge", name), defaults);
+        }
+
         private static IOptionalNamedTag<Item> tag(String name)
         {
-            return ItemTags.createOptional(new ResourceLocation("forge", name));
+            return tag(name, null);
         }
     }
 
