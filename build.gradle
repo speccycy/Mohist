@@ -74,10 +74,6 @@ println('Version: ' + VERSION +
         ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ')' +
         ' Arch: ' + System.getProperty('os.arch'))
 
-def changelog = rootProject.file('build/changelog.txt')
-if (changelog.exists())
-    extraTxts += changelog
-
 subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'java'
@@ -690,7 +686,6 @@ project(':fmlonly') {
 
     task installerJar(type: InstallerJar) {
         packedDependencies = PACKED_DEPS
-        from(extraTxts)
         //TODO: make FML installer logo?
         from(rootProject.file('/forgefile/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
@@ -1159,7 +1154,6 @@ project(':forge') {
     }
 
     universalJar {
-        from extraTxts
 
         // add crowdin locales
         from { crowdin.output.present && crowdin.output.get().asFile.exists() ? zipTree(crowdin.output) : null}
@@ -1179,7 +1173,6 @@ project(':forge') {
 
     task installerJar(type: InstallerJar, dependsOn: [genClientBinPatches, genServerBinPatches, 'signUniversalJar', launcherJson]) {
         packedDependencies = PACKED_DEPS
-        from(extraTxts)
         from(rootProject.file('/forgefile/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
         }
