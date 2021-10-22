@@ -28,7 +28,6 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.36.0'
     id 'net.minecraftforge.gradleutils' version '1.+'
     id 'eclipse'
-    id 'org.ajoberstar.grgit' version '4.1.0'
 }
 
 Util.init() //Init all our extension methods!
@@ -74,11 +73,6 @@ println('Version: ' + VERSION +
         ' Java: ' + System.getProperty('java.version') +
         ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ')' +
         ' Arch: ' + System.getProperty('os.arch'))
-
-def extraTxts = [
-    rootProject.file('CREDITS.txt'),
-    rootProject.file('LICENSE.txt')
-]
 
 def changelog = rootProject.file('build/changelog.txt')
 if (changelog.exists())
@@ -698,7 +692,7 @@ project(':fmlonly') {
         packedDependencies = PACKED_DEPS
         from(extraTxts)
         //TODO: make FML installer logo?
-        from(rootProject.file('/forge_installer_logo.png')) {
+        from(rootProject.file('/forgefile/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
         }
     }
@@ -1186,7 +1180,7 @@ project(':forge') {
     task installerJar(type: InstallerJar, dependsOn: [genClientBinPatches, genServerBinPatches, 'signUniversalJar', launcherJson]) {
         packedDependencies = PACKED_DEPS
         from(extraTxts)
-        from(rootProject.file('/forge_installer_logo.png')) {
+        from(rootProject.file('/forgefile/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
         }
         from(genClientBinPatches.output) {
@@ -1198,7 +1192,7 @@ project(':forge') {
     }
 
     license {
-        header = file("$rootDir/LICENSE-header.txt")
+        header = file("$rootDir/forgefile/LICENSE-header.txt")
 
         ext {
             year = new Date().format("yyyy")
