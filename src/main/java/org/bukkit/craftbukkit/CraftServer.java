@@ -263,7 +263,7 @@ public final class CraftServer implements Server {
                 return player.getBukkitEntity();
             }
         }));
-        this.serverVersion = MohistMCStart.getVersion();
+        this.serverVersion = MohistMCStart.getMohistVersion();
 
         Bukkit.setServer(this);
 

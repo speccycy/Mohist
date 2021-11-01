@@ -1,0 +1,14 @@
+-p @MODULE_PATH@
+-javaagent:@JAVA_AGENT@
+--add-modules @MODULES@
+--add-opens java.base/java.util.jar=cpw.mods.securejarhandler
+--add-exports java.base/sun.security.util=cpw.mods.securejarhandler
+-DignoreList=@IGNORE_LIST@
+-DlibraryDirectory=libraries
+-DlegacyClassPath=@CLASS_PATH@
+net.minecraftforge.server.ServerMain
+--launchTarget @TASK@
+--fml.forgeVersion @FORGE_VERSION@
+--fml.mcVersion @MC_VERSION@
+--fml.forgeGroup @FORGE_GROUP@
+--fml.mcpVersion @MCP_VERSION@
