@@ -30,6 +30,7 @@ public class MinecraftLocator implements IModLocator {
         var baseMC = launchHandler.getMinecraftPaths();
         var mcjar = ModJarMetadata.buildFile(j->ModFileFactory.FACTORY.build(j, this, this::buildMinecraftTOML), j->true, baseMC.minecraftFilter(), baseMC.minecraftPaths().toArray(Path[]::new)).orElseThrow();
         var artifacts = baseMC.otherArtifacts().stream().map(SecureJar::from).map(sj->ModFile.newFMLInstance(this, sj)).collect(Collectors.<IModFile>toList());
+        baseMC.otherModPaths().forEach(System.out::println);
         var othermods = baseMC.otherModPaths().stream().map(p->ModJarMetadata.buildFile(this, p.toArray(Path[]::new))).toList();
         artifacts.add(mcjar);
         artifacts.addAll(othermods);

@@ -19,8 +19,6 @@
 
 package net.minecraftforge.server;
 
-import com.mohistmc.MohistMCStart;
-import cpw.mods.bootstraplauncher.BootstrapLauncher;
 import cpw.mods.modlauncher.InvalidLauncherSetupException;
 import cpw.mods.modlauncher.Launcher;
 
@@ -36,16 +34,6 @@ import java.util.jar.Manifest;
 
 public class ServerMain {
     public static void main(String[] args) {
-
-        System.out.println("lalala" + args);
-
-        try {
-            MohistMCStart.main();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        BootstrapLauncher.main(args);
 
         try {
             Class.forName("cpw.mods.modlauncher.Launcher", false, ClassLoader.getSystemClassLoader());

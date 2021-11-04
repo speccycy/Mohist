@@ -14,6 +14,9 @@ import com.mohistmc.tasks.JenkinsNumber
 
 import java.nio.file.Files
 import net.minecraftforge.forge.tasks.*
+
+import java.util.function.Predicate
+
 import static net.minecraftforge.forge.tasks.Util.*
 import net.minecraftforge.gradle.common.tasks.ApplyBinPatches
 import net.minecraftforge.gradle.common.tasks.DownloadMavenArtifact
@@ -469,6 +472,7 @@ if (symlinkValid)
             implementation project(':fmlloader')
             implementation project(':javafmllanguage')
             implementation project(':mclanguage')
+            implementation project(':mohistloader')
             runtimeOnly "cpw.mods:bootstraplauncher:${BOOTSTRAPLAUNCHER_VERSION}"
         }
         dependencies sharedDeps
@@ -706,7 +710,7 @@ if (symlinkValid)
         }
 
         // Since we need the modules in the bootstrap, we need to make sure they are compiled before we do each run
-        afterEvaluate { prepareRuns.dependsOn(':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar') }
+        afterEvaluate { prepareRuns.dependsOn(':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar', ':mohistloader:jar') }
     }
 
 project(':forge') {
@@ -742,7 +746,7 @@ project(':forge') {
         // Essentially, the same as the old, except dropping the first number, and the builds are no longer unique.
         MCP_ARTIFACT = project(':mcp').mcp.config.get()
         VERSION_JSON = project(':mcp').file('build/mcp/downloadJson/version.json')
-        PACKED_DEPS = [':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar']
+        PACKED_DEPS = [':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar', ':mohistloader:jar']
         MAVEN_PATH = "${group.replace('.', '/')}/${project.name}/${VERSION}"
     }
 
@@ -764,6 +768,7 @@ project(':forge') {
         implementation project(':fmlloader')
         implementation project(':javafmllanguage')
         implementation project(':mclanguage')
+        implementation project(':mohistloader')
     }
     dependencies sharedDeps
 
@@ -1161,7 +1166,7 @@ project(':forge') {
         archiveBaseName = 'mohist'
         archiveVersion = "1.17.1-dev"
         destinationDirectory = file('build/libs')
-        from project(':fmlloader').sourceSets.main.output
+        from project(':mohistloader').sourceSets.main.output
         def mohistJar = "mohist-1.17.1-dev-server.jar"
         doFirst {
             def classpath = new StringBuilder()
@@ -1173,9 +1178,7 @@ project(':forge') {
             MANIFESTS.each { pkg, values ->
                 if (pkg == '/') {
                     manifest.attributes(values += [
-                            'Premain-Class'       : 'com.mohistmc.util.JarLoader',
-                            'Launcher-Agent-Class': 'com.mohistmc.util.JarLoader',
-                            'Main-Class'          : 'net.minecraftforge.server.ServerMain',
+                            'Main-Class'          : 'com.mohistmc.MohistMCStart',
                             'Class-Path'          : classpath.toString(),
                             'ServerLaunchArgs'    : [
                                     '--gameDir', '.',
@@ -1196,25 +1199,39 @@ project(':forge') {
                 [
                         mohistJar
                 ]
-        def CLASS_PATH = Util.getArtifacts(project, configurations.installer, false).values().collect { "libraries/${it.downloads.artifact.path}" } +
-                [
-                        mohistJar
-                ]
+        List<String> CLASS_PATH = new ArrayList<>();
+        Util.getArtifacts(project, configurations.installer, false).values().collect {
+            if (!it.downloads.artifact.path.contains("annotations") && !it.downloads.artifact.path.contains("asm"))
+                CLASS_PATH.add("libraries/${it.downloads.artifact.path}")
+        }
+        CLASS_PATH.add('libraries/' + Util.getMavenPath(rootProject.tasks.findByPath(':fmlloader:jar')))
+        CLASS_PATH.add("libraries/net/minecraft/server/${MC_VERSION}-${MCP_VERSION}/server-${MC_VERSION}-${MCP_VERSION}-extra.jar")
         def tokens = [
-                TASK         : name.equals('forge') ? 'forgeserver' : 'fmlserver',
+                TASK         : 'forgeserver',
                 FORGE_VERSION: FORGE_VERSION,
                 MC_VERSION   : MC_VERSION,
                 MCP_VERSION  : MCP_VERSION,
                 FORGE_GROUP  : this.group,
-                IGNORE_LIST  : Util.getArtifacts(project, configurations.moduleonly, false).values().collect { it.downloads.artifact.path.rsplit('/', 1)[1] }.join(','),
+                IGNORE_LIST  : Util.getArtifacts(project, configurations.moduleonly, false).values().collect { it.downloads.artifact.path.rsplit('/', 1)[1] }.join(',') + [mohistJar],
                 MODULES      : 'ALL-MODULE-PATH',
-                JAVA_AGENT: mohistJar
         ]
         from(genServerBinPatches.output) {
             rename { 'data/server.lzma' }
         }
         from(universalJar) {
-            rename { 'data/forge-' + MC_VERSION + '-' + MOHIST_VERSION + '-universal.jar' }
+            rename { 'data/forge-' + MC_VERSION + '-' + FORGE_VERSION + '-universal.jar' }
+        }
+        from(project(':fmlloader').tasks.jar.outputs) {
+            rename { 'data/fmlloader-' + MC_VERSION + '-' + FORGE_VERSION + '.jar' }
+        }
+        from(project(':fmlcore').tasks.jar.outputs) {
+            rename { 'data/fmlcore-' + MC_VERSION + '-' + FORGE_VERSION + '.jar' }
+        }
+        from(project(':javafmllanguage').tasks.jar.outputs) {
+            rename { 'data/javafmllanguage-' + MC_VERSION + '-' + FORGE_VERSION + '.jar' }
+        }
+        from(project(':mclanguage').tasks.jar.outputs) {
+            rename { 'data/mclanguage-' + MC_VERSION + '-' + FORGE_VERSION + '.jar' }
         }
         from(rootProject.file('server_files/version.txt')) {
             filter(ReplaceTokens, tokens: [VERSION: MOHIST_VERSION])
@@ -1233,12 +1250,12 @@ project(':forge') {
             rename { 'versions/mcp.txt' }
         }
 
-        from(rootProject.file('server_files/args_mohist.txt')) {
+        from(rootProject.file('server_files/args.txt')) {
             filter(ReplaceTokens, tokens: tokens + [MODULE_PATH: MODULE_PATH.join(';'), CLASS_PATH: CLASS_PATH.join(';')])
             rename { 'run/win_args.txt' }
         }
 
-        from(rootProject.file('server_files/args_mohist.txt')) {
+        from(rootProject.file('server_files/args.txt')) {
             filter(ReplaceTokens, tokens: tokens + [MODULE_PATH: MODULE_PATH.join(':'), CLASS_PATH: CLASS_PATH.join(':')])
             rename { 'run/unix_args.txt' }
         }
@@ -1305,7 +1322,7 @@ project(':forge') {
     tasks.eclipse.dependsOn('genEclipseRuns')
 
     // Since we need the modules in the bootstrap, we need to make sure they are compiled before we do each run
-    afterEvaluate { prepareRuns.dependsOn(':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar') }
+    afterEvaluate { prepareRuns.dependsOn(':fmlcore:jar', ':fmlloader:jar', ':javafmllanguage:jar', ':mclanguage:jar', ':mohistloader:jar') }
 }
 
 //evaluationDependsOnChildren()

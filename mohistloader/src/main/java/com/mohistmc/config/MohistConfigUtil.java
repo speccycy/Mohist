@@ -1,7 +1,6 @@
 package com.mohistmc.config;
 
 import com.mohistmc.MohistMCStart;
-import net.minecraftforge.server.ServerMain;
 
 import java.io.File;
 import java.nio.file.Files;

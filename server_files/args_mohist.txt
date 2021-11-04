@@ -1,5 +1,4 @@
 -p @MODULE_PATH@
--javaagent:@JAVA_AGENT@
 --add-modules @MODULES@
 --add-opens java.base/java.util.jar=cpw.mods.securejarhandler
 --add-exports java.base/sun.security.util=cpw.mods.securejarhandler

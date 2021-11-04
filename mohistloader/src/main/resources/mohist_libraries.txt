@@ -12,6 +12,7 @@ libraries/com/google/guava/guava/30.1-android/guava-30.1-android.jar|6baf34e0acf
 libraries/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar|d094c22570d65e132c19cea5d352e381
 libraries/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar|5fa4ec4ec0c5aa70af8a7d4922df1931
 libraries/com/google/jimfs/jimfs/1.2/jimfs-1.2.jar|c47cfe0223863f400132e6d8f38a8da0
+libraries/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar|5cc2c478d73e8454b4c369cee66c5bc7
 libraries/com/nothome/javaxdelta/2.0.1/javaxdelta-2.0.1.jar|02058f3edd701db5a5230a427b9e8979
 libraries/com/opencsv/opencsv/4.4/opencsv-4.4.jar|0a370fa0055d9d2840599332bd5cbf47
 libraries/commons-beanutils/commons-beanutils/1.9.3/commons-beanutils-1.9.3.jar|4a105c9d029a7edc6f2b16567d37eab6
@@ -23,6 +24,8 @@ libraries/cpw/mods/modlauncher/9.0.7/modlauncher-9.0.7.jar|81c9715e3ad065953b03e
 libraries/cpw/mods/securejarhandler/0.9.54/securejarhandler-0.9.54.jar|1ccebb7dcbf30057243433755e48697f
 libraries/de/oceanlabs/mcp/mcp_config/1.17.1-20210706.113038/mcp_config-1.17.1-20210706.113038.zip|6c4ffbcb3f0ca26adc4c0e09bc025214
 libraries/de/siegmar/fastcsv/2.0.0/fastcsv-2.0.0.jar|4addb828f7bf861180ff219027707f7e
+libraries/jline/jline/2.12.1/jline-2.12.1.jar|96e04a388ffff0adee6c2ce64612a7a1
+libraries/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar|b46c5a50b6d707b37bd34e27e0f6cbaf
 libraries/net/jodah/typetools/0.8.3/typetools-0.8.3.jar|ee4596e1413cc1a5e080c971d6064753
 libraries/net/md-5/SpecialSource/1.10.0/SpecialSource-1.10.0.jar|a427608eace6462ea605af40f962144e
 libraries/net/minecraftforge/accesstransformers/8.0.4/accesstransformers-8.0.4.jar|f0d3533f9437ba4428eaee9f28f7ecd9
@@ -32,7 +35,7 @@ libraries/net/minecraftforge/eventbus/5.0.3/eventbus-5.0.3.jar|c8b735cdfe9975a56
 libraries/net/minecraftforge/forgespi/4.0.10/forgespi-4.0.10.jar|b4b4b87397040701bd74ad6cbb784954
 libraries/net/minecraftforge/installertools/1.2.7/installertools-1.2.7.jar|8f71e94d2079b093c0f9df90567e5149
 libraries/net/minecraftforge/jarsplitter/1.1.4/jarsplitter-1.1.4.jar|ecb9d6b0438948bef9bc0209aad4e917
-libraries/net/minecraftforge/lex/vignette/0.2.0.16/vignette-0.2.0.16.jar|373e27e559faa6194ca52d06eefeca0f
+libraries/net/minecraftforge/lex/vignette/0.2.0.16-fix/vignette-0.2.0.16-fix.jar|e98a76bd58dc8771304c2bb309cdaa2d
 libraries/net/minecraftforge/srgutils/0.4.3/srgutils-0.4.3.jar|3b588ea9fd2bfaa3ab6a75779f16ad93
 libraries/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar|2d1016ebe4c1a63dd50a59d26bd12db1
 libraries/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar|679363fa893293791e55a21f81342f87
@@ -43,8 +46,11 @@ libraries/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar|540b125
 libraries/org/apache/commons/commons-text/1.3/commons-text-1.3.jar|e12b93c4a7fa6326e8afe557243c8651
 libraries/org/apache/logging/log4j/log4j-api/2.14.1/log4j-api-2.14.1.jar|6f31a3b90c3eb09fb0dc0aef155a001c
 libraries/org/apache/logging/log4j/log4j-core/2.14.1/log4j-core-2.14.1.jar|948dda787593340a7af1a18e328b7b7f
+libraries/org/apache/logging/log4j/log4j-iostreams/2.11.2/log4j-iostreams-2.11.2.jar|32c2a9ba4933b8b2e2fc0e1192adf519
 libraries/org/apache/maven/maven-artifact/3.6.3/maven-artifact-3.6.3.jar|b83c1943a0783f3f81d4cd4c83c363e1
 libraries/org/apache/maven/maven-resolver-provider/3.8.1/maven-resolver-provider-3.8.1.jar|14b2e340c01e51b8d8b3ce21ee1740fd
+libraries/org/apache/maven/resolver/maven-resolver-connector-basic/1.7.0/maven-resolver-connector-basic-1.7.0.jar|f02b7f4f5f05bfa9d2084ac8e4ff37df
+libraries/org/apache/maven/resolver/maven-resolver-transport-http/1.7.0/maven-resolver-transport-http-1.7.0.jar|aa061d780208a819f9da72a2892d4d37
 libraries/org/cadixdev/atlas/0.2.2/atlas-0.2.2.jar|4b483bae9f3782d621ffaf7b6429f110
 libraries/org/cadixdev/bombe/0.3.5/bombe-0.3.5.jar|d2d3323a2e9b9563d4cdb1d8ce9ff883
 libraries/org/cadixdev/bombe-asm/0.3.5/bombe-asm-0.3.5.jar|09a2268d05a11d497dfb81b2c7269cb9
@@ -53,6 +59,7 @@ libraries/org/cadixdev/lorenz-asm/0.5.7/lorenz-asm-0.5.7.jar|075b9284e7e9d694573
 libraries/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5.jar|b7a5c96547fb3fb6869f5f76bcd19b15
 libraries/org/checkerframework/checker-qual/2.0.0/checker-qual-2.0.0.jar|94fe1af76c10006fbc5b988180b71bf0
 libraries/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar|9d42e46845c874f1710a9f6a741f6c14
+libraries/org/fusesource/jansi/jansi/1.18/jansi-1.18.jar|6ee32de8880da9f02552474f60ab6fbd
 libraries/org/jline/jline-reader/3.12.1/jline-reader-3.12.1.jar|a2e7b012cd9802f83321187409174a94
 libraries/org/jline/jline-terminal/3.12.1/jline-terminal-3.12.1.jar|3c52be5ab5e3847be6e62269de924cb0
 libraries/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar|91e98c20afa1090c344229ce28b4c53f
@@ -62,6 +69,7 @@ libraries/org/ow2/asm/asm-commons/9.1/asm-commons-9.1.jar|81cc6b8f5ce8f2767d39fb
 libraries/org/ow2/asm/asm-tree/9.1/asm-tree-9.1.jar|c2536add9ebcfa8066fcfb0dbe865879
 libraries/org/ow2/asm/asm-util/9.1/asm-util-9.1.jar|2f1a28f6b0f3e02b17d38a0f657a1527
 libraries/org/spongepowered/mixin/0.8.4/mixin-0.8.4.jar|2333a4ce6c6969e8c11dfd524112f2c0
-libraries/org/yaml/snakeyaml/1.28/snakeyaml-1.28.jar|466ff09da784f9f21b2e6bf3b486a8cd
+libraries/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar|743bacfa02e66cad1027e80b065c45ad
+libraries/org/yaml/snakeyaml/1.28/snakeyaml-1.28.jar|0fac676adf839a85e0ca7a3df05cb28b
 libraries/trove/trove/1.0.2/trove-1.0.2.jar|487d72e3da5947890376ddfc5e14442e
 libraries/minecraft_server.1.17.1.jar|0c657982f8223bdd64d8e31fb48b98a4

@@ -45,7 +45,7 @@ public class UpdateUtils {
 				System.out.println(i18n.get("update.detect", build_number, jar_sha, time));
 				if(bMohist("check_update_auto_download", "false")) {
 					downloadFile("https://ci.codemc.io/job/MohistMC/job/Mohist-1.17.1/lastSuccessfulBuild/artifact/projects/mohist/build/libs/mohist-" + build_number + "-server.jar", JarTool.getFile());
-					restartServer(new ArrayList<>(Arrays.asList("java", "-jar", JarTool.getJarName())), true);
+					restartServer(new ArrayList<>(Arrays.asList("java", "-jar", JarTool.getJarName())), true, true);
 				}
 			}
 		} catch (Throwable e) {
@@ -87,8 +87,9 @@ public class UpdateUtils {
 		System.out.println(i18n.get("download.file.ok", f.getName()));
 	}
 
-	public static void restartServer(ArrayList<String> cmd, boolean shutdown) throws Exception {
-		System.out.println(i18n.get("jarfile.restart"));
+	public static void restartServer(ArrayList<String> cmd, boolean shutdown, boolean info) throws Exception {
+		if (info)
+			System.out.println(i18n.get("jarfile.restart"));
 		ProcessBuilder processBuilder = new ProcessBuilder(cmd);
 		processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
 		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);

@@ -23,13 +23,21 @@ import java.util.jar.JarFile;
 public class InstallUtils {
     private static final PrintStream origin = System.out;
     public static String mohistVer = MohistMCStart.getMohistVersion();
+    public static String forgeVer = MohistMCStart.getForgeVersion();
     public static String mcpVer = MohistMCStart.getMCPVersion();
     public static String mcVer = MohistMCStart.getMinecraftVersion();
     public static String libPath = JarTool.getJarDir() + "/libraries/";
 
-    public static String forgeStart = libPath + "net/minecraftforge/forge/" + mcVer + "-" + mohistVer + "/forge-" + mcVer + "-" + mohistVer;
+    public static String forgeStart = libPath + "net/minecraftforge/forge/" + mcVer + "-" + forgeVer + "/forge-" + mcVer + "-" + forgeVer;
     public static File universalJar = new File(forgeStart + "-universal.jar");
     public static File serverJar = new File(forgeStart + "-server.jar");
+
+
+    public static File fmlloader = new File(libPath + "net/minecraftforge/fmlloader/" + mcVer + "-" + forgeVer + "/fmlloader-" + mcVer + "-" + forgeVer + ".jar");
+    public static File fmlcore = new File(libPath + "net/minecraftforge/fmlcore/" + mcVer + "-" + forgeVer + "/fmlcore-" + mcVer + "-" + forgeVer + ".jar");
+    public static File javafmllanguage = new File(libPath + "net/minecraftforge/javafmllanguage/" + mcVer + "-" + forgeVer + "/javafmllanguage-" + mcVer + "-" + forgeVer + ".jar");
+    public static File mclanguage = new File(libPath + "net/minecraftforge/mclanguage/" + mcVer + "-" + forgeVer + "/mclanguage-" + mcVer + "-" + forgeVer + ".jar");
+
 
     public static File lzma = new File(libPath + "com/mohistmc/installation/data/server.lzma");
     public static File installInfo = new File(libPath + "com/mohistmc/installation/installInfo");
@@ -48,7 +56,11 @@ public class InstallUtils {
     public static void startInstallation() throws Exception {
         System.out.println(i18n.get("installation.start"));
         copyFileFromJar(lzma, "data/server.lzma");
-        copyFileFromJar(universalJar, "data/forge-" + mcVer + "-" + mohistVer + "-universal.jar");
+        copyFileFromJar(universalJar, "data/forge-" + mcVer + "-" + forgeVer + "-universal.jar");
+        copyFileFromJar(fmlloader, "data/fmlloader-" + mcVer + "-" + forgeVer + ".jar");
+        copyFileFromJar(fmlcore, "data/fmlcore-" + mcVer + "-" + forgeVer + ".jar");
+        copyFileFromJar(javafmllanguage, "data/javafmllanguage-" + mcVer + "-" + forgeVer + ".jar");
+        copyFileFromJar(mclanguage, "data/mclanguage-" + mcVer + "-" + forgeVer + ".jar");
 
         if(mohistVer == null || mcpVer == null) {
             System.out.println("[Mohist] There is an error with the installation, the forge / mcp version is not set.");
