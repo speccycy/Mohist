@@ -37,7 +37,7 @@ public class InstallUtils {
     public static File fmlcore = new File(libPath + "net/minecraftforge/fmlcore/" + mcVer + "-" + forgeVer + "/fmlcore-" + mcVer + "-" + forgeVer + ".jar");
     public static File javafmllanguage = new File(libPath + "net/minecraftforge/javafmllanguage/" + mcVer + "-" + forgeVer + "/javafmllanguage-" + mcVer + "-" + forgeVer + ".jar");
     public static File mclanguage = new File(libPath + "net/minecraftforge/mclanguage/" + mcVer + "-" + forgeVer + "/mclanguage-" + mcVer + "-" + forgeVer + ".jar");
-
+    public static File mohistloader = new File(libPath + "net/minecraftforge/mohistloader/" + mcVer + "-" + mohistVer + "/mohistloader-" + mcVer + "-" + mohistVer + ".jar");
 
     public static File lzma = new File(libPath + "com/mohistmc/installation/data/server.lzma");
     public static File installInfo = new File(libPath + "com/mohistmc/installation/installInfo");
@@ -61,6 +61,7 @@ public class InstallUtils {
         copyFileFromJar(fmlcore, "data/fmlcore-" + mcVer + "-" + forgeVer + ".jar");
         copyFileFromJar(javafmllanguage, "data/javafmllanguage-" + mcVer + "-" + forgeVer + ".jar");
         copyFileFromJar(mclanguage, "data/mclanguage-" + mcVer + "-" + forgeVer + ".jar");
+        copyFileFromJar(mohistloader, "data/mohistloader-" + mcVer + "-" + mohistVer + ".jar");
 
         if(mohistVer == null || mcpVer == null) {
             System.out.println("[Mohist] There is an error with the installation, the forge / mcp version is not set.");
