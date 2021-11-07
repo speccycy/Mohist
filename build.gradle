@@ -1233,6 +1233,9 @@ project(':forge') {
         from(project(':mclanguage').tasks.jar.outputs) {
             rename { 'data/mclanguage-' + MC_VERSION + '-' + FORGE_VERSION + '.jar' }
         }
+        from(project(':mohistloader').tasks.jar.outputs) {
+            rename { 'data/mohistloader-' + MC_VERSION + '-' + MOHIST_VERSION + '.jar' }
+        }
         from(rootProject.file('server_files/version.txt')) {
             filter(ReplaceTokens, tokens: [VERSION: MOHIST_VERSION])
             rename { 'versions/mohist.txt' }
