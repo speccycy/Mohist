@@ -503,6 +503,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     @Override
+    public void stopAllSounds() {
+        if (getHandle().connection == null) return;
+
+        getHandle().connection.send(new ClientboundStopSoundPacket(null, null));
+    }
+
+    @Override
     public void stopSound(String sound, org.bukkit.SoundCategory category) {
         if (getHandle().connection == null) return;
 
@@ -523,10 +530,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (data != null) {
             Validate.isTrue(effect.getData() != null && effect.getData().isAssignableFrom(data.getClass()), "Wrong kind of data for this effect!");
         } else {
-            Validate.isTrue(effect.getData() == null, "Wrong kind of data for this effect!");
+            // Special case: the axis is optional for ELECTRIC_SPARK
+            Validate.isTrue(effect.getData() == null || effect == Effect.ELECTRIC_SPARK, "Wrong kind of data for this effect!");
         }
 
-        int datavalue = data == null ? 0 : CraftEffect.getDataValue(effect, data);
+        int datavalue = CraftEffect.getDataValue(effect, data);
         playEffect(loc, effect, datavalue);
     }
 

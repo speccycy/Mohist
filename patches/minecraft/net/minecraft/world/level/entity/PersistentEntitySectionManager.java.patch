@@ -12,6 +12,15 @@
  import java.util.function.Consumer;
  import java.util.stream.Collectors;
  import java.util.stream.Stream;
+@@ -33,7 +_,7 @@
+    static final Logger f_157490_ = LogManager.getLogger();
+    final Set<UUID> f_157491_ = Sets.newHashSet();
+    final LevelCallback<T> f_157492_;
+-   private final EntityPersistentStorage<T> f_157493_;
++   public final EntityPersistentStorage<T> f_157493_;
+    private final EntityLookup<T> f_157494_;
+    final EntitySectionStorage<T> f_157495_;
+    private final LevelEntityGetter<T> f_157496_;
 @@ -72,7 +_,16 @@
        return this.m_157538_(p_157534_, false);
     }
@@ -55,13 +64,17 @@
        this.f_157493_.close();
     }
  
-@@ -348,13 +_,21 @@
+@@ -348,13 +_,25 @@
        return this.f_157491_.size() + "," + this.f_157494_.m_156821_() + "," + this.f_157495_.m_156887_() + "," + this.f_157498_.size() + "," + this.f_157497_.size() + "," + this.f_157500_.size() + "," + this.f_157499_.size();
     }
  
 +   // CraftBukkit start - add method to get all entities in chunk
 +   public List<Entity> getEntities(ChunkPos chunkCoordIntPair) {
 +      return f_157495_.m_156888_(chunkCoordIntPair.m_45588_()).flatMap(EntitySection::m_156845_).map(entiy -> (Entity) entiy).collect(Collectors.toList());
++   }
++
++   public boolean isPending(long pair) {
++      return f_157498_.get(pair) == ChunkLoadStatus.PENDING;
 +   }
 +   // CraftBukkit end
 +

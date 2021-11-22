@@ -44,10 +44,7 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.server.ConsoleInput;
 import net.minecraft.server.commands.ReloadCommand;
 import net.minecraft.server.players.StoredUserEntry;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.*;
 import net.minecraft.world.entity.npc.CatSpawner;
 import net.minecraft.world.entity.npc.WanderingTraderSpawner;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -165,7 +162,9 @@ import org.bukkit.craftbukkit.metadata.WorldMetadataStore;
 import org.bukkit.craftbukkit.potion.CraftPotionBrewer;
 import org.bukkit.craftbukkit.scheduler.CraftScheduler;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
+import org.bukkit.craftbukkit.structure.CraftStructureManager;
 import org.bukkit.craftbukkit.tag.CraftBlockTag;
+import org.bukkit.craftbukkit.tag.CraftEntityTag;
 import org.bukkit.craftbukkit.tag.CraftFluidTag;
 import org.bukkit.craftbukkit.tag.CraftItemTag;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -205,6 +204,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitWorker;
+import org.bukkit.structure.StructureManager;
 import org.bukkit.util.StringUtil;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.yaml.snakeyaml.Yaml;
@@ -222,6 +222,7 @@ public final class CraftServer implements Server {
     private final SimpleHelpMap helpMap = new SimpleHelpMap(this);
     private final StandardMessenger messenger = new StandardMessenger();
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
+    private final StructureManager structureManager;
     protected final DedicatedServer console;
     protected final DedicatedPlayerList playerList;
     private final Map<String, World> worlds = new LinkedHashMap<String, World>();
@@ -236,6 +237,7 @@ public final class CraftServer implements Server {
     private int animalSpawn = -1;
     private int waterAnimalSpawn = -1;
     private int waterAmbientSpawn = -1;
+    private int waterUndergroundCreatureSpawn = -1;
     private int ambientSpawn = -1;
     private File container;
     private WarningState warningState = WarningState.DEFAULT;
@@ -264,6 +266,7 @@ public final class CraftServer implements Server {
             }
         }));
         this.serverVersion = MohistMCStart.getMohistVersion();
+        this.structureManager = new CraftStructureManager(console.getStructureManager());
 
         Bukkit.setServer(this);
 
@@ -323,6 +326,7 @@ public final class CraftServer implements Server {
         animalSpawn = configuration.getInt("spawn-limits.animals");
         waterAnimalSpawn = configuration.getInt("spawn-limits.water-animals");
         waterAmbientSpawn = configuration.getInt("spawn-limits.water-ambient");
+        waterUndergroundCreatureSpawn = configuration.getInt("spawn-limits.water-underground-creature");
         ambientSpawn = configuration.getInt("spawn-limits.ambient");
         console.autosavePeriod = configuration.getInt("ticks-per.autosave");
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
@@ -668,6 +672,11 @@ public final class CraftServer implements Server {
     }
 
     @Override
+    public int getTicksPerWaterUndergroundCreatureSpawns() {
+        return this.configuration.getInt("ticks-per.water-underground-creature-spawns");
+    }
+
+    @Override
     public int getTicksPerAmbientSpawns() {
         return this.configuration.getInt("ticks-per.ambient-spawns");
     }
@@ -751,6 +760,7 @@ public final class CraftServer implements Server {
         animalSpawn = configuration.getInt("spawn-limits.animals");
         waterAnimalSpawn = configuration.getInt("spawn-limits.water-animals");
         waterAmbientSpawn = configuration.getInt("spawn-limits.water-ambient");
+        waterUndergroundCreatureSpawn = configuration.getInt("spawn-limits.water-underground-creature");
         ambientSpawn = configuration.getInt("spawn-limits.ambient");
         warningState = WarningState.value(configuration.getString("settings.deprecated-verbose"));
         TicketType.PLUGIN.timeout = configuration.getInt("chunk-gc.period-in-ticks");
@@ -824,14 +834,10 @@ public final class CraftServer implements Server {
         List<BukkitWorker> overdueWorkers = getScheduler().getActiveWorkers();
         for (BukkitWorker worker : overdueWorkers) {
             Plugin plugin = worker.getOwner();
-            String author = "<NoAuthorGiven>";
-            if (plugin.getDescription().getAuthors().size() > 0) {
-                author = plugin.getDescription().getAuthors().get(0);
-            }
             getLogger().log(Level.SEVERE, String.format(
-                "Nag author: '%s' of '%s' about the following: %s",
-                author,
-                plugin.getDescription().getName(),
+                "Nag author(s): '%s' of '%s' about the following: %s",
+                plugin.getDescription().getAuthors(),
+                plugin.getDescription().getFullName(),
                 "This plugin is not properly shutting down its async tasks when it is being reloaded.  This may cause conflicts with the newly loaded version of the plugin"
             ));
         }
@@ -1805,6 +1811,11 @@ public final class CraftServer implements Server {
     }
 
     @Override
+    public int getWaterUndergroundCreatureSpawnLimit() {
+        return waterUndergroundCreatureSpawn;
+    }
+
+    @Override
     public int getAmbientSpawnLimit() {
         return ambientSpawn;
     }
@@ -2089,6 +2100,10 @@ public final class CraftServer implements Server {
                 Preconditions.checkArgument(clazz == org.bukkit.Fluid.class, "Fluid namespace must have fluid type");
 
                 return (org.bukkit.Tag<T>) new CraftFluidTag(FluidTags.getAllTags(), key);
+            case org.bukkit.Tag.REGISTRY_ENTITY_TYPES:
+                Preconditions.checkArgument(clazz == org.bukkit.entity.EntityType.class, "Entity type namespace must have entity type");
+
+                return (org.bukkit.Tag<T>) new CraftEntityTag(EntityTypeTags.getAllTags(), key);
             default:
                 throw new IllegalArgumentException();
         }
@@ -2113,6 +2128,11 @@ public final class CraftServer implements Server {
 
                 TagCollection<net.minecraft.world.level.material.Fluid> fluidTags = FluidTags.getAllTags();
                 return fluidTags.getAllTags().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftFluidTag(fluidTags, key)).collect(ImmutableList.toImmutableList());
+            case org.bukkit.Tag.REGISTRY_ENTITY_TYPES:
+                Preconditions.checkArgument(clazz == org.bukkit.entity.EntityType.class, "Entity type namespace must have entity type");
+
+                TagCollection<net.minecraft.world.entity.EntityType<?>> entityTags = EntityTypeTags.getAllTags();
+                return entityTags.getAllTags().keySet().stream().map(key -> (org.bukkit.Tag<T>) new CraftEntityTag(entityTags, key)).collect(ImmutableList.toImmutableList());
             default:
                 throw new IllegalArgumentException();
         }
@@ -2143,6 +2163,11 @@ public final class CraftServer implements Server {
         }
 
         return new ArrayList<>(Lists.transform(nms, (entity) -> entity.getBukkitEntity()));
+    }
+
+    @Override
+    public StructureManager getStructureManager() {
+        return structureManager;
     }
 
     @Deprecated

@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -16,12 +17,8 @@ import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 
 public class CraftJukebox extends CraftBlockEntityState<JukeboxBlockEntity> implements Jukebox {
 
-    public CraftJukebox(final Block block) {
-        super(block, JukeboxBlockEntity.class);
-    }
-
-    public CraftJukebox(final Material material, JukeboxBlockEntity te) {
-        super(material, te);
+    public CraftJukebox(World world, JukeboxBlockEntity te) {
+        super(world, te);
     }
 
     @Override
@@ -85,8 +82,8 @@ public class CraftJukebox extends CraftBlockEntityState<JukeboxBlockEntity> impl
 
     @Override
     public boolean eject() {
-        Preconditions.checkState(getWorldHandle() instanceof net.minecraft.world.level.Level, "Can't eject during world generation");
-        requirePlaced();
+        ensureNoWorldGeneration();
+
         BlockEntity tileEntity = this.getTileEntityFromWorld();
         if (!(tileEntity instanceof JukeboxBlockEntity)) return false;
 

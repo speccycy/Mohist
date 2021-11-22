@@ -24,6 +24,8 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
         Direction oldDir = hanging.getDirection();
         Direction newDir = CraftBlock.blockFaceToNotch(face);
 
+        Preconditions.checkArgument(newDir != null, "%s is not a valid facing direction", face);
+
         getHandle().setDirection(newDir);
         if (!force && !getHandle().generation && !hanging.survives()) {
             hanging.setDirection(oldDir);

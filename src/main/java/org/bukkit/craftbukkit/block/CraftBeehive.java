@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftBee;
@@ -15,12 +16,8 @@ import org.bukkit.entity.Bee;
 
 public class CraftBeehive extends CraftBlockEntityState<BeehiveBlockEntity> implements Beehive {
 
-    public CraftBeehive(final Block block) {
-        super(block, BeehiveBlockEntity.class);
-    }
-
-    public CraftBeehive(final Material material, final BeehiveBlockEntity te) {
-        super(material, te);
+    public CraftBeehive(World world, final BeehiveBlockEntity te) {
+        super(world, te);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class CraftBeehive extends CraftBlockEntityState<BeehiveBlockEntity> impl
 
     @Override
     public List<Bee> releaseEntities() {
-        Preconditions.checkState(getWorldHandle() instanceof net.minecraft.world.level.Level, "Can't get entities during world generation");
+        ensureNoWorldGeneration();
 
         List<Bee> bees = new ArrayList<>();
 

@@ -5,17 +5,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.EndGateway;
 
 public class CraftEndGateway extends CraftBlockEntityState<TheEndGatewayBlockEntity> implements EndGateway {
 
-    public CraftEndGateway(Block block) {
-        super(block, TheEndGatewayBlockEntity.class);
-    }
-
-    public CraftEndGateway(final Material material, TheEndGatewayBlockEntity te) {
-        super(material, te);
+    public CraftEndGateway(World world, TheEndGatewayBlockEntity te) {
+        super(world, te);
     }
 
     @Override

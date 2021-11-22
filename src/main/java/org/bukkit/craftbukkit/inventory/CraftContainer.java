@@ -182,7 +182,7 @@ public class CraftContainer extends AbstractContainerMenu {
                 delegate = new HopperMenu(windowId, bottom, top);
                 break;
             case ANVIL:
-                delegate = new AnvilMenu(windowId, bottom);
+                setupAnvil(top, bottom); // SPIGOT-6783 - manually set up slots so we can use the delegated inventory and not the automatically created one
                 break;
             case SMITHING:
                 delegate = new SmithingMenu(windowId, bottom);
@@ -226,8 +226,13 @@ public class CraftContainer extends AbstractContainerMenu {
         }
 
         // SPIGOT-4598 - we should still delegate the shift click handler
-        if (cachedType == InventoryType.WORKBENCH) {
-            delegate = new CraftingMenu(windowId, bottom);
+        switch (cachedType) {
+            case WORKBENCH:
+                delegate = new CraftingMenu(windowId, bottom);
+                break;
+            case ANVIL:
+                delegate = new AnvilMenu(windowId, bottom);
+                break;
         }
     }
 
@@ -254,6 +259,27 @@ public class CraftContainer extends AbstractContainerMenu {
             this.addSlot(new Slot(bottom, col, 8 + col * 18, 142));
         }
         // End copy from ContainerWorkbench
+    }
+
+    private void setupAnvil(net.minecraft.world.Container top, net.minecraft.world.Container bottom) {
+        // This code copied from ContainerAnvilAbstract
+        this.addSlot(new Slot(top, 0, 27, 47));
+        this.addSlot(new Slot(top, 1, 76, 47));
+        this.addSlot(new Slot(top, 2, 134, 47));
+
+        int row;
+        int col;
+
+        for (row = 0; row < 3; ++row) {
+            for (col = 0; col < 9; ++col) {
+                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+            }
+        }
+
+        for (row = 0; row < 9; ++row) {
+            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142));
+        }
+        // End copy from ContainerAnvilAbstract
     }
 
     @Override

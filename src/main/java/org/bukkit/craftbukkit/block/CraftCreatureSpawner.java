@@ -5,18 +5,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
 public class CraftCreatureSpawner extends CraftBlockEntityState<SpawnerBlockEntity> implements CreatureSpawner {
 
-    public CraftCreatureSpawner(final Block block) {
-        super(block, SpawnerBlockEntity.class);
-    }
-
-    public CraftCreatureSpawner(final Material material, SpawnerBlockEntity te) {
-        super(material, te);
+    public CraftCreatureSpawner(World world, SpawnerBlockEntity te) {
+        super(world, te);
     }
 
     @Override

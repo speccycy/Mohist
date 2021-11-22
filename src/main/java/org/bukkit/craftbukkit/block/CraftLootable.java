@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Nameable;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.loot.LootTable;
@@ -12,12 +13,8 @@ import org.bukkit.loot.Lootable;
 
 public abstract class CraftLootable<T extends RandomizableContainerBlockEntity> extends CraftContainer<T> implements Nameable, Lootable {
 
-    public CraftLootable(Block block, Class<T> tileEntityClass) {
-        super(block, tileEntityClass);
-    }
-
-    public CraftLootable(Material material, T tileEntity) {
-        super(material, tileEntity);
+    public CraftLootable(World world, T tileEntity) {
+        super(world, tileEntity);
     }
 
     @Override

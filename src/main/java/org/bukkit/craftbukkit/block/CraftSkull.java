@@ -4,10 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.SkullType;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
@@ -21,12 +18,8 @@ public class CraftSkull extends CraftBlockEntityState<SkullBlockEntity> implemen
     private static final int MAX_OWNER_LENGTH = 16;
     private GameProfile profile;
 
-    public CraftSkull(final Block block) {
-        super(block, SkullBlockEntity.class);
-    }
-
-    public CraftSkull(final Material material, final SkullBlockEntity te) {
-        super(material, te);
+    public CraftSkull(World world, final SkullBlockEntity te) {
+        super(world, te);
     }
 
     @Override

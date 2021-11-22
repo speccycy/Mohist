@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -17,12 +18,8 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest {
 
-    public CraftChest(final Block block) {
-        super(block, ChestBlockEntity.class);
-    }
-
-    public CraftChest(final Material material, final ChestBlockEntity te) {
-        super(material, te);
+    public CraftChest(World world, final ChestBlockEntity te) {
+        super(world, te);
     }
 
     @Override
@@ -41,9 +38,8 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
 
     @Override
     public Inventory getInventory() {
-        Preconditions.checkState(getWorldHandle() instanceof net.minecraft.world.level.Level, "Can't get inventory during world generation, use getBlockInventory() instead");
         CraftInventory inventory = (CraftInventory) this.getBlockInventory();
-        if (!isPlaced()) {
+        if (!isPlaced() || isWorldGeneration()) {
             return inventory;
         }
 
@@ -51,7 +47,7 @@ public class CraftChest extends CraftLootable<ChestBlockEntity> implements Chest
         CraftWorld world = (CraftWorld) this.getWorld();
 
         ChestBlock blockChest= (ChestBlock) (this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
-        MenuProvider nms = blockChest.getMenuProvider(data, world.getHandle(), this.getPosition());
+        MenuProvider nms = blockChest.getInventory(data, world.getHandle(), this.getPosition(), true);
 
         if (nms instanceof ChestBlock.DoubleInventory) {
             inventory = new CraftInventoryDoubleChest((ChestBlock.DoubleInventory) nms);

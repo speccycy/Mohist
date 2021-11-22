@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.random.WeightedRandomList;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import org.bukkit.HeightMap;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftHeightMap;
@@ -96,6 +98,13 @@ public class CustomChunkGenerator extends InternalChunkGenerator {
     @Override
     public int getSeaLevel() {
         return delegate.getSeaLevel();
+    }
+
+    @Override
+    public void createStructures(RegistryAccess iregistrycustom, StructureFeatureManager structuremanager, ChunkAccess ichunkaccess, StructureManager definedstructuremanager, long i) {
+        if (generator.shouldGenerateStructures()) {
+            super.createStructures(iregistrycustom, structuremanager, ichunkaccess, definedstructuremanager, i);
+        }
     }
 
     @Override

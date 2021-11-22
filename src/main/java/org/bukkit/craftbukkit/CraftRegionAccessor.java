@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.EyeOfEnder;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -459,7 +460,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
     }
 
     public <T extends Entity> T spawn(Location location, Class<T> clazz, Consumer<T> function, CreatureSpawnEvent.SpawnReason reason, boolean randomizeData) throws IllegalArgumentException {
-        net.minecraft.world.entity.Entity entity = createEntity(location, clazz);
+        net.minecraft.world.entity.Entity entity = createEntity(location, clazz, randomizeData);
 
         return addEntity(entity, reason, function, randomizeData);
     }
@@ -493,6 +494,11 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
 
     @SuppressWarnings("unchecked")
     public net.minecraft.world.entity.Entity createEntity(Location location, Class<? extends Entity> clazz) throws IllegalArgumentException {
+        return createEntity(location, clazz, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public net.minecraft.world.entity.Entity createEntity(Location location, Class<? extends Entity> clazz, boolean randomizeData) throws IllegalArgumentException {
         if (location == null || clazz == null) {
             throw new IllegalArgumentException("Location or entity class cannot be null");
         }
@@ -784,52 +790,55 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
                 entity.setYHeadRot(yaw); // SPIGOT-3587
             }
         } else if (Hanging.class.isAssignableFrom(clazz)) {
-            BlockFace face = BlockFace.SELF;
+            if (LeashHitch.class.isAssignableFrom(clazz)) {
+                // SPIGOT-5732: LeashHitch has no direction and is always centered at a block
+                entity = new LeashFenceKnotEntity(world, new BlockPos(x, y, z));
+            } else {
+                BlockFace face = BlockFace.SELF;
+                BlockFace[] faces = new BlockFace[]{BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
 
-            int width = 16; // 1 full block, also painting smallest size.
-            int height = 16; // 1 full block, also painting smallest size.
+                int width = 16; // 1 full block, also painting smallest size.
+                int height = 16; // 1 full block, also painting smallest size.
 
-            if (ItemFrame.class.isAssignableFrom(clazz)) {
-                width = 12;
-                height = 12;
-            } else if (LeashHitch.class.isAssignableFrom(clazz)) {
-                width = 9;
-                height = 9;
-            }
+                if (ItemFrame.class.isAssignableFrom(clazz)) {
+                    width = 12;
+                    height = 12;
+                    faces = new BlockFace[]{BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.UP, BlockFace.DOWN};
+                }
 
-            BlockFace[] faces = new BlockFace[]{BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.UP, BlockFace.DOWN};
-            final BlockPos pos = new BlockPos(x, y, z);
-            for (BlockFace dir : faces) {
-                net.minecraft.world.level.block.state.BlockState nmsBlock = getHandle().getBlockState(pos.relative(CraftBlock.blockFaceToNotch(dir)));
-                if (nmsBlock.getMaterial().isSolid() || net.minecraft.world.level.block.DiodeBlock.isDiode(nmsBlock)) {
-                    boolean taken = false;
-                    AABB bb = (ItemFrame.class.isAssignableFrom(clazz))
-                            ? net.minecraft.world.entity.decoration.ItemFrame.calculateBoundingBox(null, pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height)
-                            : net.minecraft.world.entity.decoration.HangingEntity.calculateBoundingBox(null, pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height);
-                    List<net.minecraft.world.entity.Entity> list = (List<net.minecraft.world.entity.Entity>) getHandle().getEntities(null, bb);
-                    for (Iterator<net.minecraft.world.entity.Entity> it = list.iterator(); !taken && it.hasNext();) {
-                        net.minecraft.world.entity.Entity e = it.next();
-                        if (e instanceof net.minecraft.world.entity.decoration.HangingEntity) {
-                            taken = true; // Hanging entities do not like hanging entities which intersect them.
+                final BlockPos pos = new BlockPos(x, y, z);
+                for (BlockFace dir : faces) {
+                    net.minecraft.world.level.block.state.BlockState nmsBlock = getHandle().getBlockState(pos.relative(CraftBlock.blockFaceToNotch(dir)));
+                    if (nmsBlock.getMaterial().isSolid() || net.minecraft.world.level.block.DiodeBlock.isDiode(nmsBlock)) {
+                        boolean taken = false;
+                        AABB bb = (ItemFrame.class.isAssignableFrom(clazz))
+                                ? net.minecraft.world.entity.decoration.ItemFrame.calculateBoundingBox(null, pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height)
+                                : net.minecraft.world.entity.decoration.HangingEntity.calculateBoundingBox(null, pos, CraftBlock.blockFaceToNotch(dir).getOpposite(), width, height);
+                        List<net.minecraft.world.entity.Entity> list = (List<net.minecraft.world.entity.Entity>) getHandle().getEntities(null, bb);
+                        for (Iterator<net.minecraft.world.entity.Entity> it = list.iterator(); !taken && it.hasNext(); ) {
+                            net.minecraft.world.entity.Entity e = it.next();
+                            if (e instanceof net.minecraft.world.entity.decoration.HangingEntity) {
+                                taken = true; // Hanging entities do not like hanging entities which intersect them.
+                            }
+                        }
+
+                        if (!taken) {
+                            face = dir;
+                            break;
                         }
                     }
-
-                    if (!taken) {
-                        face = dir;
-                        break;
-                    }
                 }
-            }
 
-            if (LeashHitch.class.isAssignableFrom(clazz)) {
-                entity = new net.minecraft.world.entity.decoration.LeashFenceKnotEntity(world, new BlockPos(x, y, z));
-            } else {
                 // No valid face found
-                Preconditions.checkArgument(face != BlockFace.SELF, "Cannot spawn hanging entity for %s at %s (no free face)", clazz.getName(), location);
+                if (face == BlockFace.SELF) {
+                    // SPIGOT-6387: Allow hanging entities to be placed in midair
+                    face = BlockFace.SOUTH;
+                    randomizeData = false; // Don't randomize if no valid face is found, prevents null painting
+                }
 
                 Direction dir = CraftBlock.blockFaceToNotch(face).getOpposite();
                 if (Painting.class.isAssignableFrom(clazz)) {
-                    if (isNormalWorld()) {
+                    if (isNormalWorld() && randomizeData) {
                         entity = new net.minecraft.world.entity.decoration.Painting(getHandle().getMinecraftWorld(), new BlockPos(x, y, z), dir);
                     } else {
                         entity = new net.minecraft.world.entity.decoration.Painting(net.minecraft.world.entity.EntityType.PAINTING, getHandle().getMinecraftWorld());
@@ -843,10 +852,6 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
                         entity = new net.minecraft.world.entity.decoration.ItemFrame(world, new BlockPos(x, y, z), dir);
                     }
                 }
-            }
-
-            if (entity != null && isNormalWorld() && !((net.minecraft.world.entity.decoration.HangingEntity) entity).survives()) {
-                throw new IllegalArgumentException("Cannot spawn hanging entity for " + clazz.getName() + " at " + location);
             }
         } else if (TNTPrimed.class.isAssignableFrom(clazz)) {
             entity = new net.minecraft.world.entity.item.PrimedTnt(world, x, y, z, null);

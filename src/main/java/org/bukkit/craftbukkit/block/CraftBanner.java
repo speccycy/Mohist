@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
@@ -19,12 +20,8 @@ public class CraftBanner extends CraftBlockEntityState<BannerBlockEntity> implem
     private DyeColor base;
     private List<Pattern> patterns;
 
-    public CraftBanner(final Block block) {
-        super(block, BannerBlockEntity.class);
-    }
-
-    public CraftBanner(final Material material, final BannerBlockEntity te) {
-        super(material, te);
+    public CraftBanner(World world, final BannerBlockEntity te) {
+        super(world, te);
     }
 
     @Override

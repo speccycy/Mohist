@@ -3,17 +3,14 @@ package org.bukkit.craftbukkit.block;
 import net.minecraft.world.level.block.entity.BedBlockEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Bed;
 import org.bukkit.block.Block;
 
 public class CraftBed extends CraftBlockEntityState<BedBlockEntity> implements Bed {
 
-    public CraftBed(Block block) {
-        super(block, BedBlockEntity.class);
-    }
-
-    public CraftBed(Material material, BedBlockEntity te) {
-        super(material, te);
+    public CraftBed(World world, BedBlockEntity te) {
+        super(world, te);
     }
 
     @Override

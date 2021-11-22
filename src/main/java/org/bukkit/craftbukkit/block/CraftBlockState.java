@@ -20,6 +20,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nullable;
+
 public class CraftBlockState implements org.bukkit.block.BlockState {
     protected final CraftWorld world;
     private final BlockPos position;
@@ -27,33 +29,23 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
     protected int flag;
     private WeakReference<LevelAccessor> weakWorld;
 
-    public CraftBlockState(final Block block) {
-        this.world = (CraftWorld) block.getWorld();
-        this.position = ((CraftBlock) block).getPosition();
-        this.data = ((CraftBlock) block).getNMS();
+    protected CraftBlockState(final Block block) {
+        this(block.getWorld(), ((CraftBlock) block).getPosition(), ((CraftBlock) block).getNMS());
         this.flag = 3;
 
         setWorldHandle(((CraftBlock) block).getHandle());
     }
 
-    public CraftBlockState(final Block block, int flag) {
+    protected CraftBlockState(final Block block, int flag) {
         this(block);
         this.flag = flag;
     }
 
-    public CraftBlockState(Material material) {
-        world = null;
-        data = CraftMagicNumbers.getBlock(material).defaultBlockState();
-        position = BlockPos.ZERO;
-        this.weakWorld = null;
-    }
-
-    public static CraftBlockState getBlockState(LevelAccessor world, net.minecraft.core.BlockPos pos) {
-        return new CraftBlockState(CraftBlock.at(world, pos));
-    }
-
-    public static CraftBlockState getBlockState(LevelAccessor world, net.minecraft.core.BlockPos pos, int flag) {
-        return new CraftBlockState(CraftBlock.at(world, pos), flag);
+    // world can be null for non-placed BlockStates.
+    protected CraftBlockState(@Nullable World world, BlockPos blockPosition, BlockState blockData) {
+        this.world = (CraftWorld) world;
+        position = blockPosition;
+        data = blockData;
     }
 
     public void setWorldHandle(LevelAccessor generatorAccess) {
@@ -64,18 +56,31 @@ public class CraftBlockState implements org.bukkit.block.BlockState {
         }
     }
 
+    // Returns null if weakWorld is not available and the BlockState is not placed.
+    // If this returns a World instead of only a GeneratorAccess, this implies that this BlockState is placed.
     public LevelAccessor getWorldHandle() {
         if (weakWorld == null) {
-            return world.getHandle();
+            return this.isPlaced() ? world.getHandle() : null;
         }
 
         LevelAccessor access = weakWorld.get();
         if (access == null) {
             weakWorld = null;
-            return world.getHandle();
+            return this.isPlaced() ? world.getHandle() : null;
         }
 
         return access;
+    }
+
+    protected final boolean isWorldGeneration() {
+        LevelAccessor generatorAccess = this.getWorldHandle();
+        return generatorAccess != null && !(generatorAccess instanceof net.minecraft.world.level.Level);
+    }
+
+    protected final void ensureNoWorldGeneration() {
+        if (isWorldGeneration()) {
+            throw new IllegalStateException("This operation is not supported during world generation!");
+        }
     }
 
     @Override

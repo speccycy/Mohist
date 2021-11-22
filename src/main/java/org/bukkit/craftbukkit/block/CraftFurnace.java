@@ -3,6 +3,7 @@ package org.bukkit.craftbukkit.block;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.inventory.CraftInventoryFurnace;
@@ -10,12 +11,8 @@ import org.bukkit.inventory.FurnaceInventory;
 
 public abstract class CraftFurnace<T extends AbstractFurnaceBlockEntity> extends CraftContainer<T> implements Furnace {
 
-    public CraftFurnace(Block block, Class<T> tileEntityClass) {
-        super(block, tileEntityClass);
-    }
-
-    public CraftFurnace(final Material material, final T te) {
-        super(material, te);
+    public CraftFurnace(World world, final T te) {
+        super(world, te);
     }
 
     @Override

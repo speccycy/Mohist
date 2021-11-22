@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
@@ -12,12 +13,8 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftBarrel extends CraftLootable<BarrelBlockEntity> implements Barrel {
 
-    public CraftBarrel(Block block) {
-        super(block, BarrelBlockEntity.class);
-    }
-
-    public CraftBarrel(Material material, BarrelBlockEntity te) {
-        super(material, te);
+    public CraftBarrel(World world, BarrelBlockEntity tileEntity) {
+        super(world, tileEntity);
     }
 
     @Override

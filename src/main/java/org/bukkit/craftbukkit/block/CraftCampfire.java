@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.block;
 
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Campfire;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -9,12 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class CraftCampfire extends CraftBlockEntityState<CampfireBlockEntity> implements Campfire {
 
-    public CraftCampfire(Block block) {
-        super(block, CampfireBlockEntity.class);
-    }
-
-    public CraftCampfire(Material material, CampfireBlockEntity te) {
-        super(material, te);
+    public CraftCampfire(World world, CampfireBlockEntity te) {
+        super(world, te);
     }
 
     @Override

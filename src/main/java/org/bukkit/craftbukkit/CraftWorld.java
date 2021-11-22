@@ -253,6 +253,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     private int animalSpawn = -1;
     private int waterAnimalSpawn = -1;
     private int waterAmbientSpawn = -1;
+    private int waterUndergroundCreatureSpawn = -1;
     private int ambientSpawn = -1;
 
     private static final Random rand = new Random();
@@ -1210,10 +1211,11 @@ public class CraftWorld extends CraftRegionAccessor implements World {
         if (data != null) {
             Validate.isTrue(effect.getData() != null && effect.getData().isAssignableFrom(data.getClass()), "Wrong kind of data for this effect!");
         } else {
-            Validate.isTrue(effect.getData() == null, "Wrong kind of data for this effect!");
+            // Special case: the axis is optional for ELECTRIC_SPARK
+            Validate.isTrue(effect.getData() == null || effect == Effect.ELECTRIC_SPARK, "Wrong kind of data for this effect!");
         }
 
-        int datavalue = data == null ? 0 : CraftEffect.getDataValue(effect, data);
+        int datavalue = CraftEffect.getDataValue(effect, data);
         playEffect(loc, effect, datavalue, radius);
     }
 
@@ -1499,6 +1501,16 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     }
 
     @Override
+    public long getTicksPerWaterUndergroundCreatureSpawns() {
+        return world.ticksPerWaterUndergroundCreatureSpawns;
+    }
+
+    @Override
+    public void setTicksPerWaterUndergroundCreatureSpawns(int ticksPerWaterUndergroundCreatureSpawns) {
+        world.ticksPerWaterUndergroundCreatureSpawns = ticksPerWaterUndergroundCreatureSpawns;
+    }
+
+    @Override
     public long getTicksPerAmbientSpawns() {
         return world.ticksPerAmbientSpawns;
     }
@@ -1582,6 +1594,20 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public void setWaterAmbientSpawnLimit(int limit) {
         waterAmbientSpawn = limit;
+    }
+
+    @Override
+    public int getWaterUndergroundCreatureSpawnLimit() {
+        if (waterUndergroundCreatureSpawn < 0) {
+            return server.getWaterUndergroundCreatureSpawnLimit();
+        }
+
+        return waterUndergroundCreatureSpawn;
+    }
+
+    @Override
+    public void setWaterUndergroundCreatureSpawnLimit(int limit) {
+        waterUndergroundCreatureSpawn = limit;
     }
 
     @Override

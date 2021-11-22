@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.block;
 
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.craftbukkit.inventory.CraftInventoryBrewer;
@@ -9,12 +10,8 @@ import org.bukkit.inventory.BrewerInventory;
 
 public class CraftBrewingStand extends CraftContainer<BrewingStandBlockEntity> implements BrewingStand {
 
-    public CraftBrewingStand(Block block) {
-        super(block, BrewingStandBlockEntity.class);
-    }
-
-    public CraftBrewingStand(final Material material, final BrewingStandBlockEntity te) {
-        super(material, te);
+    public CraftBrewingStand(World world, final BrewingStandBlockEntity te) {
+        super(world, te);
     }
 
     @Override

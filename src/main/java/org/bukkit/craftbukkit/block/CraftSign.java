@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -15,12 +16,8 @@ public class CraftSign extends CraftBlockEntityState<SignBlockEntity> implements
     private String[] originalLines = null;
     private String[] lines = null;
 
-    public CraftSign(final Block block) {
-        super(block, SignBlockEntity.class);
-    }
-
-    public CraftSign(final Material material, final SignBlockEntity te) {
-        super(material, te);
+    public CraftSign(World world, final SignBlockEntity te) {
+        super(world, te);
     }
 
     @Override

@@ -2,16 +2,13 @@ package org.bukkit.craftbukkit.block;
 
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jigsaw;
 
 public class CraftJigsaw extends CraftBlockEntityState<JigsawBlockEntity> implements Jigsaw {
 
-    public CraftJigsaw(Block block) {
-        super(block, JigsawBlockEntity.class);
-    }
-
-    public CraftJigsaw(Material material, JigsawBlockEntity te) {
-        super(material, te);
+    public CraftJigsaw(World world, JigsawBlockEntity te) {
+        super(world, te);
     }
 }

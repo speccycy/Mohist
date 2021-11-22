@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
@@ -15,12 +16,8 @@ import org.bukkit.inventory.Inventory;
 
 public class CraftShulkerBox extends CraftLootable<ShulkerBoxBlockEntity> implements ShulkerBox {
 
-    public CraftShulkerBox(final Block block) {
-        super(block, ShulkerBoxBlockEntity.class);
-    }
-
-    public CraftShulkerBox(final Material material, final ShulkerBoxBlockEntity te) {
-        super(material, te);
+    public CraftShulkerBox(World world, final ShulkerBoxBlockEntity te) {
+        super(world, te);
     }
 
     @Override
